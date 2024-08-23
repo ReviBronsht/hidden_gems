@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">HiddenGems</string>
+    <string name="name_label">NAME</string>
+    <string name="name_placeholder">Name</string>
+    <string name="desc_label">DESCRIPTION</string>
+    <string name="desc_placeholder">Description</string>
+    <string name="address_label">ADDRESS</string>
+    <string name="address_placeholder">Address</string>
+    <string name="city_placeholder">City</string>
+    <string name="type_placeholder">Type</string>
+    <string name="rating_placeholder">Rating</string>
+    <string name="save_btn">Save</string>
 </resources>
