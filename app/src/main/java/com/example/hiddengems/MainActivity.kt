@@ -31,14 +31,38 @@ private lateinit var gemsAdapter: GemsAdapter
     var btnProfile: Button ?= null
     //initializes var to keep current displayed fragment
     var inDisplayFragment: Fragment?= null
+    //initializes var to keep current displayed button
+    var inDisplayButton: Button?= null
 
     //normally back would remove first fragment (feed), overrides to close instead of backing when its the last fragment left in the stack
+    //function also selects the correct button to be currently highlighted, based on currently displayed fragment after back
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 1) {
             super.onBackPressed()
+            println(inDisplayFragment)
+            val currFragmentId = supportFragmentManager.findFragmentById(R.id.flMainFragmentContainer)?.toString()?.split("{")
+            currFragmentId?.let {
+                when (it[0]) {
+                    "FeedFragment" -> btnHome?.let {button->
+                        displayButton(button)
+                    }
+                    "SearchFragment" -> btnSearch?.let {button->
+                        displayButton(button)
+                    }
+                    "AddEditGemFragment" -> btnAddGem?.let {button->
+                        displayButton(button)
+                    }
+                    "FavoritesFragment" -> btnFaves?.let {button->
+                        displayButton(button)
+                    }
+                    else -> btnProfile?.let {button->
+                        displayButton(button)
+                    }
+                }
+            }
         } else {
-            //println(supportFragmentManager.backStackEntryCount)
-            //supportFragmentManager.popBackStackImmediate()
+            //if (supportFragmentManager.backStackEntryCount != 1)
+            //{supportFragmentManager.popBackStackImmediate()}
             finish()
         }
     }
@@ -70,33 +94,45 @@ private lateinit var gemsAdapter: GemsAdapter
 
         //setting onclicklistener that displays fragments when nav buttons are pressed
         btnHome?.setOnClickListener{
-            fragmentFeed?.let {
-                displayFragment(it)
+            fragmentFeed?.let {fragment ->
+                btnHome?.let {button->
+                    displayFragment(fragment, button)
+                }
             }
         }
         btnSearch?.setOnClickListener{
-            fragmentSearch?.let {
-                displayFragment(it)
+            fragmentSearch?.let {fragment ->
+                btnSearch?.let {button->
+                    displayFragment(fragment, button)
+                }
             }
         }
         btnAddGem?.setOnClickListener{
-            fragmentAddEditGem?.let {
-                displayFragment(it)
+            fragmentAddEditGem?.let {fragment ->
+                btnAddGem?.let {button->
+                    displayFragment(fragment, button)
+                }
             }
         }
         btnFaves?.setOnClickListener{
-            fragmentFavorites?.let {
-                displayFragment(it)
+            fragmentFavorites?.let {fragment ->
+                btnFaves?.let {button->
+                    displayFragment(fragment, button)
+                }
             }
         }
         btnProfile?.setOnClickListener{
-            fragmentProfile?.let {
-                displayFragment(it)
+            fragmentProfile?.let {fragment ->
+                btnProfile?.let {button->
+                    displayFragment(fragment, button)
+                }
             }
         }
 
-        fragmentFeed?.let {
-            displayFragment(it)
+        fragmentFeed?.let {fragment ->
+            btnHome?.let {button->
+                displayFragment(fragment, button)
+            }
         }
 
 //        gemsAdapter = GemsAdapter(mutableListOf())
@@ -148,7 +184,7 @@ private lateinit var gemsAdapter: GemsAdapter
 //    }
 
     //function that removes current fragment, displays new fragment, and sets it as new current fragment
-    fun displayFragment(fragment: Fragment){
+    fun displayFragment(fragment: Fragment,button: Button){
         val transaction = supportFragmentManager.beginTransaction()
         inDisplayFragment?.let {
             transaction.remove(it)
@@ -156,6 +192,8 @@ private lateinit var gemsAdapter: GemsAdapter
         transaction.add(R.id.flMainFragmentContainer, fragment)
         transaction.addToBackStack("TAG")
         inDisplayFragment = fragment
+        //recoloring selected button
+        displayButton(button)
         transaction.commit()
     }
 
@@ -166,4 +204,15 @@ private lateinit var gemsAdapter: GemsAdapter
         transaction.addToBackStack("TAG")
         transaction.commit()
     }
+
+    //function that displays the current selected button
+    fun displayButton(button: Button){
+        inDisplayButton?.let {
+            it.backgroundTintList = getColorStateList(R.color.main)
+        }
+        button.backgroundTintList = getColorStateList(R.color.secondary)
+        inDisplayButton = button
+
+    }
 }
+

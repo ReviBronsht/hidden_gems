@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">HiddenGems</string>
+    <string name="home_btn">Home</string>
+    <string name="search_btn">Search</string>
+    <string name="add_gem_btn">Add Gem</string>
+    <string name="faves_btn">Favorites</string>
+    <string name="profile_btn">Profile</string>
     <string name="name_label">NAME</string>
     <string name="name_placeholder">Name</string>
     <string name="desc_label">DESCRIPTION</string>
