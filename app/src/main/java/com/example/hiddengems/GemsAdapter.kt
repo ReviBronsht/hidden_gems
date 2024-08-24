@@ -11,10 +11,18 @@ class GemsAdapter (
     private val gems:MutableList<Gem>
 ):RecyclerView.Adapter<GemsAdapter.GemsViewHolder>(){
     inner class GemsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        val tvGemName = itemView.findViewById<TextView>(R.id.tvGemName)
-        val tvGemRating = itemView.findViewById<TextView>(R.id.tvGemRating)
-        val tvGemCity = itemView.findViewById<TextView>(R.id.tvGemCity)
-        val tvGemType = itemView.findViewById<TextView>(R.id.tvGemType)
+
+        var tvGemName:TextView?= null
+        var tvGemRating:TextView?=null
+        var tvGemCity:TextView?=null
+        var tvGemType:TextView?=null
+
+        init {
+            tvGemName = itemView.findViewById<TextView>(R.id.tvGemName)
+            tvGemRating = itemView.findViewById<TextView>(R.id.tvGemRating)
+            tvGemCity = itemView.findViewById<TextView>(R.id.tvGemCity)
+            tvGemType = itemView.findViewById<TextView>(R.id.tvGemType)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GemsViewHolder {
@@ -33,10 +41,10 @@ class GemsAdapter (
     }
     override fun onBindViewHolder(holder: GemsViewHolder, position: Int) {
         val currGem = gems[position]
-        holder.tvGemName.text =  currGem.name
-        holder.tvGemRating.text =  currGem.rating.toString()
-        holder.tvGemCity.text =  currGem.city
-        holder.tvGemType.text =  currGem.type
+        holder.tvGemName?.text =  currGem.name
+        holder.tvGemRating?.text =  currGem.rating.toString()
+        holder.tvGemCity?.text =  currGem.city
+        holder.tvGemType?.text =  currGem.type
 
     }
 

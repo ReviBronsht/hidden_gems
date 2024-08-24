@@ -10,4 +10,6 @@
     <string name="type_placeholder">Type</string>
     <string name="rating_placeholder">Rating</string>
     <string name="save_btn">Save</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
