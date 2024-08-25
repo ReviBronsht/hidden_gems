@@ -15,8 +15,6 @@ import com.example.hiddengems.Modules.Search.SearchFragment
 
 class MainActivity : AppCompatActivity() {
 
-private lateinit var gemsAdapter: GemsAdapter
-
     //initializes fragments
     var fragmentFeed:  FeedFragment?= null
     var fragmentSearch:  SearchFragment?= null
@@ -184,16 +182,29 @@ private lateinit var gemsAdapter: GemsAdapter
 //    }
 
     //function that removes current fragment, displays new fragment, and sets it as new current fragment
-    fun displayFragment(fragment: Fragment,button: Button){
+    //if button is passed, uses displayButton function to set it as current tab
+    //if an argument is passed, uses Bundle to put it to new fragment
+    internal fun displayFragment(fragment: Fragment, button: Button? = inDisplayButton,arg:String?=null){
+        val b = Bundle()
+        if (arg != null){
+            b.putString("arg",arg)
+        }
+        fragment.arguments = b
+
         val transaction = supportFragmentManager.beginTransaction()
+
         inDisplayFragment?.let {
             transaction.remove(it)
         }
+
         transaction.add(R.id.flMainFragmentContainer, fragment)
         transaction.addToBackStack("TAG")
         inDisplayFragment = fragment
+
         //recoloring selected button
-        displayButton(button)
+        button?.let {
+            displayButton(it)
+        }
         transaction.commit()
     }
 

@@ -5,6 +5,10 @@
     <string name="add_gem_btn">Add Gem</string>
     <string name="faves_btn">Favorites</string>
     <string name="profile_btn">Profile</string>
+    <string name="hello_msg_1">Hey Billy,  </string>
+    <string name="hello_msg_2"> \u0020 Good Afternoon!</string>
+    <string name="categories_title">All Categories</string>
+    <string name="latest_title">Latest Gems</string>
     <string name="name_label">NAME</string>
     <string name="name_placeholder">Name</string>
     <string name="desc_label">DESCRIPTION</string>

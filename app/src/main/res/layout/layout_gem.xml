@@ -3,52 +3,114 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="230dp">
+    android:layout_height="330dp">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivUserImg"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/img"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/circular" />
+
+    <TextView
+        android:id="@+id/tvUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="15.5dp"
+        android:text="Billy"
+        app:layout_constraintStart_toEndOf="@+id/ivUserImg"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/ivGemImg"
         android:layout_width="match_parent"
         android:layout_height="180dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/img"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/ivUserImg"
+        app:shapeAppearanceOverlay="@style/cornerRadius" />
 
     <TextView
         android:id="@+id/tvGemName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
         android:text="Name"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivGemImg" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivStarIcon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/star_svgrepo_com"
+        android:tint="@color/accent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGemName"
+        app:shapeAppearanceOverlay="@style/circular" />
 
     <TextView
         android:id="@+id/tvGemRating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="50dp"
+        android:layout_marginTop="8dp"
+        android:textSize="18sp"
         android:text="0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvGemCity" />
+        app:layout_constraintStart_toEndOf="@+id/ivStarIcon"
+        app:layout_constraintTop_toBottomOf="@+id/tvGemName" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivLocationIcon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="25dp"
+        android:src="@drawable/location_svgrepo_com"
+        android:tint="@color/accent"
+        app:layout_constraintStart_toEndOf="@+id/tvGemRating"
+        app:layout_constraintTop_toBottomOf="@+id/tvGemName"
+        app:shapeAppearanceOverlay="@style/circular" />
 
     <TextView
         android:id="@+id/tvGemCity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="50dp"
+        android:layout_marginTop="8dp"
         android:text="City"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvGemType" />
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/ivLocationIcon"
+        app:layout_constraintTop_toBottomOf="@+id/tvGemName" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivTypeIcon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ferris_svgrepo_com"
+        android:tint="@color/accent"
+        app:layout_constraintStart_toEndOf="@+id/tvGemCity"
+        app:layout_constraintTop_toBottomOf="@+id/tvGemName"
+        app:shapeAppearanceOverlay="@style/circular" />
 
     <TextView
         android:id="@+id/tvGemType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="150dp"
+        android:layout_marginTop="8dp"
         android:text="Type"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/ivTypeIcon"
+        app:layout_constraintTop_toBottomOf="@+id/tvGemName" />
 </androidx.constraintlayout.widget.ConstraintLayout>
