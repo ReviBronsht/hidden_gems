@@ -9,6 +9,11 @@
     <string name="hello_msg_2"> \u0020 Good Afternoon!</string>
     <string name="categories_title">All Categories</string>
     <string name="latest_title">Latest Gems</string>
+    <string name="gem_view_title">Gem View</string>
+    <string name="my_rating_title">MY RATING</string>
+    <string name="comments_title">Comments</string>
+    <string name="comments_hint">Comment...</string>
+    <string name="comments_post">Post</string>
     <string name="name_label">NAME</string>
     <string name="name_placeholder">Name</string>
     <string name="desc_label">DESCRIPTION</string>

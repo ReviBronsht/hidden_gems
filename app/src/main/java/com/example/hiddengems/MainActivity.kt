@@ -1,7 +1,9 @@
 package com.example.hiddengems
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -27,10 +29,13 @@ class MainActivity : AppCompatActivity() {
     var btnAddGem: Button ?= null
     var btnFaves: Button ?= null
     var btnProfile: Button ?= null
+
+    var llBottomNav:LinearLayout?=null
     //initializes var to keep current displayed fragment
     var inDisplayFragment: Fragment?= null
     //initializes var to keep current displayed button
     var inDisplayButton: Button?= null
+    var prevFragment: Fragment ?=null
 
     //normally back would remove first fragment (feed), overrides to close instead of backing when its the last fragment left in the stack
     //function also selects the correct button to be currently highlighted, based on currently displayed fragment after back
@@ -89,6 +94,8 @@ class MainActivity : AppCompatActivity() {
         btnAddGem = findViewById(R.id.btnAddGem)
         btnFaves = findViewById(R.id.btnFaves)
         btnProfile = findViewById(R.id.btnProfile)
+
+        llBottomNav = findViewById<LinearLayout>(R.id.llBottomNav)
 
         //setting onclicklistener that displays fragments when nav buttons are pressed
         btnHome?.setOnClickListener{
@@ -181,10 +188,33 @@ class MainActivity : AppCompatActivity() {
 //        }
 //    }
 
+
+    internal fun bottomNavShow(){
+        llBottomNav?.visibility=View.VISIBLE
+        btnHome?.visibility = View.VISIBLE
+        btnSearch?.visibility = View.VISIBLE
+        btnAddGem?.visibility = View.VISIBLE
+        btnFaves?.visibility = View.VISIBLE
+        btnProfile?.visibility = View.VISIBLE
+    }
+    internal fun bottomNavHide(){
+        llBottomNav?.visibility =View.GONE
+        btnHome?.visibility = View.GONE
+        btnSearch?.visibility = View.GONE
+        btnAddGem?.visibility = View.GONE
+        btnFaves?.visibility = View.GONE
+        btnProfile?.visibility = View.GONE
+    }
+    internal fun goBack(){
+        prevFragment?.let {
+            displayFragment(it)
+        }
+    }
+
     //function that removes current fragment, displays new fragment, and sets it as new current fragment
     //if button is passed, uses displayButton function to set it as current tab
     //if an argument is passed, uses Bundle to put it to new fragment
-    internal fun displayFragment(fragment: Fragment, button: Button? = inDisplayButton,arg:String?=null){
+    internal fun displayFragment(fragment: Fragment, button: Button? = inDisplayButton,arg:String?=null,savePrev:Boolean=false){
         val b = Bundle()
         if (arg != null){
             b.putString("arg",arg)
@@ -192,6 +222,10 @@ class MainActivity : AppCompatActivity() {
         fragment.arguments = b
 
         val transaction = supportFragmentManager.beginTransaction()
+
+        if(savePrev){
+            prevFragment = inDisplayFragment
+        }
 
         inDisplayFragment?.let {
             transaction.remove(it)

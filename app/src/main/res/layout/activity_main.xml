@@ -20,6 +20,7 @@
         android:padding="8dp"/>
 
     <LinearLayout
+        android:id="@+id/llBottomNav"
         android:background="@color/main"
         android:layout_width="match_parent"
         android:layout_height="60dp"

@@ -1,15 +1,355 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Modules.ViewGem.ViewGemFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/tvTest"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="View Gem" />
+    <Button
+        android:id="@+id/btnBack"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+        android:layout_width="50dp"
+        android:layout_height="55dp"
+        android:backgroundTint="@color/gray"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:icon="@drawable/back_svgrepo_com"
+        app:iconGravity="textStart"
+        app:iconPadding="-9dp"
+        app:iconSize="20dp"
+        app:iconTint="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/darkgray" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/tvGemViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/gem_view_title"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/btnBack"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivGemImg"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivUserImg"
+        app:shapeAppearanceOverlay="@style/cornerRadius" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivUserImg"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/img"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnBack"
+        app:shapeAppearanceOverlay="@style/circular" />
+
+    <TextView
+        android:id="@+id/tvUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="35dp"
+        android:text="Billy"
+        app:layout_constraintStart_toEndOf="@+id/ivUserImg"
+        app:layout_constraintTop_toBottomOf="@+id/tvGemViewTitle" />
+
+    <TextView
+        android:id="@+id/tvGemName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Name"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivGemImg" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivFavorite"
+        android:layout_width="43dp"
+        android:layout_height="27dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/heart_alt_svgrepo_com"
+        android:tint="@color/accent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivGemImg"
+        app:shapeAppearanceOverlay="@style/circular" />
+
+    <TextView
+        android:id="@+id/tvGemDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Hidden coffee shop
+        by the park, csy and homey atmosphere with fantastic
+        pastries"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGemName" />
+
+    <TextView
+        android:id="@+id/tvAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Address line, City, Country"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGemDesc" />
+
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivStarIcon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/star_svgrepo_com"
+        android:tint="@color/accent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvAddress"
+        app:shapeAppearanceOverlay="@style/circular" />
+
+    <TextView
+        android:id="@+id/tvGemRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="0"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/ivStarIcon"
+        app:layout_constraintTop_toBottomOf="@+id/tvAddress" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivLocationIcon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/location_svgrepo_com"
+        android:tint="@color/accent"
+        app:layout_constraintStart_toEndOf="@+id/tvGemRating"
+        app:layout_constraintTop_toBottomOf="@+id/tvAddress"
+        app:shapeAppearanceOverlay="@style/circular" />
+
+    <TextView
+        android:id="@+id/tvGemCity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="City"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/ivLocationIcon"
+        app:layout_constraintTop_toBottomOf="@+id/tvAddress" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivTypeIcon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ferris_svgrepo_com"
+        android:tint="@color/accent"
+        app:layout_constraintStart_toEndOf="@+id/tvGemCity"
+        app:layout_constraintTop_toBottomOf="@+id/tvAddress"
+        app:shapeAppearanceOverlay="@style/circular" />
+
+    <TextView
+        android:id="@+id/tvGemType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Type"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/ivTypeIcon"
+        app:layout_constraintTop_toBottomOf="@+id/tvAddress" />
+
+    <TextView
+        android:id="@+id/tvMyRating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/my_rating_title"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGemCity" />
+
+    <Button
+        android:id="@+id/btnRating1"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+        android:layout_width="50dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        app:icon="@drawable/star_filled_svgrepo_com"
+        app:iconGravity="textStart"
+        app:iconPadding="-9dp"
+        app:iconSize="20dp"
+        app:iconTint="@color/darkgray"
+        app:layout_constraintEnd_toStartOf="@+id/btnRating2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvMyRating"
+        app:strokeColor="@color/darkgray" />
+
+    <Button
+        android:id="@+id/btnRating2"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+        android:layout_width="50dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="8dp"
+        app:icon="@drawable/star_filled_svgrepo_com"
+        app:iconGravity="textStart"
+        app:iconPadding="-9dp"
+        app:iconSize="20dp"
+        app:iconTint="@color/darkgray"
+        app:layout_constraintEnd_toStartOf="@+id/btnRating3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnRating1"
+        app:layout_constraintTop_toBottomOf="@+id/tvMyRating"
+        app:strokeColor="@color/darkgray" />
+
+    <Button
+        android:id="@+id/btnRating3"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+        android:layout_width="50dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="8dp"
+        app:icon="@drawable/star_filled_svgrepo_com"
+        app:iconGravity="textStart"
+        app:iconPadding="-9dp"
+        app:iconSize="20dp"
+        app:iconTint="@color/darkgray"
+        app:layout_constraintEnd_toStartOf="@+id/btnRating4"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnRating2"
+        app:layout_constraintTop_toBottomOf="@+id/tvMyRating"
+        app:strokeColor="@color/darkgray" />
+
+    <Button
+        android:id="@+id/btnRating4"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+        android:layout_width="50dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="8dp"
+        app:icon="@drawable/star_filled_svgrepo_com"
+        app:iconGravity="textStart"
+        app:iconPadding="-9dp"
+        app:iconSize="20dp"
+        app:iconTint="@color/darkgray"
+        app:layout_constraintEnd_toStartOf="@+id/btnRating5"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnRating3"
+        app:layout_constraintTop_toBottomOf="@+id/tvMyRating"
+        app:strokeColor="@color/darkgray" />
+
+    <Button
+        android:id="@+id/btnRating5"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+        android:layout_width="50dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="8dp"
+        app:icon="@drawable/star_filled_svgrepo_com"
+        app:iconGravity="textStart"
+        app:iconPadding="-9dp"
+        app:iconSize="20dp"
+        app:iconTint="@color/darkgray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnRating4"
+        app:layout_constraintTop_toBottomOf="@+id/tvMyRating"
+        app:strokeColor="@color/darkgray" />
+
+    <TextView
+        android:id="@+id/tvComments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/comments_title"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnRating2" />
+
+    <TextView
+        android:id="@+id/tvCommentsNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="8dp"
+        android:text="(0)"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/tvComments"
+        app:layout_constraintTop_toBottomOf="@+id/btnRating2" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivUserImgAddComment"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="3dp"
+        android:background="@drawable/img"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvComments"
+        app:shapeAppearanceOverlay="@style/circular" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilCommentLayout"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:hint="@string/comments_hint"
+        app:boxBackgroundColor="@color/warmgray"
+        app:layout_constraintEnd_toStartOf="@+id/btnHome"
+        app:layout_constraintStart_toEndOf="@+id/ivUserImgAddComment"
+        app:layout_constraintTop_toBottomOf="@+id/tvComments"
+        app:shapeAppearanceOverlay="@style/cornerRadius">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etComment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteX="80dp"
+            tools:layout_editor_absoluteY="578dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btnHome"
+        style="@style/Widget.Material3.Button"
+        android:layout_width="70dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="3dp"
+        android:text="@string/comments_post"
+        android:textColor="@color/white"
+        android:textSize="10sp"
+        app:backgroundTint="@color/darkgray"
+        app:iconGravity="textTop"
+        app:iconTint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvCommentsNum" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilCommentLayout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

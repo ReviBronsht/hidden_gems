@@ -140,7 +140,8 @@ class FeedFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener,GemsA
     fun viewGem(position:Int){
         fragmentViewGem?.let {
             prevbtn = null
-            (activity as MainActivity).displayFragment(it, arg = position.toString())
+            (activity as MainActivity).bottomNavHide()
+            (activity as MainActivity).displayFragment(it, arg = position.toString(),savePrev = true)
         }
         }
 
