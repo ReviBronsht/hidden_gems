@@ -18,6 +18,7 @@
     <string name="search_hint">Gem name...</string>
     <string name="refine_search_title">Refine Search</string>
     <string name="suggested_gems_title">Suggested Gems</string>
+    <string name="create_gem_title">Create Gem</string>
     <string name="name_label">NAME</string>
     <string name="name_placeholder">Name</string>
     <string name="desc_label">DESCRIPTION</string>

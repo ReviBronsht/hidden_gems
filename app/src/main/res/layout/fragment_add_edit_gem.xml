@@ -6,16 +6,289 @@
     android:layout_height="match_parent"
     tools:context=".Modules.AddEditGem.AddEditGemFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/tvAddEditTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="add edit"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/search_title"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnSave"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="95dp"
+        android:layout_height="55dp"
+        android:text="@string/save_btn"
+        android:textColor="@color/black"
+        android:textSize="17dp"
+        app:backgroundTint="@color/secondary"
+        app:iconGravity="textTop"
+        app:iconTint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <Button
+        android:id="@+id/btnImg"
+        style="@style/Widget.Material3.Button.Icon"
+        android:layout_width="0dp"
+        android:layout_height="155dp"
+        android:layout_marginTop="28dp"
+        android:backgroundTint="@color/gray"
+        app:icon="@drawable/upload_image_svgrepo_com"
+        app:iconGravity="textStart"
+        app:iconSize="80dp"
+        app:iconTint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintTop_toBottomOf="@+id/tvAddEditTitle"
+        app:shapeAppearanceOverlay="@style/cornerRadius" />
+
+    <TextView
+        android:id="@+id/tvNameLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/name_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnImg" />
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilNameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        app:boxBackgroundColor="@color/gray"
+        app:errorEnabled="true"
+        app:placeholderText="@string/name_placeholder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvNameLabel"
+        app:shapeAppearanceOverlay="@style/cornerRadius">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:maxLength="25"
+            android:maxLines="1"
+            tools:layout_editor_absoluteX="80dp"
+            tools:layout_editor_absoluteY="578dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <TextView
+        android:id="@+id/tvDescLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:text="@string/desc_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilNameLayout" />
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilDescLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        app:boxBackgroundColor="@color/gray"
+        app:errorEnabled="true"
+        app:placeholderText="@string/desc_placeholder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDescLabel"
+        app:shapeAppearanceOverlay="@style/cornerRadius">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etDesc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:maxLength="250"
+            android:maxLines="3"
+            tools:layout_editor_absoluteX="80dp"
+            tools:layout_editor_absoluteY="578dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <TextView
+        android:id="@+id/tvAddressLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/address_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilDescLayout" />
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilAddressLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        app:boxBackgroundColor="@color/gray"
+        app:placeholderText="@string/address_placeholder"
+        app:errorEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvAddressLabel"
+        app:shapeAppearanceOverlay="@style/cornerRadius">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etAddress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:maxLength="30"
+            android:maxLines="1"
+            tools:layout_editor_absoluteX="80dp"
+            tools:layout_editor_absoluteY="578dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilCityLayout"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:hint="@string/city_placeholder"
+        app:boxBackgroundColor="@color/warmgray"
+        app:endIconMode="dropdown_menu"
+        app:errorEnabled="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilAddressLayout"
+        app:shapeAppearanceOverlay="@style/cornerRadius">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/actvCity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="15sp"
+            tools:layout_editor_absoluteX="80dp"
+            tools:layout_editor_absoluteY="578dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilTypeLayout"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:hint="@string/type_placeholder"
+        app:boxBackgroundColor="@color/warmgray"
+        app:endIconMode="dropdown_menu"
+        app:errorEnabled="true"
+        app:layout_constraintStart_toEndOf="@+id/tilCityLayout"
+        app:layout_constraintTop_toBottomOf="@+id/tilAddressLayout"
+        app:shapeAppearanceOverlay="@style/cornerRadius">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/actvType"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="15sp"
+            tools:layout_editor_absoluteX="80dp"
+            tools:layout_editor_absoluteY="578dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <TextView
+        android:id="@+id/tvMyRating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:text="@string/my_rating_title"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilTypeLayout" />
+
+
+    <Button
+        android:id="@+id/btnRating1"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+        android:layout_width="50dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        app:icon="@drawable/star_filled_svgrepo_com"
+        app:iconGravity="textStart"
+        app:iconPadding="-9dp"
+        app:iconSize="20dp"
+        app:iconTint="@color/darkgray"
+        app:layout_constraintEnd_toStartOf="@+id/btnRating2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvMyRating"
+        app:strokeColor="@color/darkgray" />
+
+    <Button
+        android:id="@+id/btnRating2"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+        android:layout_width="50dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="8dp"
+        app:icon="@drawable/star_filled_svgrepo_com"
+        app:iconGravity="textStart"
+        app:iconPadding="-9dp"
+        app:iconSize="20dp"
+        app:iconTint="@color/darkgray"
+        app:layout_constraintEnd_toStartOf="@+id/btnRating3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnRating1"
+        app:layout_constraintTop_toBottomOf="@+id/tvMyRating"
+        app:strokeColor="@color/darkgray" />
+
+    <Button
+        android:id="@+id/btnRating3"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+        android:layout_width="50dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="8dp"
+        app:icon="@drawable/star_filled_svgrepo_com"
+        app:iconGravity="textStart"
+        app:iconPadding="-9dp"
+        app:iconSize="20dp"
+        app:iconTint="@color/darkgray"
+        app:layout_constraintEnd_toStartOf="@+id/btnRating4"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnRating2"
+        app:layout_constraintTop_toBottomOf="@+id/tvMyRating"
+        app:strokeColor="@color/darkgray" />
+
+    <Button
+        android:id="@+id/btnRating4"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+        android:layout_width="50dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="8dp"
+        app:icon="@drawable/star_filled_svgrepo_com"
+        app:iconGravity="textStart"
+        app:iconPadding="-9dp"
+        app:iconSize="20dp"
+        app:iconTint="@color/darkgray"
+        app:layout_constraintEnd_toStartOf="@+id/btnRating5"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnRating3"
+        app:layout_constraintTop_toBottomOf="@+id/tvMyRating"
+        app:strokeColor="@color/darkgray" />
+
+    <Button
+        android:id="@+id/btnRating5"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+        android:layout_width="50dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="8dp"
+        app:icon="@drawable/star_filled_svgrepo_com"
+        app:iconGravity="textStart"
+        app:iconPadding="-9dp"
+        app:iconSize="20dp"
+        app:iconTint="@color/darkgray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnRating4"
+        app:layout_constraintTop_toBottomOf="@+id/tvMyRating"
+        app:strokeColor="@color/darkgray" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
