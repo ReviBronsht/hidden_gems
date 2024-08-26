@@ -20,7 +20,7 @@ class GemsAdapter (
 
 ):RecyclerView.Adapter<GemsAdapter.GemsViewHolder>(){
 
-    //CategoriesViewHolderClass holds references to the views for each item
+    //GemsViewHolder holds references to the views for each item
     inner class GemsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
 
         var tvUserName:TextView?=null
@@ -75,7 +75,7 @@ class GemsAdapter (
         }
     }
 
-    //returns the number of items in categories list so recyclerview determines how many items to display
+    //returns the number of items in gems list so recyclerview determines how many items to display
     override fun getItemCount(): Int {
         return gems.size
     }

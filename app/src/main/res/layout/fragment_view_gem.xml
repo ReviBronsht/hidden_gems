@@ -300,10 +300,10 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/ivUserImgAddComment"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/img"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvComments"
@@ -312,11 +312,12 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilCommentLayout"
         android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+
         android:hint="@string/comments_hint"
         app:boxBackgroundColor="@color/warmgray"
-        app:layout_constraintEnd_toStartOf="@+id/btnHome"
+        app:layout_constraintEnd_toStartOf="@+id/btnPost"
         app:layout_constraintStart_toEndOf="@+id/ivUserImgAddComment"
         app:layout_constraintTop_toBottomOf="@+id/tvComments"
         app:shapeAppearanceOverlay="@style/cornerRadius">
@@ -326,18 +327,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout_editor_absoluteX="80dp"
-            tools:layout_editor_absoluteY="578dp" />
+            tools:layout_editor_absoluteY="578dp"
+            />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/btnHome"
+        android:id="@+id/btnPost"
         style="@style/Widget.Material3.Button"
         android:layout_width="70dp"
         android:layout_height="50dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="0dp"
         android:text="@string/comments_post"
         android:textColor="@color/white"
         android:textSize="10sp"
+        android:enabled="false"
         app:backgroundTint="@color/darkgray"
         app:iconGravity="textTop"
         app:iconTint="@color/white"
@@ -345,6 +348,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvCommentsNum" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvComments"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

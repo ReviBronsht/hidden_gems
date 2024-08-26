@@ -16,10 +16,19 @@ class Model private constructor() {
         categories.add(Category(2, "Museum", "museum_svgrepo_com"))
         categories.add(Category(3, "Park", "park_svgrepo_com"))
 
+        val comments1: MutableList<Comment> = ArrayList()
+        comments1.add(Comment("Billy","My favorite cafe"))
+        comments1.add(Comment("Jane","Thanks for the recommendation"))
+        comments1.add(Comment("Alfy","Great service!"))
         gems.add(Gem(0,"Billy", "Grande Coffee", "Hidden coffee shop by the park, cozy and homey atmosphere with fantastic pastries!",
-            "76 rue Leon Dierx","Paris, FR","Cafe/Restaurant", 2.5,mutableListOf(2, 3, 3)))
+            "76 rue Leon Dierx","Paris, FR","Cafe/Restaurant", 2.5,mutableListOf(2, 3, 3),comments1))
+
+        val comments2: MutableList<Comment> = ArrayList()
+        comments2.add(Comment("Billy","What a trip!"))
+        comments2.add(Comment("Jane","Great museum!"))
         gems.add(Gem(1,"Jane", "Illusion Museum","You won't believe your eyes in this illusion museum!",
-            "70 Griffin St" ,"NYC, USA","Museum", 3.6,mutableListOf(5, 3, 3)))
+            "70 Griffin St" ,"NYC, USA","Museum", 3.6,mutableListOf(5, 3, 3),comments2))
+
         gems.add(Gem(2,"Bobby", "Side Street Park","Beautiful park with pastoral views",
             "3 Via Nino Martoglio", "Rome, It","Park", 3.0,mutableListOf( 3, 3)))
         gems.add(Gem(3,"Billy", "Soup-y", "Tiny restaurant run by a small family, hidden just out of view!",

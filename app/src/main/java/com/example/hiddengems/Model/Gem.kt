@@ -11,17 +11,18 @@ data class Gem(
     val address:String,
     val city:String,
     val type:String,
-    val rating:Double,
-    val ratings:MutableList<Int> = ArrayList()
+    var rating:Double,
+    val ratings:MutableList<Int> = ArrayList(),
+    val comments:MutableList<Comment> = ArrayList()
 ) {
     //function that recalculates rating when user adds rating from all previous ratings and new rating average
-    fun updateRating(nRating: Int):Double{
+    fun updateRating(nRating: Int){
         if (ratings.size == 0){
-            return 0.0
+            rating = 0.0
         }
         else {
             ratings.add(nRating)
-            return ratings.average().toBigDecimal().setScale(1,RoundingMode.DOWN).toDouble()
+            rating = ratings.average().toBigDecimal().setScale(1,RoundingMode.DOWN).toDouble()
         }
     }
 

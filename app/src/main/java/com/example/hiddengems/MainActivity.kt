@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     var inDisplayFragment: Fragment?= null
     //initializes var to keep current displayed button
     var inDisplayButton: Button?= null
+    //intilializes var to keep previous displayed fragment
     var prevFragment: Fragment ?=null
 
     //normally back would remove first fragment (feed), overrides to close instead of backing when its the last fragment left in the stack
@@ -189,6 +190,7 @@ class MainActivity : AppCompatActivity() {
 //    }
 
 
+    // function that shows the bottom nav for fragments that require it
     internal fun bottomNavShow(){
         llBottomNav?.visibility=View.VISIBLE
         btnHome?.visibility = View.VISIBLE
@@ -197,6 +199,7 @@ class MainActivity : AppCompatActivity() {
         btnFaves?.visibility = View.VISIBLE
         btnProfile?.visibility = View.VISIBLE
     }
+    // function that hides the bottom nav for fragments that don't require it
     internal fun bottomNavHide(){
         llBottomNav?.visibility =View.GONE
         btnHome?.visibility = View.GONE
@@ -205,6 +208,8 @@ class MainActivity : AppCompatActivity() {
         btnFaves?.visibility = View.GONE
         btnProfile?.visibility = View.GONE
     }
+
+    //function that displays previously saved fragment
     internal fun goBack(){
         prevFragment?.let {
             displayFragment(it)
@@ -214,6 +219,7 @@ class MainActivity : AppCompatActivity() {
     //function that removes current fragment, displays new fragment, and sets it as new current fragment
     //if button is passed, uses displayButton function to set it as current tab
     //if an argument is passed, uses Bundle to put it to new fragment
+    //if savePrev is true, saves previous fragment
     internal fun displayFragment(fragment: Fragment, button: Button? = inDisplayButton,arg:String?=null,savePrev:Boolean=false){
         val b = Bundle()
         if (arg != null){

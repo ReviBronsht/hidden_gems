@@ -29,8 +29,6 @@ class FeedFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener,GemsA
     //initialising views
     var prevbtn: Button ?= null
     var gemsAdapter: GemsAdapter ?= null
-    var fragmentFeed:  FeedFragment?= null
-    var fragmentProfile: ProfileFragment?= null
     var fragmentViewGem:  ViewGemFragment?= null
 
   //    var categories: MutableList<Category> ?= null
