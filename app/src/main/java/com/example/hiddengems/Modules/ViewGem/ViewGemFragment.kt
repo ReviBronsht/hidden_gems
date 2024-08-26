@@ -59,6 +59,9 @@ class ViewGemFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_view_gem, container, false)
 
+        //hide bottom nav - invoked here in case entered from back button
+        (activity as MainActivity).bottomNavHide()
+
         //getting the id of the Gem from argument and finding the gem by id in gems list
         id = arguments?.getString("arg")
         var currGem: Gem = gems.filter { it.id == id?.toInt() }[0]

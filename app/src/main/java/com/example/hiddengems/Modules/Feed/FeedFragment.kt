@@ -76,13 +76,10 @@ class FeedFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener,GemsA
 
     //setting up gems recycler view by getting categories, initialising adapter with them and this onclicklistennr, setting the adapter of recyclerview, and setting layout manager
     val gems = Model.instance.gems
-    gemsAdapter = GemsAdapter(gems,this)
+    gemsAdapter = GemsAdapter(gems,this,R.layout.layout_gem)
     val rvGems = view.findViewById<RecyclerView>(R.id.rvLatestGems)
     rvGems.adapter = gemsAdapter
     rvGems.layoutManager = LinearLayoutManager(requireContext())
-
-//        val btn1stCategory = view?.findViewById<Button>(R.id.btnCategory)
-//        btn1stCategory?.text = "hoi"
 
 
 
@@ -128,20 +125,12 @@ class FeedFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener,GemsA
 
     //function that overrides onGemClick from OnGemClickListener
     //calls viewGem function
+    //sets prev button to null so it resets when leaving feed fragment
      override fun onGemClick(position: Int) {
-        viewGem(position)
+        prevbtn = null
+        (activity as MainActivity).viewGem(position)
     }
 
-    //viewGem function calls displayFragment function from MainActivity to display ViewGem fragment
-    //sends the position (which contains relevant gem id) as argument
-    //sets prev button to null so it resets when leaving feed fragment
-    fun viewGem(position:Int){
-        fragmentViewGem?.let {
-            prevbtn = null
-            (activity as MainActivity).bottomNavHide()
-            (activity as MainActivity).displayFragment(it, arg = position.toString(),savePrev = true)
-        }
-        }
 
     //filter and update rcycler view filters gems from Model instance by calling filterGemsByType function
     fun filterAndUpdateRecyclerView(type: String) {

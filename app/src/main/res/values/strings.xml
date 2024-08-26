@@ -14,6 +14,10 @@
     <string name="comments_title">Comments</string>
     <string name="comments_hint">Comment...</string>
     <string name="comments_post">Post</string>
+    <string name="search_title">Search</string>
+    <string name="search_hint">Gem name...</string>
+    <string name="refine_search_title">Refine Search</string>
+    <string name="suggested_gems_title">Suggested Gems</string>
     <string name="name_label">NAME</string>
     <string name="name_placeholder">Name</string>
     <string name="desc_label">DESCRIPTION</string>

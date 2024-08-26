@@ -4,12 +4,19 @@ class Model private constructor() {
 
     val categories: MutableList<Category> = ArrayList()
     val gems: MutableList<Gem> = ArrayList()
+    val cities: MutableList<String> = ArrayList()
 
     companion object {
         val instance: Model = Model()
     }
 
     init {
+
+        cities.add("All")
+        cities.add("Paris, FR")
+        cities.add("NYC, USA")
+        cities.add("Rome, IT")
+        cities.add("London, UK")
 
         categories.add(Category(0, "All", "ferris_svgrepo_com"))
         categories.add(Category(1, "Cafe/Restaurant", "restaurant_svgrepo_com"))

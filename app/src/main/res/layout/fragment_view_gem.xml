@@ -314,7 +314,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
-
         android:hint="@string/comments_hint"
         app:boxBackgroundColor="@color/warmgray"
         app:layout_constraintEnd_toStartOf="@+id/btnPost"

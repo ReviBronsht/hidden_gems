@@ -6,16 +6,133 @@
     android:layout_height="match_parent"
     tools:context=".Modules.Search.SearchFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/tvSearchTitle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="search"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/search_title"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilSearchLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="@string/search_hint"
+        app:boxBackgroundColor="@color/warmgray"
+        app:endIconMode="clear_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSearchTitle"
+        app:shapeAppearanceOverlay="@style/cornerRadius"
+        app:startIconDrawable="@drawable/baseline_search_24">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etSearch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteX="80dp"
+            tools:layout_editor_absoluteY="578dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/tvRefineSearchTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/refine_search_title"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintTop_toBottomOf="@+id/tilSearchLayout" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilCityLayout"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="@string/city_placeholder"
+        app:boxBackgroundColor="@color/warmgray"
+        app:endIconMode="dropdown_menu"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvRefineSearchTitle"
+        app:shapeAppearanceOverlay="@style/cornerRadius">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/actvCity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="15sp"
+            tools:layout_editor_absoluteX="80dp"
+            tools:layout_editor_absoluteY="578dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilTypeLayout"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="@string/type_placeholder"
+        app:boxBackgroundColor="@color/warmgray"
+        app:endIconMode="dropdown_menu"
+        app:layout_constraintStart_toEndOf="@+id/tilCityLayout"
+        app:layout_constraintTop_toBottomOf="@+id/tvRefineSearchTitle"
+        app:shapeAppearanceOverlay="@style/cornerRadius">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/actvType"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="15sp"
+            tools:layout_editor_absoluteX="80dp"
+            tools:layout_editor_absoluteY="578dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btnRatingSort"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+        android:layout_width="130dp"
+        android:layout_height="60dp"
+        android:backgroundTint="@color/warmgray"
+        android:text="@string/rating_placeholder"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:icon="@drawable/sort_svgrepo_com"
+        app:iconGravity="textEnd"
+        app:iconPadding="10dp"
+        app:iconSize="20dp"
+        app:iconTint="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tilTypeLayout"
+        app:layout_constraintTop_toBottomOf="@+id/tvRefineSearchTitle"
+        app:strokeColor="@color/darkgray" />
+
+    <TextView
+        android:id="@+id/tvSuggestedGemsTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/suggested_gems_title"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilTypeLayout" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSuggestedGems"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSuggestedGemsTitle" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

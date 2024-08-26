@@ -14,6 +14,7 @@ import com.example.hiddengems.Modules.Favorites.FavoritesFragment
 import com.example.hiddengems.Modules.Feed.FeedFragment
 import com.example.hiddengems.Modules.Profile.ProfileFragment
 import com.example.hiddengems.Modules.Search.SearchFragment
+import com.example.hiddengems.Modules.ViewGem.ViewGemFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,6 +24,8 @@ class MainActivity : AppCompatActivity() {
     var fragmentAddEditGem: AddEditGemFragment?= null
     var fragmentFavorites: FavoritesFragment?= null
     var fragmentProfile: ProfileFragment?= null
+    var fragmentViewGem: ViewGemFragment?=null
+
     //initializes nav buttons
     var btnHome: Button ?= null
     var btnSearch: Button ?= null
@@ -40,34 +43,47 @@ class MainActivity : AppCompatActivity() {
 
     //normally back would remove first fragment (feed), overrides to close instead of backing when its the last fragment left in the stack
     //function also selects the correct button to be currently highlighted, based on currently displayed fragment after back
+    //if prevFragment is viewGem, uses goBack function instead
     override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount > 1) {
-            super.onBackPressed()
-            println(inDisplayFragment)
-            val currFragmentId = supportFragmentManager.findFragmentById(R.id.flMainFragmentContainer)?.toString()?.split("{")
-            currFragmentId?.let {
-                when (it[0]) {
-                    "FeedFragment" -> btnHome?.let {button->
-                        displayButton(button)
-                    }
-                    "SearchFragment" -> btnSearch?.let {button->
-                        displayButton(button)
-                    }
-                    "AddEditGemFragment" -> btnAddGem?.let {button->
-                        displayButton(button)
-                    }
-                    "FavoritesFragment" -> btnFaves?.let {button->
-                        displayButton(button)
-                    }
-                    else -> btnProfile?.let {button->
-                        displayButton(button)
+        bottomNavShow()
+        if (inDisplayFragment == fragmentViewGem) {
+            goBack()
+        }
+        else{
+            if (supportFragmentManager.backStackEntryCount > 1) {
+                super.onBackPressed()
+                println(inDisplayFragment)
+                val currFragmentId =
+                    supportFragmentManager.findFragmentById(R.id.flMainFragmentContainer)
+                        ?.toString()?.split("{")
+                currFragmentId?.let {
+                    when (it[0]) {
+                        "FeedFragment" -> btnHome?.let { button ->
+                            displayButton(button)
+                        }
+
+                        "SearchFragment" -> btnSearch?.let { button ->
+                            displayButton(button)
+                        }
+
+                        "AddEditGemFragment" -> btnAddGem?.let { button ->
+                            displayButton(button)
+                        }
+
+                        "FavoritesFragment" -> btnFaves?.let { button ->
+                            displayButton(button)
+                        }
+
+                        else -> btnProfile?.let { button ->
+                            displayButton(button)
+                        }
                     }
                 }
+            } else {
+                //if (supportFragmentManager.backStackEntryCount != 1)
+                //{supportFragmentManager.popBackStackImmediate()}
+                finish()
             }
-        } else {
-            //if (supportFragmentManager.backStackEntryCount != 1)
-            //{supportFragmentManager.popBackStackImmediate()}
-            finish()
         }
     }
 
@@ -87,6 +103,7 @@ class MainActivity : AppCompatActivity() {
         fragmentAddEditGem = AddEditGemFragment()
         fragmentFavorites = FavoritesFragment()
         fragmentProfile = ProfileFragment()
+        fragmentViewGem = ViewGemFragment()
         //fragmentProfile = FeedFragment.newInstance("Five")
 
         //settting nav buttons
@@ -189,6 +206,15 @@ class MainActivity : AppCompatActivity() {
 //        }
 //    }
 
+
+    //viewGem function calls displayFragment function from MainActivity to display ViewGem fragment
+    //sends the position (which contains relevant gem id) as argument
+    fun viewGem(position:Int){
+        fragmentViewGem?.let {
+            bottomNavHide()
+            displayFragment(it, arg = position.toString(),savePrev = true)
+        }
+    }
 
     // function that shows the bottom nav for fragments that require it
     internal fun bottomNavShow(){

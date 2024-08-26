@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.hiddengems.Model.Gem
 import com.example.hiddengems.Modules.Categories.CategoriesAdapter
 import com.example.hiddengems.R
@@ -14,15 +15,17 @@ import com.google.android.material.imageview.ShapeableImageView
 //Declaring RecyclerView.Adapter subclass for Gems
 class GemsAdapter (
 
-    //setting parameters as gems list and an instance of OnGemClickListener interface
+    //setting parameters as gems list, an instance of OnGemClickListener interface, and the id of the layout that will be used for each gem
     private var gems:MutableList<Gem>,
-    private val onItemClickListener: OnGemClickListener
+    private val onItemClickListener: OnGemClickListener,
+    private val layout:Int
 
 ):RecyclerView.Adapter<GemsAdapter.GemsViewHolder>(){
 
     //GemsViewHolder holds references to the views for each item
     inner class GemsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
 
+        var ivGemContainer:ConstraintLayout ?= null
         var tvUserName:TextView?=null
         var tvGemName:TextView?= null
         var tvGemRating:TextView?=null
@@ -31,6 +34,7 @@ class GemsAdapter (
         var ivGemImg: ShapeableImageView?=null
 
         init {
+            ivGemContainer = itemView.findViewById<ConstraintLayout>(R.id.ivGemContainer)
             tvUserName = itemView.findViewById<TextView>(R.id.tvUserName)
             tvGemName = itemView.findViewById<TextView>(R.id.tvGemName)
             tvGemRating = itemView.findViewById<TextView>(R.id.tvGemRating)
@@ -45,7 +49,7 @@ class GemsAdapter (
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GemsViewHolder {
         return GemsViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.layout_gem,
+                layout,
                 parent,
                 false
             )
@@ -71,6 +75,9 @@ class GemsAdapter (
         holder.tvGemType?.text =  currGem.type
 
     holder.ivGemImg?.setOnClickListener(){
+            onItemClickListener.onGemClick(currGem.id)
+        }
+    holder.ivGemContainer?.setOnClickListener(){
             onItemClickListener.onGemClick(currGem.id)
         }
     }
