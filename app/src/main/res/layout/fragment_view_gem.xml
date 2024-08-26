@@ -66,6 +66,23 @@
         app:layout_constraintStart_toEndOf="@+id/ivUserImg"
         app:layout_constraintTop_toBottomOf="@+id/tvGemViewTitle" />
 
+    <Button
+        android:id="@+id/btnEditGem"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+        android:layout_width="130dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="11dp"
+        android:text="@string/edit_gem_btn"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:icon="@drawable/edit_svgrepo_com"
+        app:iconSize="20dp"
+        app:iconTint="@color/darkgray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvUserName"
+        app:layout_constraintTop_toBottomOf="@+id/tvGemViewTitle"
+        app:strokeColor="@color/darkgray" />
+
     <TextView
         android:id="@+id/tvGemName"
         android:layout_width="match_parent"

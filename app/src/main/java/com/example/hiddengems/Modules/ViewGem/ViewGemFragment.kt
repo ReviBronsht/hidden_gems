@@ -18,6 +18,7 @@ import com.example.hiddengems.MainActivity
 import com.example.hiddengems.Model.Comment
 import com.example.hiddengems.Model.Gem
 import com.example.hiddengems.Model.Model
+import com.example.hiddengems.Modules.AddEditGem.AddEditGemFragment
 import com.example.hiddengems.Modules.Comments.CommentsAdapter
 import com.example.hiddengems.Modules.Gems.GemsAdapter
 import com.example.hiddengems.R
@@ -50,6 +51,12 @@ class ViewGemFragment : Fragment() {
     var btnRating3:MaterialButton ?= null
     var btnRating4:MaterialButton ?= null
     var btnRating5:MaterialButton ?= null
+
+    //initializing edit button
+    var btnEditGem:MaterialButton ?= null
+
+    //initializing addeditgemfragment
+    var fragmentAddEditGem: AddEditGemFragment?= null
 
 
     override fun onCreateView(
@@ -156,6 +163,22 @@ class ViewGemFragment : Fragment() {
             ratingBtnList[i-1]?.setOnClickListener() {
                 rate(currGem, i)
                 markRating(ratingBtnList, i)
+            }
+        }
+
+        //setting edit gem button
+        btnEditGem = view.findViewById<MaterialButton>(R.id.btnEditGem)
+
+        //setting edit add fragment
+        fragmentAddEditGem = AddEditGemFragment()
+
+        //setting on click listener of edit gem button to display addeditgem fragment in edit mode (by passing id as argument)
+        btnEditGem?.setOnClickListener(){
+            fragmentAddEditGem?.let {
+                (activity as MainActivity).displayFragment(
+                    it,
+                    arg = currGem.id.toString()
+                )
             }
         }
 

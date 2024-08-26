@@ -9,19 +9,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.view.marginLeft
+import androidx.core.view.marginStart
 import com.example.hiddengems.MainActivity
 import com.example.hiddengems.Model.Gem
 import com.example.hiddengems.Model.Model
 import com.example.hiddengems.Modules.Feed.FeedFragment
 import com.example.hiddengems.Modules.Gems.GemsAdapter
+import com.example.hiddengems.Modules.ViewGem.ViewGemFragment
 import com.example.hiddengems.R
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputLayout
 
 class AddEditGemFragment : Fragment() {
+
+    //boolean to check if fragment is in edit mode or add mode
+    var isEditMode = false
 
     //initializing edit text for search input
     var etName: EditText?= null
@@ -62,8 +69,9 @@ class AddEditGemFragment : Fragment() {
     //initializes list of rating buttons
     var ratingBtnList:MutableList<MaterialButton?> = mutableListOf()
 
-    //initializes feed fragment
+    //initializes fragments for navigation
     var fragmentFeed:  FeedFragment?= null
+    var fragmentViewGem: ViewGemFragment?=null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,6 +79,14 @@ class AddEditGemFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_add_edit_gem, container, false)
+
+        //trying to get the id of the Gem from argument
+        //if exists, edit mode, if not, add mode
+        val id = arguments?.getString("arg")
+        if (id != null)
+        {
+            isEditMode = true
+        }
 
         //getting edittexts
         etName = view.findViewById<EditText>(R.id.etName)
@@ -170,8 +186,28 @@ class AddEditGemFragment : Fragment() {
         tilCityLayout = view.findViewById<TextInputLayout>(R.id.tilCityLayout)
         tilTypeLayout = view.findViewById<TextInputLayout>(R.id.tilTypeLayout)
 
-        //setting feed fragment
+        //setting fragments
         fragmentFeed = FeedFragment()
+        fragmentViewGem = ViewGemFragment()
+
+        //check if edit mode, and make relevant adjustments
+        if (isEditMode){
+            //getting title text view and setting title to edit
+            val tvAddEditTitle = view.findViewById<TextView>(R.id.tvAddEditTitle)
+            tvAddEditTitle.text = "Edit Gem"
+           // tvAddEditTitle.height = 20
+
+
+            //getting back button and givint it go back function on click listener
+            val btnBack = view.findViewById<MaterialButton>(R.id.btnBack)
+            btnBack.visibility=View.VISIBLE
+
+            btnBack.setOnClickListener(){
+                fragmentViewGem?.let {
+                    (activity as MainActivity).displayFragment(it, arg = id)
+                }
+            }
+        }
 
         return view
     }

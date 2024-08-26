@@ -10,10 +10,30 @@
         android:id="@+id/tvAddEditTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/search_title"
+        android:layout_marginStart="3dp"
+        android:text="@string/create_gem_title"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btnImg"
+        app:layout_constraintStart_toEndOf="@id/btnBack"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnBack"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+        android:layout_width="50dp"
+        android:layout_height="55dp"
+        android:backgroundTint="@color/gray"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:icon="@drawable/back_svgrepo_com"
+        app:iconGravity="textStart"
+        android:visibility="gone"
+        app:iconPadding="-9dp"
+        app:iconSize="20dp"
+        app:iconTint="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/darkgray" />
 
     <Button
         android:id="@+id/btnSave"
@@ -35,7 +55,7 @@
         style="@style/Widget.Material3.Button.Icon"
         android:layout_width="0dp"
         android:layout_height="155dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="55dp"
         android:backgroundTint="@color/gray"
         app:icon="@drawable/upload_image_svgrepo_com"
         app:iconGravity="textStart"
@@ -44,7 +64,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAddEditTitle"
+        app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/cornerRadius" />
 
     <TextView
