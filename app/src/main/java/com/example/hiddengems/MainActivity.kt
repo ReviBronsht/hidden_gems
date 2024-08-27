@@ -1,6 +1,7 @@
 package com.example.hiddengems
 
 import android.os.Bundle
+import android.view.Display.Mode
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -10,12 +11,15 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.example.hiddengems.Model.Gem
+import com.example.hiddengems.Model.Model
 import com.example.hiddengems.Modules.AddEditGem.AddEditGemFragment
 import com.example.hiddengems.Modules.EditProfile.EditProfileFragment
 import com.example.hiddengems.Modules.Favorites.FavoritesFragment
 import com.example.hiddengems.Modules.Feed.FeedFragment
+import com.example.hiddengems.Modules.LogIn.LogInFragment
 import com.example.hiddengems.Modules.Profile.ProfileFragment
 import com.example.hiddengems.Modules.Search.SearchFragment
+import com.example.hiddengems.Modules.SignUp.SignUpFragment
 import com.example.hiddengems.Modules.ViewGem.ViewGemFragment
 
 class MainActivity : AppCompatActivity() {
@@ -28,6 +32,8 @@ class MainActivity : AppCompatActivity() {
     var fragmentProfile: ProfileFragment?= null
     var fragmentViewGem: ViewGemFragment?=null
     var fragmentEditProfile: EditProfileFragment?=null
+    var fragmentLogIn: LogInFragment ?=null
+    var fragmentSignUp: SignUpFragment ?= null
 
     //initializes nav buttons
     var btnHome: Button ?= null
@@ -47,8 +53,9 @@ class MainActivity : AppCompatActivity() {
     var prevGem:String ?=null
 
     //override on back pressed function to use custom back navigation
-    //if in home page, exits the app
-    //if not in homepage, uses GoBack function for custom back navigation
+    //if in home page or log in, exits the app
+    //if not in homepage or log in, uses GoBack function for custom back navigation
+    //if in sign up, goes back to log in
     override fun onBackPressed() {
 //        bottomNavShow()
 //        if (inDisplayFragment == fragmentViewGem) {
@@ -84,17 +91,29 @@ class MainActivity : AppCompatActivity() {
 //                        }
 //                    }
 //                }
-        if(inDisplayFragment != fragmentFeed){
-            goBack(prevGem)
+        if (Model.instance.currUser.user == ""){
+            if (inDisplayFragment == fragmentLogIn) {
+                finish()
+            }
+            else{
+                fragmentLogIn?.let{
+                    displayFragment(it)
+                }
+            }
+        }
+        else {
+            if (inDisplayFragment != fragmentFeed) {
+                goBack(prevGem)
             } else {
                 //if (supportFragmentManager.backStackEntryCount != 1)
                 //{supportFragmentManager.popBackStackImmediate()}
                 finish()
-           if(false) {
-               super.onBackPressed()
-           }
+                if (false) {
+                    super.onBackPressed()
+                }
 
-           // }
+                // }
+            }
         }
     }
 
@@ -116,6 +135,8 @@ class MainActivity : AppCompatActivity() {
         fragmentProfile = ProfileFragment()
         fragmentViewGem = ViewGemFragment()
         fragmentEditProfile = EditProfileFragment()
+        fragmentLogIn = LogInFragment()
+        fragmentSignUp = SignUpFragment()
         //fragmentProfile = FeedFragment.newInstance("Five")
 
         //setting nav buttons
@@ -164,9 +185,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        fragmentFeed?.let {fragment ->
-            btnHome?.let {button->
-                displayFragment(fragment, button)
+        //if user not logged in, sets log in
+        // if user  logged in, sets feed
+        if (Model.instance.currUser.user != "") {
+            fragmentFeed?.let { fragment ->
+                btnHome?.let { button ->
+                    displayFragment(fragment, button)
+                }
+            }
+        }
+        else {
+            bottomNavHide()
+            fragmentLogIn?.let {
+                displayFragment(it)
             }
         }
 

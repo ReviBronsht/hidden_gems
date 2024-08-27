@@ -10,8 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hiddengems.MainActivity
 import com.example.hiddengems.Model.Model
+import com.example.hiddengems.Model.User
 import com.example.hiddengems.Modules.EditProfile.EditProfileFragment
 import com.example.hiddengems.Modules.Gems.GemsAdapter
+import com.example.hiddengems.Modules.LogIn.LogInFragment
 import com.example.hiddengems.R
 import com.google.android.material.button.MaterialButton
 
@@ -33,6 +35,12 @@ class ProfileFragment : Fragment() , GemsAdapter.OnGemClickListener{
 
     //initializing edit profile fragment
     var fragmentEditProfile: EditProfileFragment?=null
+
+    //initializing log out button
+    var btnLogOut: MaterialButton ?= null
+
+    //initializes log in fragment
+    var fragmentLogIn: LogInFragment ?= null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -85,7 +93,32 @@ class ProfileFragment : Fragment() , GemsAdapter.OnGemClickListener{
                 (activity as MainActivity).displayFragment(it, savePrev = true)
             }
         }
+
+        //setting log out button
+        btnLogOut = view.findViewById<MaterialButton>(R.id.btnLogOut)
+
+        //setting log in fragment
+        fragmentLogIn = LogInFragment()
+
+        //setting log out button to log out on click
+        btnLogOut?.setOnClickListener(){
+            onLogOut()
+        }
         return view
+    }
+
+    //function that removes current user details in Model instance and moves user to log in
+    fun onLogOut(){
+
+        Model.instance.currUser.user = ""
+        Model.instance.currUser.bio = ""
+        Model.instance.currUser.favoriteGems = mutableListOf()
+        Model.instance.currUser.visitedGems =mutableListOf()
+
+        (activity as MainActivity).bottomNavHide()
+        fragmentLogIn?.let {
+            (activity as MainActivity).displayFragment(it)
+        }
     }
 
     //function that overrides onGemClick from OnGemClickListener

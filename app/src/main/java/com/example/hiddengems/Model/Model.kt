@@ -14,7 +14,9 @@ class Model private constructor() {
     init {
 
 
-        val user:User = User("Billy","Experienced Traveller", mutableListOf(0,2), mutableListOf(1))
+       // val user:User = User("Billy","Experienced Traveller", mutableListOf(0,2), mutableListOf(1))
+        //currUser = user
+        val user:User = User()
         currUser = user
 
         cities.add("All")
