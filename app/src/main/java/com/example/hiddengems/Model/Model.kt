@@ -5,12 +5,17 @@ class Model private constructor() {
     val categories: MutableList<Category> = ArrayList()
     val gems: MutableList<Gem> = ArrayList()
     val cities: MutableList<String> = ArrayList()
+    var currUser: User
 
     companion object {
         val instance: Model = Model()
     }
 
     init {
+
+
+        val user:User = User("Billy","Experienced Traveller", mutableListOf(0,2), mutableListOf(1))
+        currUser = user
 
         cities.add("All")
         cities.add("Paris, FR")

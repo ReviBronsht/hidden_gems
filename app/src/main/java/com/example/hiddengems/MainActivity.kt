@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import com.example.hiddengems.Model.Gem
 import com.example.hiddengems.Modules.AddEditGem.AddEditGemFragment
 import com.example.hiddengems.Modules.Favorites.FavoritesFragment
 import com.example.hiddengems.Modules.Feed.FeedFragment
@@ -87,7 +88,9 @@ class MainActivity : AppCompatActivity() {
                 //if (supportFragmentManager.backStackEntryCount != 1)
                 //{supportFragmentManager.popBackStackImmediate()}
                 finish()
-            super.onBackPressed()
+           if(false) {
+               super.onBackPressed()
+           }
 
            // }
         }
@@ -212,6 +215,19 @@ class MainActivity : AppCompatActivity() {
 //        }
 //    }
 
+
+    //function that filters gems by ids and maps them to order of ids in faves list
+    fun filterGemsById(gems: MutableList<Gem>, ids: List<Int>): MutableList<Gem> {
+        val idOrderMap = ids.withIndex().associate { it.value to it.index }
+        return gems
+            .filter { it.id in idOrderMap }
+            .sortedBy { idOrderMap[it.id] } as MutableList<Gem>
+    }
+
+    fun filterGemsByUser(gems: MutableList<Gem>, user:String): MutableList<Gem> {
+        return gems
+            .filter { it.user == user } as MutableList<Gem>
+    }
 
     //viewGem function calls displayFragment function from MainActivity to display ViewGem fragment
     //sends the position (which contains relevant gem id) as argument

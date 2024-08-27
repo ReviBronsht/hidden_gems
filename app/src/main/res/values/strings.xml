@@ -31,6 +31,11 @@
     <string name="save_btn">Save</string>
     <string name="edit_gem_btn">Edit Gem</string>
     <string name="delete_gem_btn">Delete Gem</string>
+    <string name="favorites_title">Favorites</string>
+    <string name="profile_title">My Profile</string>
+    <string name="visited_gems_title">Visited Gems</string>
+    <string name="my_gems_title">My Gems</string>
+    <string name="not_visited">Not visited</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

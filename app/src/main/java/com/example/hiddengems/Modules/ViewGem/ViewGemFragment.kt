@@ -23,6 +23,7 @@ import com.example.hiddengems.Modules.Comments.CommentsAdapter
 import com.example.hiddengems.Modules.Gems.GemsAdapter
 import com.example.hiddengems.R
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.imageview.ShapeableImageView
 
 class ViewGemFragment : Fragment() {
 
@@ -59,6 +60,11 @@ class ViewGemFragment : Fragment() {
     //initializing addeditgemfragment
     var fragmentAddEditGem: AddEditGemFragment?= null
 
+    //initializing add/remove gems to faves button
+    var ivFavorite: ShapeableImageView?= null
+
+    //initializing add/remove gems to visited button
+    var btnVisitedGem:MaterialButton?=null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -118,7 +124,7 @@ class ViewGemFragment : Fragment() {
         btnPost?.setOnClickListener(){
             val commentText = etComment?.text.toString()
             if (!commentText.isEmpty()) {
-                onPostClicked("Billy", commentText)
+                onPostClicked(Model.instance.currUser.user, commentText)
             }
         }
 
@@ -173,33 +179,104 @@ class ViewGemFragment : Fragment() {
             markRating(ratingBtnList,myRating)
         }
 
-        //setting edit gem button
-        btnEditGem = view.findViewById<MaterialButton>(R.id.btnEditGem)
+        //if user is Gem's creator, set up edit/delete
+        //if not, set up visited
+        if(Model.instance.currUser.user == currGem.user) {
+            //setting edit gem button and making it visible
+            btnEditGem = view.findViewById<MaterialButton>(R.id.btnEditGem)
+            btnEditGem?.visibility = View.VISIBLE
 
-        //setting edit add fragment
-        fragmentAddEditGem = AddEditGemFragment()
+            //setting edit add fragment
+            fragmentAddEditGem = AddEditGemFragment()
 
-        //setting on click listener of edit gem button to display addeditgem fragment in edit mode (by passing id as argument)
-        btnEditGem?.setOnClickListener(){
-            fragmentAddEditGem?.let {
-                (activity as MainActivity).displayFragment(
-                    it,
-                    arg = currGem.id.toString(),
-                    savePrevGem = true
-                )
+            //setting on click listener of edit gem button to display addeditgem fragment in edit mode (by passing id as argument)
+            btnEditGem?.setOnClickListener() {
+                fragmentAddEditGem?.let {
+                    (activity as MainActivity).displayFragment(
+                        it,
+                        arg = currGem.id.toString(),
+                        savePrevGem = true
+                    )
+                }
+            }
+
+            //setting delete gem button and making it visible
+            btnDeleteGem = view.findViewById<MaterialButton>(R.id.btnDeleteGem)
+            btnDeleteGem?.visibility = View.VISIBLE
+
+            //setting on click listener of delete gem button to delete gem and go back to homepage
+            btnDeleteGem?.setOnClickListener() {
+                gems.remove(currGem)
+                (activity as MainActivity).goBack()
+            }
+
+        }
+        else{
+            //getting visited button and setting it to visible
+            btnVisitedGem = view.findViewById<MaterialButton>(R.id.btnVisitedGem)
+            btnVisitedGem?.visibility = View.VISIBLE
+
+            //setting visited button to add or remove visited gem on click
+            btnVisitedGem?.setOnClickListener(){
+                addRemoveVisited(currGem.id)
+            }
+
+            //setting appearance of visited if gem is in faves
+            if (currGem.id in Model.instance.currUser.visitedGems){
+                btnVisitedGem?.text = "Visited!"
+                context?.let {
+                    btnVisitedGem?.backgroundTintList =
+                        AppCompatResources.getColorStateList(it, R.color.secondary)
+                }
             }
         }
+        //getting fave button
+        ivFavorite = view.findViewById<ShapeableImageView>(R.id.ivFavorite)
 
-        //setting delete gem button
-        btnDeleteGem = view.findViewById<MaterialButton>(R.id.btnDeleteGem)
-
-        //setting on click listener of delete gem button to delete gem and go back to homepage
-        btnDeleteGem?.setOnClickListener(){
-            gems.remove(currGem)
-            (activity as MainActivity).goBack()
+        //setting fave button to add or remove fave gem on click
+        ivFavorite?.setOnClickListener(){
+            addRemoveFave(currGem.id)
         }
 
+        //setting icon of fave if gem is in faves
+        if (currGem.id in Model.instance.currUser.favoriteGems){
+            ivFavorite?.setImageResource(R.drawable.heart_svgrepo_com)
+        }
         return view
+    }
+
+    //function that adds or removes id of gem to/from user's visited gems and sets text accordingly
+    fun addRemoveVisited(id:Int){
+        val currUser = Model.instance.currUser
+        if (id in currUser.visitedGems){
+            currUser.visitedGems.remove(id)
+            btnVisitedGem?.text = "Not visited"
+            context?.let {
+                btnVisitedGem?.backgroundTintList =
+                    AppCompatResources.getColorStateList(it, R.color.darkgray)
+            }
+        }
+        else {
+            currUser.visitedGems.add(0,id)
+            btnVisitedGem?.text = "Visited!"
+            context?.let {
+                btnVisitedGem?.backgroundTintList =
+                    AppCompatResources.getColorStateList(it, R.color.secondary)
+            }
+        }
+    }
+
+    //function that adds or removes id of gem to/from user's favorite gems and sets icon accordingly
+    fun addRemoveFave(id:Int){
+        val currUser = Model.instance.currUser
+        if (id in currUser.favoriteGems){
+            currUser.favoriteGems.remove(id)
+            ivFavorite?.setImageResource(R.drawable.heart_alt_svgrepo_com)
+        }
+        else {
+            currUser.favoriteGems.add(0,id)
+            ivFavorite?.setImageResource(R.drawable.heart_svgrepo_com)
+        }
     }
 
     // on post clicked function creates a comment from passed user and text,

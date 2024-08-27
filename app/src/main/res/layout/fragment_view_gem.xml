@@ -79,6 +79,7 @@
         app:icon="@drawable/edit_svgrepo_com"
         app:iconSize="20dp"
         app:iconTint="@color/darkgray"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/btnDeleteGem"
         app:layout_constraintTop_toBottomOf="@+id/tvGemViewTitle"
         app:strokeColor="@color/darkgray" />
@@ -94,6 +95,25 @@
         android:textSize="13sp"
         app:icon="@drawable/delete_1_svgrepo_com"
         android:backgroundTint="@color/red"
+        app:iconSize="20dp"
+        android:visibility="gone"
+        app:iconTint="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGemViewTitle"
+        app:strokeColor="@color/black" />
+
+    <Button
+        android:id="@+id/btnVisitedGem"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+        android:layout_width="130dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="11dp"
+        android:text="@string/not_visited"
+        android:textColor="@color/black"
+        android:textSize="13sp"
+        app:icon="@drawable/flag_svgrepo_com"
+        android:visibility="gone"
+        android:backgroundTint="@color/darkgray"
         app:iconSize="20dp"
         app:iconTint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"

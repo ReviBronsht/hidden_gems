@@ -110,7 +110,7 @@ class SearchFragment : Fragment(),GemsAdapter.OnGemClickListener {
         }
 
 
-        //setting up gems recycler view by getting categories, initialising adapter with them, this onclicklistennr and row layout, setting the adapter of recyclerview, and setting layout manager
+        //setting up gems recycler view by getting gems, initialising adapter with them, this onclicklistennr and row layout, setting the adapter of recyclerview, and setting layout manager
         val gems = Model.instance.gems
         gemsAdapter = GemsAdapter(gems,this,R.layout.layout_gem_row)
         val rvGems = view.findViewById<RecyclerView>(R.id.rvSuggestedGems)

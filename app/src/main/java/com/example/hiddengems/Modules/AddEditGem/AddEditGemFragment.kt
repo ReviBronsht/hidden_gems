@@ -326,6 +326,7 @@ class AddEditGemFragment : Fragment() {
 
         if(rating == -1){
             Toast.makeText(context,"Please rate your gem",Toast.LENGTH_SHORT).show()
+            flag = true
         }
 
         return flag
@@ -346,7 +347,7 @@ class AddEditGemFragment : Fragment() {
         if (isErrors == false) {
 
             val newGem: Gem = Gem(
-                gems.size, "Billy", name, desc, address, city, type, rating.toDouble(),0,
+                gems.size, Model.instance.currUser.user, name, desc, address, city, type, rating.toDouble(),0,
                 mutableListOf<Int>(rating)
             )
 
