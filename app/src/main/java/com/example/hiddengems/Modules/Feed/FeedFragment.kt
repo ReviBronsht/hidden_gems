@@ -30,6 +30,7 @@ class FeedFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener,GemsA
     var prevbtn: Button ?= null
     var gemsAdapter: GemsAdapter ?= null
     var fragmentViewGem:  ViewGemFragment?= null
+    var rvGems: RecyclerView?= null
 
   //    var categories: MutableList<Category> ?= null
 //    var tvFeedTitle: TextView ?= null
@@ -74,18 +75,23 @@ class FeedFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener,GemsA
     rvCategories.adapter = catsAdapter
     rvCategories.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
 
-    //setting up gems recycler view by getting categories, initialising adapter with them and this onclicklistennr, setting the adapter of recyclerview, and setting layout manager
+    //setting up gems recycler view by getting gems, initialising adapter with them and this onclicklistennr, setting the adapter of recyclerview, and setting layout manager
     val gems = Model.instance.gems
     gemsAdapter = GemsAdapter(gems,this,R.layout.layout_gem)
-    val rvGems = view.findViewById<RecyclerView>(R.id.rvLatestGems)
-    rvGems.adapter = gemsAdapter
-    rvGems.layoutManager = LinearLayoutManager(requireContext())
-
+    rvGems = view.findViewById<RecyclerView>(R.id.rvLatestGems)
+    rvGems?.adapter = gemsAdapter
+    rvGems?.layoutManager = LinearLayoutManager(requireContext())
 
 
 
     return view
     }
+
+    //scroll to top
+    fun scrollToTop(){
+        rvGems?.scrollToPosition(0)
+    }
+
 
     //overriding onCategoryClick of OnCategoryClickListener to call function that sets current category
     override fun onCategoryClick(position: Int,currBtn: Button) {

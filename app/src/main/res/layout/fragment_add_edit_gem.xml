@@ -61,11 +61,43 @@
         app:iconGravity="textStart"
         app:iconSize="80dp"
         app:iconTint="@color/black"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/cornerRadius" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivGemImg"
+        android:layout_width="match_parent"
+        android:layout_height="155dp"
+        android:visibility="gone"
+        android:layout_marginTop="55dp"
+        android:background="@drawable/img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/cornerRadius" />
+
+    <Button
+        android:id="@+id/btnEditImgIcon"
+        style="@style/Widget.Material3.Button.Icon"
+        android:layout_width="50dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        app:icon="@drawable/edit_svgrepo_com"
+        app:iconGravity="textStart"
+        android:visibility="gone"
+        app:iconPadding="-9dp"
+        app:iconSize="20dp"
+        app:iconTint="@color/white"
+        android:backgroundTint="@android:color/transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/ivGemImg"
+        app:strokeColor="@color/darkgray" />
 
     <TextView
         android:id="@+id/tvNameLabel"

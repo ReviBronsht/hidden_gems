@@ -52,8 +52,9 @@ class ViewGemFragment : Fragment() {
     var btnRating4:MaterialButton ?= null
     var btnRating5:MaterialButton ?= null
 
-    //initializing edit button
+    //initializing edit button and delete button
     var btnEditGem:MaterialButton ?= null
+    var btnDeleteGem:MaterialButton?=null
 
     //initializing addeditgemfragment
     var fragmentAddEditGem: AddEditGemFragment?= null
@@ -166,6 +167,12 @@ class ViewGemFragment : Fragment() {
             }
         }
 
+        //if user previously rated gem, sets it
+        if (currGem.myRatingIdx != -1){
+            val myRating = currGem.ratings[currGem.myRatingIdx]
+            markRating(ratingBtnList,myRating)
+        }
+
         //setting edit gem button
         btnEditGem = view.findViewById<MaterialButton>(R.id.btnEditGem)
 
@@ -177,9 +184,19 @@ class ViewGemFragment : Fragment() {
             fragmentAddEditGem?.let {
                 (activity as MainActivity).displayFragment(
                     it,
-                    arg = currGem.id.toString()
+                    arg = currGem.id.toString(),
+                    savePrevGem = true
                 )
             }
+        }
+
+        //setting delete gem button
+        btnDeleteGem = view.findViewById<MaterialButton>(R.id.btnDeleteGem)
+
+        //setting on click listener of delete gem button to delete gem and go back to homepage
+        btnDeleteGem?.setOnClickListener(){
+            gems.remove(currGem)
+            (activity as MainActivity).goBack()
         }
 
         return view

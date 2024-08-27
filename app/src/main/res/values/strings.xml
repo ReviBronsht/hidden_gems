@@ -30,6 +30,7 @@
     <string name="rating_placeholder">Rating</string>
     <string name="save_btn">Save</string>
     <string name="edit_gem_btn">Edit Gem</string>
+    <string name="delete_gem_btn">Delete Gem</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

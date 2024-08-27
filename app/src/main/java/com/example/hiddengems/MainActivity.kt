@@ -40,50 +40,56 @@ class MainActivity : AppCompatActivity() {
     var inDisplayButton: Button?= null
     //intilializes var to keep previous displayed fragment
     var prevFragment: Fragment ?=null
+    //initializes var to keep previous gem id if going back from editGem
+    var prevGem:String ?=null
 
-    //normally back would remove first fragment (feed), overrides to close instead of backing when its the last fragment left in the stack
-    //function also selects the correct button to be currently highlighted, based on currently displayed fragment after back
-    //if prevFragment is viewGem, uses goBack function instead
+    //override on back pressed function to use custom back navigation
+    //if in home page, exits the app
+    //if not in homepage, uses GoBack function for custom back navigation
     override fun onBackPressed() {
-        bottomNavShow()
-        if (inDisplayFragment == fragmentViewGem) {
-            goBack()
-        }
-        else{
-            if (supportFragmentManager.backStackEntryCount > 1) {
-                super.onBackPressed()
-                println(inDisplayFragment)
-                val currFragmentId =
-                    supportFragmentManager.findFragmentById(R.id.flMainFragmentContainer)
-                        ?.toString()?.split("{")
-                currFragmentId?.let {
-                    when (it[0]) {
-                        "FeedFragment" -> btnHome?.let { button ->
-                            displayButton(button)
-                        }
-
-                        "SearchFragment" -> btnSearch?.let { button ->
-                            displayButton(button)
-                        }
-
-                        "AddEditGemFragment" -> btnAddGem?.let { button ->
-                            displayButton(button)
-                        }
-
-                        "FavoritesFragment" -> btnFaves?.let { button ->
-                            displayButton(button)
-                        }
-
-                        else -> btnProfile?.let { button ->
-                            displayButton(button)
-                        }
-                    }
-                }
+//        bottomNavShow()
+//        if (inDisplayFragment == fragmentViewGem) {
+//            goBack()
+//        }
+//        else{
+//            if (supportFragmentManager.backStackEntryCount > 1) {
+//                super.onBackPressed()
+//                println(inDisplayFragment)
+//                val currFragmentId =
+//                    supportFragmentManager.findFragmentById(R.id.flMainFragmentContainer)
+//                        ?.toString()?.split("{")
+//                currFragmentId?.let {
+//                    when (it[0]) {
+//                        "FeedFragment" -> btnHome?.let { button ->
+//                            displayButton(button)
+//                        }
+//
+//                        "SearchFragment" -> btnSearch?.let { button ->
+//                            displayButton(button)
+//                        }
+//
+//                        "AddEditGemFragment" -> btnAddGem?.let { button ->
+//                            displayButton(button)
+//                        }
+//
+//                        "FavoritesFragment" -> btnFaves?.let { button ->
+//                            displayButton(button)
+//                        }
+//
+//                        else -> btnProfile?.let { button ->
+//                            displayButton(button)
+//                        }
+//                    }
+//                }
+        if(inDisplayFragment != fragmentFeed){
+            goBack(prevGem)
             } else {
                 //if (supportFragmentManager.backStackEntryCount != 1)
                 //{supportFragmentManager.popBackStackImmediate()}
                 finish()
-            }
+            super.onBackPressed()
+
+           // }
         }
     }
 
@@ -235,10 +241,29 @@ class MainActivity : AppCompatActivity() {
         btnProfile?.visibility = View.GONE
     }
 
-    //function that displays previously saved fragment
-    internal fun goBack(){
-        prevFragment?.let {
-            displayFragment(it)
+    //custom back navigation function
+    //if in edit gem page (currPrevGem passed), goes back to view the gem with that id
+    //if in view gem page, which can be accessed from multiple pages, goes back to previous fragment
+    //if in other pages that aren't homepage, goes back to homepage
+    internal fun goBack(currPrevGem:String?=null){
+        if (currPrevGem!=null)
+        {
+            fragmentViewGem?.let {
+                displayFragment(it, arg = currPrevGem)
+                prevGem = null
+            }
+        }
+        else if(inDisplayFragment == fragmentViewGem){
+            prevFragment?.let {
+                displayFragment(it)
+                bottomNavShow()
+            }
+        }
+        else
+        fragmentFeed?.let {
+            fragmentFeed?.let {
+                displayFragment(it, btnHome)
+            }
         }
     }
 
@@ -246,7 +271,8 @@ class MainActivity : AppCompatActivity() {
     //if button is passed, uses displayButton function to set it as current tab
     //if an argument is passed, uses Bundle to put it to new fragment
     //if savePrev is true, saves previous fragment
-    internal fun displayFragment(fragment: Fragment, button: Button? = inDisplayButton,arg:String?=null,savePrev:Boolean=false){
+    //if savePrevGem is true, saves gem id in current passed argument
+    internal fun displayFragment(fragment: Fragment, button: Button? = inDisplayButton,arg:String?=null,savePrev:Boolean=false,savePrevGem:Boolean=false){
         val b = Bundle()
         if (arg != null){
             b.putString("arg",arg)
@@ -257,6 +283,9 @@ class MainActivity : AppCompatActivity() {
 
         if(savePrev){
             prevFragment = inDisplayFragment
+        }
+        if(savePrevGem){
+            prevGem=arg
         }
 
         inDisplayFragment?.let {

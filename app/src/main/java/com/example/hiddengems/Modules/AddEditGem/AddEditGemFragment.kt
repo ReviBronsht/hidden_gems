@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
@@ -73,12 +74,23 @@ class AddEditGemFragment : Fragment() {
     var fragmentFeed:  FeedFragment?= null
     var fragmentViewGem: ViewGemFragment?=null
 
+    //initializes view to hold image, image edit icon and image button view
+    var ivGemImg:ImageView ?= null
+    var btnImg:MaterialButton ?=null
+    var btnEditImgIcon:MaterialButton ?=null
+
+    //initializes gems
+    var gems: MutableList<Gem> = mutableListOf()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_add_edit_gem, container, false)
+
+        //getting gems from instance of Model
+        gems = Model.instance.gems
 
         //trying to get the id of the Gem from argument
         //if exists, edit mode, if not, add mode
@@ -87,6 +99,11 @@ class AddEditGemFragment : Fragment() {
         {
             isEditMode = true
         }
+
+        //getting imageview, add image button and edit image icon
+        ivGemImg = view.findViewById<ImageView>(R.id.ivGemImg)
+        btnImg = view.findViewById<MaterialButton>(R.id.btnImg)
+        btnEditImgIcon = view.findViewById<MaterialButton>(R.id.btnEditImgIcon)
 
         //getting edittexts
         etName = view.findViewById<EditText>(R.id.etName)
@@ -141,6 +158,7 @@ class AddEditGemFragment : Fragment() {
         // initializing array adapter with context, drop_down_item layout and types
         // setting adapter of actvType as new adapter
         actvType = view.findViewById<MaterialAutoCompleteTextView>(R.id.actvType)
+        types = mutableListOf() //resets types
         val categories = Model.instance.categories
         for (i in categories){
             types.add(i.name)
@@ -173,10 +191,12 @@ class AddEditGemFragment : Fragment() {
             }
         }
 
-        //getting save button that adds gem with add gem function
+        //getting save button that adds gem with add gem function if the mode is add
         btnSave = view.findViewById<MaterialButton>(R.id.btnSave)
-        btnSave?.setOnClickListener(){
-            addGem()
+        if (!isEditMode) {
+            btnSave?.setOnClickListener() {
+                addGem()
+            }
         }
 
         //setting layouts
@@ -202,16 +222,50 @@ class AddEditGemFragment : Fragment() {
             val btnBack = view.findViewById<MaterialButton>(R.id.btnBack)
             btnBack.visibility=View.VISIBLE
 
+            //setting back button to go back to view the current gem
             btnBack.setOnClickListener(){
-                fragmentViewGem?.let {
-                    (activity as MainActivity).displayFragment(it, arg = id)
-                }
+                    (activity as MainActivity).goBack(id)
+
+            }
+
+            //finding the gem by id in gems list
+            var currGem: Gem = gems.filter { it.id == id?.toInt() }[0]
+
+            //setting variables to current gem's variables
+            name = currGem.name
+            desc = currGem.desc
+            address = currGem.address
+            city = currGem.city
+            type = currGem.type
+            rating = currGem.ratings[currGem.myRatingIdx]
+
+            //setting input fields to show current gem's data
+            etName?.setText(name)
+            etDesc?.setText(desc)
+            etAddress?.setText(address)
+            actvCity?.setText(city)
+            actvType?.setText(type)
+
+            //marking rating to user's rating
+            markRating(ratingBtnList,rating)
+            //showing the image with edit icon by calling showImage
+            showImage()
+
+            //sets on click lisener of save button to edit
+            btnSave?.setOnClickListener() {
+                editGem(currGem)
             }
         }
 
         return view
     }
 
+    //shows the image, and shows relevant icon
+    fun showImage(){
+        ivGemImg?.visibility = View.VISIBLE
+        btnEditImgIcon?.visibility = View.VISIBLE
+
+    }
     //clear form resets variables, sets fields to empty text, and clears rating
     fun clearForm(){
         name = ""
@@ -291,10 +345,8 @@ class AddEditGemFragment : Fragment() {
 
         if (isErrors == false) {
 
-            val gems = Model.instance.gems
-
             val newGem: Gem = Gem(
-                gems.size, "Billy", name, desc, address, city, type, rating.toDouble(),
+                gems.size, "Billy", name, desc, address, city, type, rating.toDouble(),0,
                 mutableListOf<Int>(rating)
             )
 
@@ -302,9 +354,38 @@ class AddEditGemFragment : Fragment() {
 
             clearForm()
 
-            fragmentFeed?.let {
-                (activity as MainActivity).displayFragment(it)
-            }
+            (activity as MainActivity).goBack()
+
+
+        }
+    }
+
+    //function to edit gem
+    //first clears past errors
+    // calls checkerrors function to set new errors if they exist and checks if there were errors
+    //if not, creates new gem from values and adds it to gems at first position
+    //clears the form with clearform function
+    //puts user in homepage with displayfragment function
+    fun editGem(gem: Gem){
+
+        clearErrors()
+
+        var isErrors = checkErrors()
+
+        if (isErrors == false) {
+            val gemIndex = gems.indexOfFirst { it == gem }
+
+            val editedGem = gem.copy(name=name, desc = desc, address = address, city = city, type = type)
+            editedGem.updateRating(rating)
+
+            gems[gemIndex] = editedGem
+
+            //clearForm()
+
+            (activity as MainActivity).goBack(editedGem.id.toString())
+//            fragmentViewGem?.let {
+//                (activity as MainActivity).displayFragment(it, arg = editedGem.id.toString())
+//            }
         }
     }
 
