@@ -36,6 +36,11 @@
     <string name="visited_gems_title">Visited Gems</string>
     <string name="my_gems_title">My Gems</string>
     <string name="not_visited">Not visited</string>
+    <string name="edit_profile_title">Edit Profile</string>
+    <string name="username_label">USERNAME</string>
+    <string name="bio_label">BIO</string>
+    <string name="bio_placeholder">Bio</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

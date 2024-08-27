@@ -31,7 +31,7 @@ class AddEditGemFragment : Fragment() {
     //boolean to check if fragment is in edit mode or add mode
     var isEditMode = false
 
-    //initializing edit text for search input
+    //initializing edit text for input
     var etName: EditText?= null
     var etDesc: EditText?= null
     var etAddress: EditText?= null
@@ -304,12 +304,12 @@ class AddEditGemFragment : Fragment() {
             flag = true
         }
 
-        if(desc == "" || name.length > 250){
+        if(desc == "" || desc.length > 250){
             tilDescLayout?.error = "Enter a description shorter than 250 characters"
             flag = true
         }
 
-        if(address == "" || name.length > 25){
+        if(address == "" || address.length > 25){
             tilAddressLayout?.error = "Enter an address shorter than 30 characters"
             flag = true
         }
@@ -366,7 +366,7 @@ class AddEditGemFragment : Fragment() {
     // calls checkerrors function to set new errors if they exist and checks if there were errors
     //if not, creates new gem from values and adds it to gems at first position
     //clears the form with clearform function
-    //puts user in homepage with displayfragment function
+    //puts user in view gem page with displayfragment function
     fun editGem(gem: Gem){
 
         clearErrors()

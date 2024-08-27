@@ -2,6 +2,6 @@ package com.example.hiddengems.Model
 
 //class to define Comments
 class Comment (
-    val user: String,
+    var user: String,
     val comment: String
 )

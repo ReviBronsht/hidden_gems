@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.example.hiddengems.Model.Gem
 import com.example.hiddengems.Modules.AddEditGem.AddEditGemFragment
+import com.example.hiddengems.Modules.EditProfile.EditProfileFragment
 import com.example.hiddengems.Modules.Favorites.FavoritesFragment
 import com.example.hiddengems.Modules.Feed.FeedFragment
 import com.example.hiddengems.Modules.Profile.ProfileFragment
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     var fragmentFavorites: FavoritesFragment?= null
     var fragmentProfile: ProfileFragment?= null
     var fragmentViewGem: ViewGemFragment?=null
+    var fragmentEditProfile: EditProfileFragment?=null
 
     //initializes nav buttons
     var btnHome: Button ?= null
@@ -113,9 +115,10 @@ class MainActivity : AppCompatActivity() {
         fragmentFavorites = FavoritesFragment()
         fragmentProfile = ProfileFragment()
         fragmentViewGem = ViewGemFragment()
+        fragmentEditProfile = EditProfileFragment()
         //fragmentProfile = FeedFragment.newInstance("Five")
 
-        //settting nav buttons
+        //setting nav buttons
         btnHome = findViewById(R.id.btnHome)
         btnSearch = findViewById(R.id.btnSearch)
         btnAddGem = findViewById(R.id.btnAddGem)
@@ -260,8 +263,10 @@ class MainActivity : AppCompatActivity() {
     //custom back navigation function
     //if in edit gem page (currPrevGem passed), goes back to view the gem with that id
     //if in view gem page, which can be accessed from multiple pages, goes back to previous fragment
+    //if in edit profile, go back to profile
     //if in other pages that aren't homepage, goes back to homepage
     internal fun goBack(currPrevGem:String?=null){
+        println(inDisplayFragment)
         if (currPrevGem!=null)
         {
             fragmentViewGem?.let {
@@ -269,10 +274,11 @@ class MainActivity : AppCompatActivity() {
                 prevGem = null
             }
         }
-        else if(inDisplayFragment == fragmentViewGem){
+        else if(prevFragment != null){
             prevFragment?.let {
                 displayFragment(it)
                 bottomNavShow()
+                prevFragment  = null
             }
         }
         else
@@ -289,6 +295,7 @@ class MainActivity : AppCompatActivity() {
     //if savePrev is true, saves previous fragment
     //if savePrevGem is true, saves gem id in current passed argument
     internal fun displayFragment(fragment: Fragment, button: Button? = inDisplayButton,arg:String?=null,savePrev:Boolean=false,savePrevGem:Boolean=false){
+        println(inDisplayFragment)
         val b = Bundle()
         if (arg != null){
             b.putString("arg",arg)
@@ -317,6 +324,7 @@ class MainActivity : AppCompatActivity() {
             displayButton(it)
         }
         transaction.commit()
+        println(inDisplayFragment)
     }
 
     //function that removes fragment

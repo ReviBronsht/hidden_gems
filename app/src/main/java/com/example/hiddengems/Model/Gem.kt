@@ -5,7 +5,7 @@ import java.math.RoundingMode
 //class to define Gems
 data class Gem(
     val id:Int,
-    val user:String,
+    var user:String,
     val name:String,
     val desc:String,
     val address:String,

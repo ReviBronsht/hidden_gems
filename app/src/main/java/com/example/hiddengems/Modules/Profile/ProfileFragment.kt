@@ -10,8 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hiddengems.MainActivity
 import com.example.hiddengems.Model.Model
+import com.example.hiddengems.Modules.EditProfile.EditProfileFragment
 import com.example.hiddengems.Modules.Gems.GemsAdapter
 import com.example.hiddengems.R
+import com.google.android.material.button.MaterialButton
 
 class ProfileFragment : Fragment() , GemsAdapter.OnGemClickListener{
 
@@ -25,6 +27,12 @@ class ProfileFragment : Fragment() , GemsAdapter.OnGemClickListener{
     //initializing textviews that hold the user's info
     var tvUserName:TextView ?= null
     var tvBio:TextView ?= null
+
+    //initializing edit profile button
+    var btnEditProfile:MaterialButton ?= null
+
+    //initializing edit profile fragment
+    var fragmentEditProfile: EditProfileFragment?=null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,6 +72,19 @@ class ProfileFragment : Fragment() , GemsAdapter.OnGemClickListener{
         rvMyGems.layoutManager = LinearLayoutManager(requireContext())
 
 
+        //setting edit profile button
+        btnEditProfile = view.findViewById<MaterialButton>(R.id.btnEditProfile)
+
+        //setting edit profile fragment
+        fragmentEditProfile = EditProfileFragment()
+
+        //setting onclick of edit profile button to go to edit profile
+        btnEditProfile?.setOnClickListener(){
+            (activity as MainActivity).bottomNavHide()
+            fragmentEditProfile?.let {
+                (activity as MainActivity).displayFragment(it, savePrev = true)
+            }
+        }
         return view
     }
 

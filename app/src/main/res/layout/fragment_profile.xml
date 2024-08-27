@@ -16,6 +16,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/btnEditProfile"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+        android:layout_width="130dp"
+        android:layout_height="60dp"
+        android:backgroundTint="@color/secondary"
+        android:text="@string/edit_profile_title"
+        android:textColor="@color/black"
+        android:textSize="13sp"
+        app:icon="@drawable/edit_svgrepo_com"
+        app:iconSize="20dp"
+        app:iconTint="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/black" />
+
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/ivUserImg"
         android:layout_width="120dp"
