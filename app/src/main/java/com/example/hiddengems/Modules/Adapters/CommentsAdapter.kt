@@ -1,4 +1,4 @@
-package com.example.hiddengems.Modules.Comments
+package com.example.hiddengems.Modules.Adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,10 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hiddengems.Model.Comment
-import com.example.hiddengems.Model.Gem
-import com.example.hiddengems.Modules.Gems.GemsAdapter
 import com.example.hiddengems.R
-import com.google.android.material.imageview.ShapeableImageView
 
 class CommentsAdapter  (
 

@@ -10,16 +10,16 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.view.marginLeft
-import androidx.core.view.marginStart
 import com.example.hiddengems.MainActivity
+import com.example.hiddengems.Model.Category
+import com.example.hiddengems.Model.City
 import com.example.hiddengems.Model.Gem
 import com.example.hiddengems.Model.Model
 import com.example.hiddengems.Modules.Feed.FeedFragment
-import com.example.hiddengems.Modules.Gems.GemsAdapter
 import com.example.hiddengems.Modules.ViewGem.ViewGemFragment
 import com.example.hiddengems.R
 import com.google.android.material.button.MaterialButton
@@ -90,7 +90,7 @@ class AddEditGemFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_add_edit_gem, container, false)
 
         //getting gems from instance of Model
-        gems = Model.instance.gems
+        //gems = Model.instance.gems
 
         //trying to get the id of the Gem from argument
         //if exists, edit mode, if not, add mode
@@ -142,16 +142,23 @@ class AddEditGemFragment : Fragment() {
         //getting autocompletetextview for city, getting all cities from instance of Model,
         // initializing array adapter with context, drop_down_item layout and cities
         // setting adapter of actvCity as new adapter
+        cities = mutableListOf()
         actvCity = view.findViewById<MaterialAutoCompleteTextView>(R.id.actvCity)
-        cities = Model.instance.cities.toMutableList()
-        cities.removeFirst() //removing first "All" item
-        val citiesAdapter = ArrayAdapter(requireContext(),R.layout.drop_down_item,cities)
-        actvCity?.setAdapter(citiesAdapter)
 
+        Model.instance.getAllCities { resCities ->
+            val tempCities = resCities as MutableList<City>
+            for (i in tempCities){
+                cities.add(i.name)
+            }
+            cities.removeFirst() //removing first "All" item
+            val citiesAdapter = ArrayAdapter(requireContext(), R.layout.drop_down_item, cities)
+            actvCity?.setAdapter(citiesAdapter)
+        }
         // setting on click listener of city items to set city to clicked item
         actvCity?.setOnItemClickListener{parent, view, position, id ->
             city = cities[position]
         }
+
 
         //getting autocompletetextview for type, getting all types from instance of Model,
         //using for loop to only get their names as strings,
@@ -159,13 +166,18 @@ class AddEditGemFragment : Fragment() {
         // setting adapter of actvType as new adapter
         actvType = view.findViewById<MaterialAutoCompleteTextView>(R.id.actvType)
         types = mutableListOf() //resets types
-        val categories = Model.instance.categories
-        for (i in categories){
-            types.add(i.name)
+
+        Model.instance.getAllCategories { resCategories ->
+            val categories = resCategories as MutableList<Category>
+            for (i in categories){
+                types.add(i.name)
+            }
+            types.removeFirst()//removing first "All" item
+            val typesAdapter = ArrayAdapter(requireContext(),R.layout.drop_down_item,types)
+            actvType?.setAdapter(typesAdapter)
         }
-        types.removeFirst()//removing first "All" item
-        val typesAdapter = ArrayAdapter(requireContext(),R.layout.drop_down_item,types)
-        actvType?.setAdapter(typesAdapter)
+
+
 
         // setting on click listener of type items to set type to clicked item, or to null if clicked on All
         actvType?.setOnItemClickListener{parent, view, position, id ->
@@ -212,6 +224,9 @@ class AddEditGemFragment : Fragment() {
 
         //check if edit mode, and make relevant adjustments
         if (isEditMode){
+            view.findViewById<TextView>(R.id.tvHideView).visibility = View.VISIBLE
+            view.findViewById<ProgressBar>(R.id.pbViewGem).visibility = View.VISIBLE
+
             //getting title text view and setting title to edit
             val tvAddEditTitle = view.findViewById<TextView>(R.id.tvAddEditTitle)
             tvAddEditTitle.text = "Edit Gem"
@@ -229,31 +244,39 @@ class AddEditGemFragment : Fragment() {
             }
 
             //finding the gem by id in gems list
-            var currGem: Gem = gems.filter { it.id == id?.toInt() }[0]
+            id?.let {
+                Model.instance.getGemById(it) { resGem ->
+                    var currGem = resGem.gem
+                    // var currGem: Gem = gems.filter { it.gId == id?.toInt() }[0]
 
-            //setting variables to current gem's variables
-            name = currGem.name
-            desc = currGem.desc
-            address = currGem.address
-            city = currGem.city
-            type = currGem.type
-            rating = currGem.ratings[currGem.myRatingIdx]
+                    //setting variables to current gem's variables
+                    name = currGem.name
+                    desc = currGem.desc
+                    address = currGem.address
+                    city = currGem.city
+                    type = currGem.type
+                    rating = currGem.ratings[currGem.myRatingIdx]
 
-            //setting input fields to show current gem's data
-            etName?.setText(name)
-            etDesc?.setText(desc)
-            etAddress?.setText(address)
-            actvCity?.setText(city)
-            actvType?.setText(type)
+                    //setting input fields to show current gem's data
+                    etName?.setText(name)
+                    etDesc?.setText(desc)
+                    etAddress?.setText(address)
+                    actvCity?.setText(city)
+                    actvType?.setText(type)
 
-            //marking rating to user's rating
-            markRating(ratingBtnList,rating)
-            //showing the image with edit icon by calling showImage
-            showImage()
+                    //marking rating to user's rating
+                    markRating(ratingBtnList, rating)
+                    //showing the image with edit icon by calling showImage
+                    showImage()
 
-            //sets on click lisener of save button to edit
-            btnSave?.setOnClickListener() {
-                editGem(currGem)
+                    //sets on click lisener of save button to edit
+                    btnSave?.setOnClickListener() {
+                        editGem(currGem)
+                    }
+
+                    view.findViewById<TextView>(R.id.tvHideView).visibility = View.GONE
+                    view.findViewById<ProgressBar>(R.id.pbViewGem).visibility = View.GONE
+                }
             }
         }
 
@@ -347,11 +370,13 @@ class AddEditGemFragment : Fragment() {
         if (isErrors == false) {
 
             val newGem: Gem = Gem(
-                gems.size, Model.instance.currUser.user, name, desc, address, city, type, rating.toDouble(),0,
+                 Model.instance.currUser.user, name, desc, address, city, type, rating.toDouble(),0,
                 mutableListOf<Int>(rating)
             )
 
-            gems.add(0,newGem)
+            //gems.add(0,newGem)
+
+            Model.instance.upsertGem(newGem){}
 
             clearForm()
 
@@ -376,14 +401,19 @@ class AddEditGemFragment : Fragment() {
         if (isErrors == false) {
             val gemIndex = gems.indexOfFirst { it == gem }
 
-            val editedGem = gem.copy(name=name, desc = desc, address = address, city = city, type = type)
-            editedGem.updateRating(rating)
+            val (updatedRating, updatedMyRatingIdx, updatedRatings) = (activity as MainActivity).updateRating(rating, gem.myRatingIdx, gem.ratings)
 
-            gems[gemIndex] = editedGem
+
+            val editedGem = gem.copy(name=name, desc = desc, address = address, city = city, type = type, rating = updatedRating, myRatingIdx = updatedMyRatingIdx, ratings = updatedRatings)
+           // editedGem.updateRating(rating)
+
+           // gems[gemIndex] = editedGem
 
             //clearForm()
 
-            (activity as MainActivity).goBack(editedGem.id.toString())
+            Model.instance.upsertGem(editedGem){}
+
+            (activity as MainActivity).goBack(editedGem.gId.toString())
 //            fragmentViewGem?.let {
 //                (activity as MainActivity).displayFragment(it, arg = editedGem.id.toString())
 //            }

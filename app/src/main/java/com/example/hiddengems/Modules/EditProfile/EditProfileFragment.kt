@@ -155,11 +155,11 @@ class EditProfileFragment : Fragment() {
                 if (gem.user == currUser?.user) {
                     gem.user = name
                 }
-                for (comment in gem.comments){
-                    if (comment.user == currUser?.user) {
-                        comment.user = name
-                    }
-                }
+//                for (comment in gem.comments){
+//                    if (comment.user == currUser?.user) {
+//                        comment.user = name
+//                    }
+//                }
             }
 
             currUser?.user = name

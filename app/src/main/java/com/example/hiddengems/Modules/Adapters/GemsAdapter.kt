@@ -1,14 +1,13 @@
-package com.example.hiddengems.Modules.Gems
+package com.example.hiddengems.Modules.Adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.example.hiddengems.Model.Category
 import com.example.hiddengems.Model.Gem
-import com.example.hiddengems.Modules.Categories.CategoriesAdapter
 import com.example.hiddengems.R
 import com.google.android.material.imageview.ShapeableImageView
 
@@ -75,10 +74,10 @@ class GemsAdapter (
         holder.tvGemType?.text =  currGem.type
 
     holder.ivGemImg?.setOnClickListener(){
-            onItemClickListener.onGemClick(currGem.id)
+            onItemClickListener.onGemClick(currGem.gId)
         }
     holder.ivGemContainer?.setOnClickListener(){
-            onItemClickListener.onGemClick(currGem.id)
+            onItemClickListener.onGemClick(currGem.gId)
         }
     }
 
@@ -91,6 +90,11 @@ class GemsAdapter (
     fun updateGems(newGems: List<Gem>) {
         gems = newGems.toMutableList()
         notifyDataSetChanged()  // Notify the adapter that the data has changed
+    }
+
+    fun setGems(gems:MutableList<Gem>){
+        this.gems = gems
+        notifyDataSetChanged()
     }
 
     //interface with onclick function for onclick events to be implemented by classes that need to handle click events for gem items

@@ -21,6 +21,7 @@ import com.example.hiddengems.Modules.Profile.ProfileFragment
 import com.example.hiddengems.Modules.Search.SearchFragment
 import com.example.hiddengems.Modules.SignUp.SignUpFragment
 import com.example.hiddengems.Modules.ViewGem.ViewGemFragment
+import java.math.RoundingMode
 
 class MainActivity : AppCompatActivity() {
 
@@ -250,12 +251,27 @@ class MainActivity : AppCompatActivity() {
 //    }
 
 
+    //function that recalculates rating when user adds rating from all previous ratings and new rating average
+    //if user previously rated gem (has index of rating), updates at index, if doesn't, adds new rating
+    fun updateRating(nRating: Int,myRatingIdx:Int,ratings:MutableList<Int>):Triple<Double,Int,MutableList<Int>>{
+        var newMyRatingIdx = myRatingIdx
+        if (myRatingIdx == -1) {
+            ratings.add(nRating)
+            newMyRatingIdx = ratings.size-1
+        }
+        else {
+            ratings[myRatingIdx] = nRating
+        }
+        var rating = ratings.average().toBigDecimal().setScale(1, RoundingMode.DOWN).toDouble()
+        return Triple(rating,newMyRatingIdx,ratings)
+    }
+
     //function that filters gems by ids and maps them to order of ids in faves list
     fun filterGemsById(gems: MutableList<Gem>, ids: List<Int>): MutableList<Gem> {
         val idOrderMap = ids.withIndex().associate { it.value to it.index }
         return gems
-            .filter { it.id in idOrderMap }
-            .sortedBy { idOrderMap[it.id] } as MutableList<Gem>
+            .filter { it.gId in idOrderMap }
+            .sortedBy { idOrderMap[it.gId] } as MutableList<Gem>
     }
 
     fun filterGemsByUser(gems: MutableList<Gem>, user:String): MutableList<Gem> {

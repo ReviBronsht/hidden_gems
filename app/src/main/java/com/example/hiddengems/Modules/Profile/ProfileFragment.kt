@@ -10,9 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hiddengems.MainActivity
 import com.example.hiddengems.Model.Model
-import com.example.hiddengems.Model.User
 import com.example.hiddengems.Modules.EditProfile.EditProfileFragment
-import com.example.hiddengems.Modules.Gems.GemsAdapter
+import com.example.hiddengems.Modules.Adapters.GemsAdapter
 import com.example.hiddengems.Modules.LogIn.LogInFragment
 import com.example.hiddengems.R
 import com.google.android.material.button.MaterialButton
@@ -20,8 +19,8 @@ import com.google.android.material.button.MaterialButton
 class ProfileFragment : Fragment() , GemsAdapter.OnGemClickListener{
 
     //initializing gems adapters
-    var visitedGemsAdapter: GemsAdapter ?= null
-    var myGemsAdapter: GemsAdapter ?= null
+    var visitedGemsAdapter: GemsAdapter?= null
+    var myGemsAdapter: GemsAdapter?= null
 
     //getting current user
     val currUser = Model.instance.currUser

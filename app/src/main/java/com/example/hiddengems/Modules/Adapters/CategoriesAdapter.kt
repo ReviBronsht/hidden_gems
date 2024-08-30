@@ -1,19 +1,14 @@
-package com.example.hiddengems.Modules.Categories
+package com.example.hiddengems.Modules.Adapters
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat.startActivity
 import com.example.hiddengems.Model.Category
-import com.example.hiddengems.Model.Model
-import com.example.hiddengems.Modules.Feed.FeedFragment
 import com.example.hiddengems.R
 import com.google.android.material.button.MaterialButton
 
@@ -21,8 +16,8 @@ import com.google.android.material.button.MaterialButton
 class CategoriesAdapter (
 
     //setting parameters as categorieslist and an instance of OnCategoryClickListener interface
-    private val categories:MutableList<Category>,
-    private val onItemClickListener:OnCategoryClickListener
+    private var categories:MutableList<Category>,
+    private val onItemClickListener: OnCategoryClickListener
 
 ):RecyclerView.Adapter<CategoriesAdapter.CategoriesViewHolder>(){
     private lateinit var context: Context
@@ -79,6 +74,12 @@ class CategoriesAdapter (
     override fun getItemCount(): Int {
         return categories.size
     }
+
+    fun setCategories(categories:MutableList<Category>){
+        this.categories = categories
+        notifyDataSetChanged()
+    }
+
 
     //interface with onclick function for onclick events to be implemented by classes that need to handle click events for category items
     interface OnCategoryClickListener{

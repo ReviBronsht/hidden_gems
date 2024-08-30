@@ -1,34 +1,36 @@
 package com.example.hiddengems.Modules.Feed
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
+import android.widget.ProgressBar
 import androidx.appcompat.content.res.AppCompatResources.getColorStateList
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hiddengems.MainActivity
+import com.example.hiddengems.Model.Category
 import com.example.hiddengems.Model.Gem
 import com.example.hiddengems.Model.Model
-import com.example.hiddengems.Modules.Categories.CategoriesAdapter
-import com.example.hiddengems.Modules.Gems.GemsAdapter
-import com.example.hiddengems.Modules.Profile.ProfileFragment
-import com.example.hiddengems.Modules.Search.SearchFragment
+import com.example.hiddengems.Modules.Adapters.CategoriesAdapter
+import com.example.hiddengems.Modules.Adapters.GemsAdapter
 import com.example.hiddengems.Modules.ViewGem.ViewGemFragment
 import com.example.hiddengems.R
 
 // Feed/Home fragment that shows recent gems, lets user filter them by category, and lets user view their details by clicking on them
 //declaring class and implementing OnCategoryClickListener and OnGemClickListener interfaces from relevant adapters
-class FeedFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener,GemsAdapter.OnGemClickListener{
+class FeedFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener, GemsAdapter.OnGemClickListener{
+
+    var gems:MutableList<Gem> = mutableListOf()
+    var categories:MutableList<Category> = mutableListOf()
+    var catsAdapter: CategoriesAdapter?=null
 
     //initialising views
     var prevbtn: Button ?= null
-    var gemsAdapter: GemsAdapter ?= null
+    var gemsAdapter: GemsAdapter?= null
     var fragmentViewGem:  ViewGemFragment?= null
     var rvGems: RecyclerView?= null
 
@@ -69,14 +71,24 @@ class FeedFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener,GemsA
     fragmentViewGem = ViewGemFragment()
 
     //setting up categories recycler view by getting categories, initialising adapter with them and this onclicklistennr, setting the adapter of recyclerview, and setting layout manager
-    val categories = Model.instance.categories ?: mutableListOf()
-    val catsAdapter = CategoriesAdapter(categories,this)
+    Model.instance.getAllCategories { resCategories ->
+        categories = resCategories as MutableList<Category>
+        catsAdapter?.setCategories(categories)
+        view.findViewById<ProgressBar>(R.id.pbCats).visibility = View.GONE
+    }
+
+   // val categories = Model.instance.categories ?: mutableListOf()
+    catsAdapter = CategoriesAdapter(categories,this)
     val rvCategories = view.findViewById<RecyclerView>(R.id.rvCategories)
     rvCategories.adapter = catsAdapter
     rvCategories.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
 
     //setting up gems recycler view by getting gems, initialising adapter with them and this onclicklistennr, setting the adapter of recyclerview, and setting layout manager
-    val gems = Model.instance.gems
+    Model.instance.getLatestGems { resGems ->
+            gems = resGems as MutableList<Gem>
+            gemsAdapter?.setGems(gems)
+            view.findViewById<ProgressBar>(R.id.pbGems).visibility = View.GONE
+        }
     gemsAdapter = GemsAdapter(gems,this,R.layout.layout_gem)
     rvGems = view.findViewById<RecyclerView>(R.id.rvLatestGems)
     rvGems?.adapter = gemsAdapter
@@ -95,7 +107,7 @@ class FeedFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener,GemsA
 
     //overriding onCategoryClick of OnCategoryClickListener to call function that sets current category
     override fun onCategoryClick(position: Int,currBtn: Button) {
-        setCurrCat(Model.instance.categories[position].name,currBtn)
+        setCurrCat(categories[position].name,currBtn)
     }
 
     //function to set the current category
@@ -140,7 +152,7 @@ class FeedFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener,GemsA
 
     //filter and update rcycler view filters gems from Model instance by calling filterGemsByType function
     fun filterAndUpdateRecyclerView(type: String) {
-        val originalGems = Model.instance.gems
+        val originalGems = gems
         val filteredGems = filterGemsByType(originalGems, type)
         gemsAdapter?.updateGems(filteredGems)
     }

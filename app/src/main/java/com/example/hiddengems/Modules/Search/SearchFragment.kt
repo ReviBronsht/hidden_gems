@@ -9,19 +9,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hiddengems.MainActivity
+import com.example.hiddengems.Model.Category
+import com.example.hiddengems.Model.City
 import com.example.hiddengems.Model.Gem
 import com.example.hiddengems.Model.Model
-import com.example.hiddengems.Modules.Gems.GemsAdapter
+import com.example.hiddengems.Modules.Adapters.GemsAdapter
 import com.example.hiddengems.R
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 
-class SearchFragment : Fragment(),GemsAdapter.OnGemClickListener {
+class SearchFragment : Fragment(), GemsAdapter.OnGemClickListener {
 
     //initializing edit text for search input
     var etSearch: EditText ?= null
@@ -31,7 +32,7 @@ class SearchFragment : Fragment(),GemsAdapter.OnGemClickListener {
     //initializing rating sot button
     var btnRatingSort: MaterialButton ?= null
     //initializing gems adapter
-    var gemsAdapter: GemsAdapter ?= null
+    var gemsAdapter: GemsAdapter?= null
 
     //setting filter and sort parameters as null
     var searchString:String ?= null
@@ -65,9 +66,15 @@ class SearchFragment : Fragment(),GemsAdapter.OnGemClickListener {
         // initializing array adapter with context, drop_down_item layout and cities
         // setting adapter of actvCity as new adapter
         actvCity = view.findViewById<MaterialAutoCompleteTextView>(R.id.actvCity)
-        val cities = Model.instance.cities
-        val citiesAdapter = ArrayAdapter(requireContext(),R.layout.drop_down_item,cities)
-        actvCity?.setAdapter(citiesAdapter)
+        val cities = mutableListOf<String>()
+        Model.instance.getAllCities { resCities ->
+            val tempCities = resCities as MutableList<City>
+            for (i in tempCities) {
+                cities.add(i.name)
+            }
+            val citiesAdapter = ArrayAdapter(requireContext(), R.layout.drop_down_item, cities)
+            actvCity?.setAdapter(citiesAdapter)
+        }
 
         // setting on click listener of city items to set city to clicked item, or to null if clicked on All
         actvCity?.setOnItemClickListener{parent, view, position, id ->
@@ -83,14 +90,16 @@ class SearchFragment : Fragment(),GemsAdapter.OnGemClickListener {
         // initializing array adapter with context, drop_down_item layout and types
         // setting adapter of actvType as new adapter
         actvType = view.findViewById<MaterialAutoCompleteTextView>(R.id.actvType)
-        val categories = Model.instance.categories
         val types: MutableList<String> = mutableListOf()
-        for (i in categories){
-            types.add(i.name)
+        Model.instance.getAllCategories { resCategories ->
+            val categories = resCategories as MutableList<Category>
+            for (i in categories){
+                types.add(i.name)
+            }
+            types.removeFirst()//removing first "All" item
+            val typesAdapter = ArrayAdapter(requireContext(),R.layout.drop_down_item,types)
+            actvType?.setAdapter(typesAdapter)
         }
-        val typesAdapter = ArrayAdapter(requireContext(),R.layout.drop_down_item,types)
-        actvType?.setAdapter(typesAdapter)
-
         // setting on click listener of type items to set type to clicked item, or to null if clicked on All
         actvType?.setOnItemClickListener{parent, view, position, id ->
             type = types[position]

@@ -48,9 +48,9 @@
         android:id="@+id/tvLatestGems"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="@string/latest_title"
         android:textSize="20sp"
-        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,5 +66,29 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvLatestGems" />
+
+    <ProgressBar
+        android:id="@+id/pbGems"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="136dp"
+        android:layout_marginBottom="248dp"
+        app:layout_constraintBottom_toBottomOf="@+id/rvLatestGems"
+        app:layout_constraintEnd_toStartOf="@+id/rvLatestGems"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/rvLatestGems"
+        app:layout_constraintTop_toTopOf="@+id/rvLatestGems" />
+
+    <ProgressBar
+        android:id="@+id/pbCats"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/rvCategories"
+        app:layout_constraintEnd_toEndOf="@+id/rvCategories"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/rvCategories"
+        app:layout_constraintTop_toTopOf="@+id/rvCategories" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

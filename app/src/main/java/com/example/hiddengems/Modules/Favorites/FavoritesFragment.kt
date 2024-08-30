@@ -8,14 +8,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hiddengems.MainActivity
-import com.example.hiddengems.Model.Gem
 import com.example.hiddengems.Model.Model
-import com.example.hiddengems.Modules.Gems.GemsAdapter
+import com.example.hiddengems.Modules.Adapters.GemsAdapter
 import com.example.hiddengems.R
 
 class FavoritesFragment : Fragment(), GemsAdapter.OnGemClickListener  {
     //initializing gems adapter
-    var gemsAdapter: GemsAdapter ?= null
+    var gemsAdapter: GemsAdapter?= null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
