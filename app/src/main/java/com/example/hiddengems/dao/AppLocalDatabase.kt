@@ -8,6 +8,7 @@ import com.example.hiddengems.Model.Category
 import com.example.hiddengems.Model.City
 import com.example.hiddengems.Model.Comment
 import com.example.hiddengems.Model.Gem
+import com.example.hiddengems.Model.Ratings
 import com.example.hiddengems.Model.User
 import com.example.hiddengems.Model.converters.RoomConverters
 import com.example.hiddengems.Model.views.CommentWithUser
@@ -15,8 +16,8 @@ import com.example.hiddengems.base.MyApplication
 
 
 //defining local room database tables, views and version
-@Database(entities = [Category::class,Gem::class,Comment::class, City::class, User::class],
-    views = [CommentWithUser::class], version = 42)
+@Database(entities = [Category::class,Gem::class,Comment::class, City::class, User::class,Ratings::class],
+    views = [CommentWithUser::class], version = 67)
 
 @TypeConverters(RoomConverters::class) //defines type converters to handle non default types
 //creates app database singleton

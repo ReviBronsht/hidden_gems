@@ -15,7 +15,6 @@ data class Gem(
     val city:String,
     val type:String,
     var rating:Double,
-    var myRatingIdx: Int,
     val ratings:MutableList<Int> = ArrayList(),
     @PrimaryKey(autoGenerate = true) val gId:Int = 0
 )

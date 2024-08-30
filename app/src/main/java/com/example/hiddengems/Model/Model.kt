@@ -21,6 +21,8 @@ class Model private constructor() {
     // single-threaded worker executor for running tasks in the background without blocking the main thread
     private val executor:Executor = Executors.newSingleThreadExecutor()
 
+    private val firebaseModel = FirebaseModel()
+
 
     //executes background task of getAllCategories query and posting the result back to main thread
     fun getAllCategories(callback: (List<Category>) -> Unit) {
@@ -84,11 +86,12 @@ class Model private constructor() {
     }
 
     //executes background task of upsertGem query and posting the result back to main thread
-    fun upsertGem(gem: Gem, callback: () -> Unit){
+    fun upsertGem(gem: Gem, callback: (Int) -> Unit){
         executor.execute{
-            AppLocalDatabase.db.hiddenGemsDao().upsertGem(gem)
+            val idLong = AppLocalDatabase.db.hiddenGemsDao().upsertGem(gem)
+            val idInt = idLong.toInt()
             mainHandler.post{
-                callback()
+                callback(idInt)
             }
         }
     }
@@ -156,6 +159,7 @@ class Model private constructor() {
 
     //executes background task of getAllUsers query and posting the result back to main thread
     fun getAllUsers(callback: (List<User>) -> Unit) {
+        firebaseModel.getAllUsers(callback)
         executor.execute{
             val user = AppLocalDatabase.db.hiddenGemsDao().getAllUsers()
             mainHandler.post{
@@ -166,6 +170,7 @@ class Model private constructor() {
 
     //executes background task of upsertUser query and posting the result back to main thread
     fun upsertUser(user: User, callback: () -> Unit){
+        firebaseModel.upsertUser(user,callback)
         executor.execute{
             AppLocalDatabase.db.hiddenGemsDao().upsertUser(user)
             mainHandler.post{
@@ -202,6 +207,37 @@ class Model private constructor() {
             val userWithGems = AppLocalDatabase.db.hiddenGemsDao().getGemsOfUser(id)
             mainHandler.post{
                 callback(userWithGems)
+            }
+        }
+    }
+
+    //executes background task of getAllRatings query and posting the result back to main thread
+    fun getAllRatings(callback: (List<Ratings>) -> Unit) {
+        executor.execute{
+            val ratings = AppLocalDatabase.db.hiddenGemsDao().getAllRatings()
+            mainHandler.post{
+                callback(ratings)
+            }
+        }
+    }
+
+    //executes background task of upsertRating query and posting the result back to main thread
+    fun upsertRating(rating: Ratings, callback: () -> Unit){
+        executor.execute{
+            AppLocalDatabase.db.hiddenGemsDao().upsertRating(rating)
+            mainHandler.post{
+                callback()
+            }
+        }
+    }
+
+    //executes background task of getRatingByGIdAndUId query and posting the result back to main thread
+    fun getRatingByGIdAndUId(gId:String, uId:String, callback: (Ratings?) -> Unit) {
+        executor.execute{
+            //Thread.sleep(1000)
+            val rating = AppLocalDatabase.db.hiddenGemsDao().getRatingByGIdAndUId(gId,uId)
+            mainHandler.post{
+                callback(rating)
             }
         }
     }
@@ -258,15 +294,22 @@ class Model private constructor() {
         getAllGems { gemsRes ->
             if (gemsRes.isEmpty()){
                 upsertGem(Gem(1, "Grande Coffee", "Hidden coffee shop by the park, cozy and homey atmosphere with fantastic pastries!",
-                    "76 rue Leon Dierx","Paris, FR","Cafe/Restaurant", 2.5,0,mutableListOf(2, 3, 3))) {}
+                    "76 rue Leon Dierx","Paris, FR","Cafe/Restaurant", 2.5,mutableListOf(2, 3, 3))) {}
                 upsertGem(Gem(3, "Illusion Museum","You won't believe your eyes in this illusion museum!",
-                          "70 Griffin St" ,"NYC, USA","Museum", 3.6,1,mutableListOf(5, 3, 3))) {}
+                          "70 Griffin St" ,"NYC, USA","Museum", 3.6,mutableListOf(5, 3, 3))) {}
                 upsertGem(Gem(2, "Side Street Park","Beautiful park with pastoral views",
-                      "3 Via Nino Martoglio", "Rome, It","Park", 3.0,-1,mutableListOf( 3, 3))) {}
+                      "3 Via Nino Martoglio", "Rome, It","Park", 3.0,mutableListOf( 3, 3))) {}
                 upsertGem(Gem(1, "Soup-y", "Tiny restaurant run by a small family, hidden just out of view!",
-                      "174 Quai de Jemmapes","Paris, FR","Cafe/Restaurant",1.0, 0,mutableListOf(1))) {}
+                      "174 Quai de Jemmapes","Paris, FR","Cafe/Restaurant",1.0,mutableListOf(1))) {}
             }
         }
+
+        getAllRatings { ratingsRes ->
+            if(ratingsRes.isEmpty()){
+                upsertRating(Ratings(1,1,0)){}
+                upsertRating(Ratings(2,1,1)){}
+                upsertRating(Ratings(4,1,0)){}
+            }        }
     }
 
 

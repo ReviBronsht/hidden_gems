@@ -1,6 +1,10 @@
 plugins {
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("com.android.application")
+    id("com.google.gms.google-services")
+
+   // alias(libs.plugins.androidApplication)
+  //  alias(libs.plugins.jetbrainsKotlinAndroid)
+    kotlin("android")
     kotlin("kapt")
 }
 
@@ -56,5 +60,10 @@ dependencies {
 
     kapt("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
+
+    implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
+    implementation("com.google.firebase:firebase-analytics")
+
+    implementation("com.google.firebase:firebase-firestore")
 
 }

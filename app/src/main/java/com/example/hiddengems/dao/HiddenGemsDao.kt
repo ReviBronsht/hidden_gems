@@ -11,6 +11,7 @@ import com.example.hiddengems.Model.Category
 import com.example.hiddengems.Model.City
 import com.example.hiddengems.Model.Comment
 import com.example.hiddengems.Model.Gem
+import com.example.hiddengems.Model.Ratings
 import com.example.hiddengems.Model.User
 import com.example.hiddengems.Model.relationships.GemWithComments
 import com.example.hiddengems.Model.relationships.GemWithUser
@@ -54,7 +55,7 @@ interface HiddenGemsDao {
 
     //adds gem if gem doesn't exist, edits gem if it does
     @Upsert
-    fun upsertGem(gem:Gem)
+    fun upsertGem(gem:Gem):Long
 
     //gets gem with its user and comments by its id
     @Transaction
@@ -111,5 +112,17 @@ interface HiddenGemsDao {
     @Transaction
     @Query("SELECT * FROM User WHERE uId=:id")
     fun getGemsOfUser(id:String): UserWithGems
+
+    //getting all ratings
+    @Query("SELECT * FROM Ratings")
+    fun getAllRatings(): List<Ratings>
+
+    //adding new rating if doesn't exist, editing if does
+    @Upsert
+    fun upsertRating(rating:Ratings)
+
+    //getting rating by user and gem
+    @Query("SELECT * FROM Ratings WHERE gId =:gId AND uId =:uId")
+    fun getRatingByGIdAndUId(gId: String, uId:String): Ratings?
 
 }

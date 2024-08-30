@@ -1,6 +1,8 @@
 package com.example.hiddengems
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import android.view.Display.Mode
 import android.view.View
 import android.widget.Button
@@ -22,6 +24,8 @@ import com.example.hiddengems.Modules.Profile.ProfileFragment
 import com.example.hiddengems.Modules.Search.SearchFragment
 import com.example.hiddengems.Modules.SignUp.SignUpFragment
 import com.example.hiddengems.Modules.ViewGem.ViewGemFragment
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 import java.math.RoundingMode
 
 class MainActivity : AppCompatActivity() {
@@ -128,6 +132,7 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
 
         //setting fragments
         fragmentFeed = FeedFragment()

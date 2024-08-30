@@ -12,3 +12,24 @@ data class User (
     var visitedGems:MutableList<Int> = mutableListOf(),
     @PrimaryKey(autoGenerate = true) var uId:Int = 0
 )
+{
+    fun fromJson(json: Map<String, Any>): User {
+        val uId = json.get("uId") as Int
+        val user = json.get("user").toString()
+        val bio = json.get("bio").toString()
+        val favoriteGems = json.get("favoriteGems")  as MutableList<Int>
+        val visitedGems = json.get("visitedGems") as MutableList<Int>
+        val newUser = User(user,bio,favoriteGems,visitedGems,uId)
+        return newUser
+    }
+    fun toJson(): HashMap<String, Any> {
+        val json = hashMapOf(
+            "uId" to uId,
+            "user" to user,
+            "bio" to bio,
+            "favoriteGems" to favoriteGems,
+            "visitedGems" to visitedGems
+        )
+        return json
+    }
+}

@@ -19,6 +19,7 @@ import com.example.hiddengems.Model.Category
 import com.example.hiddengems.Model.City
 import com.example.hiddengems.Model.Gem
 import com.example.hiddengems.Model.Model
+import com.example.hiddengems.Model.Ratings
 import com.example.hiddengems.Modules.Feed.FeedFragment
 import com.example.hiddengems.Modules.ViewGem.ViewGemFragment
 import com.example.hiddengems.R
@@ -81,6 +82,9 @@ class AddEditGemFragment : Fragment() {
 
     //initializes gems
     var gems: MutableList<Gem> = mutableListOf()
+
+    //initializing default rating
+    var myRatingIdx:Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -253,7 +257,7 @@ class AddEditGemFragment : Fragment() {
                     address = currGem.address
                     city = currGem.city
                     type = currGem.type
-                    rating = currGem.ratings[currGem.myRatingIdx]
+                    rating = currGem.ratings[myRatingIdx]
 
                     //setting input fields to show current gem's data
                     etName?.setText(name)
@@ -369,11 +373,14 @@ class AddEditGemFragment : Fragment() {
         if (isErrors == false) {
 
             val newGem: Gem = Gem(
-                 Model.instance.currUser.uId, name, desc, address, city, type, rating.toDouble(),0,
+                 Model.instance.currUser.uId, name, desc, address, city, type, rating.toDouble(),
                 mutableListOf<Int>(rating)
             )
 
-            Model.instance.upsertGem(newGem){}
+            Model.instance.upsertGem(newGem){id ->
+                Model.instance.upsertRating(Ratings(id,Model.instance.currUser.uId,myRatingIdx)){}
+            }
+
 
             clearForm()
 
@@ -398,13 +405,15 @@ class AddEditGemFragment : Fragment() {
         if (isErrors == false) {
             val gemIndex = gems.indexOfFirst { it == gem }
 
-            val (updatedRating, updatedMyRatingIdx, updatedRatings) = (activity as MainActivity).updateRating(rating, gem.myRatingIdx, gem.ratings)
+            val (updatedRating, updatedMyRatingIdx, updatedRatings) = (activity as MainActivity).updateRating(rating, myRatingIdx, gem.ratings)
 
 
-            val editedGem = gem.copy(name=name, desc = desc, address = address, city = city, type = type, rating = updatedRating, myRatingIdx = updatedMyRatingIdx, ratings = updatedRatings)
+            val editedGem = gem.copy(name=name, desc = desc, address = address, city = city, type = type, rating = updatedRating, ratings = updatedRatings)
 
 
-            Model.instance.upsertGem(editedGem){}
+            Model.instance.upsertGem(editedGem){id ->
+                Model.instance.upsertRating(Ratings(id,Model.instance.currUser.uId,myRatingIdx)){}
+            }
 
             (activity as MainActivity).goBack(editedGem.gId.toString())
 

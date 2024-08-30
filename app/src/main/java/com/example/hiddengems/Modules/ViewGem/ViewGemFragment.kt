@@ -18,6 +18,7 @@ import com.example.hiddengems.MainActivity
 import com.example.hiddengems.Model.Comment
 import com.example.hiddengems.Model.Gem
 import com.example.hiddengems.Model.Model
+import com.example.hiddengems.Model.Ratings
 import com.example.hiddengems.Model.views.CommentWithUser
 import com.example.hiddengems.Modules.AddEditGem.AddEditGemFragment
 import com.example.hiddengems.Modules.Adapters.CommentsAdapter
@@ -70,6 +71,9 @@ class ViewGemFragment : Fragment() {
     var currGem:Gem ?= null
     var currComments:MutableList<CommentWithUser> = mutableListOf()
 
+    //initializing default rating
+    var myRatingIdx:Int = -1
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -91,190 +95,213 @@ class ViewGemFragment : Fragment() {
             Model.instance.getGemById(it) { resGem ->
                 currGem = resGem.gem
                 val currUser = resGem.user
-                if(!resGem.commentsWithUsers.isEmpty()) {
-                    currComments = resGem.commentsWithUsers.reversed() as MutableList<CommentWithUser>
-                }
-                else{
-                    currComments = mutableListOf()
-                }
 
-                //view.findViewById<ProgressBar>(R.id.pbCats).visibility = View.GONE
-
-
-        //setting back button and setting on click listener to go back using MainActivity functions and display bottom nav
-        btnBack = view.findViewById<Button>(R.id.btnBack)
-
-        btnBack?.setOnClickListener(){
-            (activity as MainActivity).goBack()
-            (activity as MainActivity).bottomNavShow()
-        }
-
-        //setting gem data views
-        tvUserName = view.findViewById<TextView>(R.id.tvUserName)
-        tvGemName = view.findViewById<TextView>(R.id.tvGemName)
-        tvGemDesc = view.findViewById<TextView>(R.id.tvGemDesc)
-        tvAddress = view.findViewById<TextView>(R.id.tvAddress)
-        tvGemRating = view.findViewById<TextView>(R.id.tvGemRating)
-        tvGemCity = view.findViewById<TextView>(R.id.tvGemCity)
-        tvGemType = view.findViewById<TextView>(R.id.tvGemType)
-        //setting text of gem data views from current gem
-        tvUserName?.text = currUser?.user
-        tvGemName?.text = currGem?.name
-        tvGemDesc?.text = currGem?.desc
-        tvAddress?.text = currGem?.address
-        tvGemRating?.text = currGem?.rating.toString()
-        tvGemCity?.text = currGem?.city
-        tvGemType?.text = currGem?.type
-
-        //getting comments number view, calculating number of comments, and setting comments number view text to number of comments
-        tvCommentsNum = view.findViewById<TextView>(R.id.tvCommentsNum)
-        commentsNum = currComments.size
-        tvCommentsNum?.text = "("+ commentsNum.toString() +")"
-
-        //setting up comments recycler view by getting comments, initialising adapter with them, setting the adapter of recyclerview, and setting layout manager
-        val comments = currComments
-
-        commentsAdapter = CommentsAdapter(comments)
-        rvComments = view.findViewById<RecyclerView>(R.id.rvComments)
-        rvComments?.adapter = commentsAdapter
-        rvComments?.layoutManager = LinearLayoutManager(requireContext())
-
-        //setting comments input and post comment button
-        etComment = view.findViewById<EditText>(R.id.etComment)
-        btnPost = view.findViewById<Button>(R.id.btnPost)
-        //setting on click listener of post button that gets text from input field, checks if its not empty, and adds comment by calling onPostClicked function
-        btnPost?.setOnClickListener(){
-            val commentText = etComment?.text.toString()
-            if (!commentText.isEmpty()) {
-                currGem?.let {
-                    onPostClicked(it.gId, Model.instance.currUser.uId, commentText)
-                }
-            }
-        }
-
-        //setting on text changed listener of comment input field to disable the button if there is no text, and enable it if there is text
-        etComment?.addTextChangedListener(object : TextWatcher{
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                val commentText = etComment?.text.toString()
-                if (!commentText.isEmpty()) {
-                    btnPost?.setEnabled(true)
-                    context?.let {
-                    btnPost?.backgroundTintList =
-                        AppCompatResources.getColorStateList(it, R.color.secondary)
+                Model.instance.getRatingByGIdAndUId(
+                    resGem.gem.gId.toString(),
+                    Model.instance.currUser.uId.toString()
+                ) { resRating ->
+                    if (resRating != null) {
+                        myRatingIdx = resRating.ratingIdx
                     }
-                }
-                else {
-                    btnPost?.setEnabled(false)
-                    context?.let {
-                        btnPost?.backgroundTintList =
-                            AppCompatResources.getColorStateList(it, R.color.darkgray)
+
+
+                    if (!resGem.commentsWithUsers.isEmpty()) {
+                        currComments =
+                            resGem.commentsWithUsers.reversed() as MutableList<CommentWithUser>
+                    } else {
+                        currComments = mutableListOf()
                     }
+
+                    //view.findViewById<ProgressBar>(R.id.pbCats).visibility = View.GONE
+
+
+                    //setting back button and setting on click listener to go back using MainActivity functions and display bottom nav
+                    btnBack = view.findViewById<Button>(R.id.btnBack)
+
+                    btnBack?.setOnClickListener() {
+                        (activity as MainActivity).goBack()
+                        (activity as MainActivity).bottomNavShow()
+                    }
+
+                    //setting gem data views
+                    tvUserName = view.findViewById<TextView>(R.id.tvUserName)
+                    tvGemName = view.findViewById<TextView>(R.id.tvGemName)
+                    tvGemDesc = view.findViewById<TextView>(R.id.tvGemDesc)
+                    tvAddress = view.findViewById<TextView>(R.id.tvAddress)
+                    tvGemRating = view.findViewById<TextView>(R.id.tvGemRating)
+                    tvGemCity = view.findViewById<TextView>(R.id.tvGemCity)
+                    tvGemType = view.findViewById<TextView>(R.id.tvGemType)
+                    //setting text of gem data views from current gem
+                    tvUserName?.text = currUser?.user
+                    tvGemName?.text = currGem?.name
+                    tvGemDesc?.text = currGem?.desc
+                    tvAddress?.text = currGem?.address
+                    tvGemRating?.text = currGem?.rating.toString()
+                    tvGemCity?.text = currGem?.city
+                    tvGemType?.text = currGem?.type
+
+                    //getting comments number view, calculating number of comments, and setting comments number view text to number of comments
+                    tvCommentsNum = view.findViewById<TextView>(R.id.tvCommentsNum)
+                    commentsNum = currComments.size
+                    tvCommentsNum?.text = "(" + commentsNum.toString() + ")"
+
+                    //setting up comments recycler view by getting comments, initialising adapter with them, setting the adapter of recyclerview, and setting layout manager
+                    val comments = currComments
+
+                    commentsAdapter = CommentsAdapter(comments)
+                    rvComments = view.findViewById<RecyclerView>(R.id.rvComments)
+                    rvComments?.adapter = commentsAdapter
+                    rvComments?.layoutManager = LinearLayoutManager(requireContext())
+
+                    //setting comments input and post comment button
+                    etComment = view.findViewById<EditText>(R.id.etComment)
+                    btnPost = view.findViewById<Button>(R.id.btnPost)
+                    //setting on click listener of post button that gets text from input field, checks if its not empty, and adds comment by calling onPostClicked function
+                    btnPost?.setOnClickListener() {
+                        val commentText = etComment?.text.toString()
+                        if (!commentText.isEmpty()) {
+                            currGem?.let {
+                                onPostClicked(it.gId, Model.instance.currUser.uId, commentText)
+                            }
+                        }
+                    }
+
+                    //setting on text changed listener of comment input field to disable the button if there is no text, and enable it if there is text
+                    etComment?.addTextChangedListener(object : TextWatcher {
+                        override fun beforeTextChanged(
+                            s: CharSequence?,
+                            start: Int,
+                            count: Int,
+                            after: Int
+                        ) {
+                        }
+
+                        override fun onTextChanged(
+                            s: CharSequence?,
+                            start: Int,
+                            before: Int,
+                            count: Int
+                        ) {
+                        }
+
+                        override fun afterTextChanged(s: Editable?) {
+                            val commentText = etComment?.text.toString()
+                            if (!commentText.isEmpty()) {
+                                btnPost?.setEnabled(true)
+                                context?.let {
+                                    btnPost?.backgroundTintList =
+                                        AppCompatResources.getColorStateList(it, R.color.secondary)
+                                }
+                            } else {
+                                btnPost?.setEnabled(false)
+                                context?.let {
+                                    btnPost?.backgroundTintList =
+                                        AppCompatResources.getColorStateList(it, R.color.darkgray)
+                                }
+                            }
+                        }
+                    })
+
+                    //setting rating buttons
+                    btnRating1 = view.findViewById<MaterialButton>(R.id.btnRating1)
+                    btnRating2 = view.findViewById<MaterialButton>(R.id.btnRating2)
+                    btnRating3 = view.findViewById<MaterialButton>(R.id.btnRating3)
+                    btnRating4 = view.findViewById<MaterialButton>(R.id.btnRating4)
+                    btnRating5 = view.findViewById<MaterialButton>(R.id.btnRating5)
+
+                    //creating list of rating buttons to access them by index
+                    val ratingBtnList: MutableList<MaterialButton?> =
+                        mutableListOf(btnRating1, btnRating2, btnRating3, btnRating4, btnRating5)
+
+                    // for every rating button, sets its on click listener to rate with rate function and change appearance to rated with markRating function
+                    for (i in 1..5) {
+                        ratingBtnList[i - 1]?.setOnClickListener() {
+                            currGem?.let { it1 -> rate(it1, i) }
+                            markRating(ratingBtnList, i)
+                        }
+                    }
+
+                    //if user previously rated gem, sets it
+                    if (resRating != null) {
+                        currGem?.let {
+                            val myRating = it.ratings[myRatingIdx]
+                            markRating(ratingBtnList, myRating)
+                        }
+                    }
+                    else{
+                        markRating(ratingBtnList,0)
+                    }
+
+                    //if user is Gem's creator, set up edit/delete
+                    //if not, set up visited
+                    if (Model.instance.currUser.uId == currGem?.uId) {
+                        //setting edit gem button and making it visible
+                        btnEditGem = view.findViewById<MaterialButton>(R.id.btnEditGem)
+                        btnEditGem?.visibility = View.VISIBLE
+
+                        //setting edit add fragment
+                        fragmentAddEditGem = AddEditGemFragment()
+
+                        //setting on click listener of edit gem button to display addeditgem fragment in edit mode (by passing id as argument)
+                        btnEditGem?.setOnClickListener() {
+                            fragmentAddEditGem?.let {
+                                (activity as MainActivity).displayFragment(
+                                    it,
+                                    arg = currGem?.gId.toString(),
+                                    savePrevGem = true
+                                )
+                            }
+                        }
+
+                        //setting delete gem button and making it visible
+                        btnDeleteGem = view.findViewById<MaterialButton>(R.id.btnDeleteGem)
+                        btnDeleteGem?.visibility = View.VISIBLE
+
+                        //setting on click listener of delete gem button to delete gem and go back to homepage
+                        btnDeleteGem?.setOnClickListener() {
+                            // gems.remove(currGem)
+                            currGem?.let {
+                                Model.instance.deleteGem(it) {}
+                                (activity as MainActivity).goBack()
+                            }
+                        }
+
+                    } else {
+                        //getting visited button and setting it to visible
+                        btnVisitedGem = view.findViewById<MaterialButton>(R.id.btnVisitedGem)
+                        btnVisitedGem?.visibility = View.VISIBLE
+
+                        //setting visited button to add or remove visited gem on click
+                        btnVisitedGem?.setOnClickListener() {
+                            currGem?.let { it1 -> addRemoveVisited(it1.gId) }
+                        }
+
+                        //setting appearance of visited if gem is in faves
+                        if (currGem?.gId in Model.instance.currUser.visitedGems) {
+                            btnVisitedGem?.text = "Visited!"
+                            context?.let {
+                                btnVisitedGem?.backgroundTintList =
+                                    AppCompatResources.getColorStateList(it, R.color.secondary)
+                            }
+                        }
+                    }
+                    //getting fave button
+                    ivFavorite = view.findViewById<ShapeableImageView>(R.id.ivFavorite)
+
+                    //setting fave button to add or remove fave gem on click
+                    ivFavorite?.setOnClickListener() {
+                        currGem?.let { it1 -> addRemoveFave(it1.gId) }
+                    }
+
+                    //setting icon of fave if gem is in faves
+                    if (currGem?.gId in Model.instance.currUser.favoriteGems) {
+                        ivFavorite?.setImageResource(R.drawable.heart_svgrepo_com)
+                    }
+
+                    view.findViewById<TextView>(R.id.tvHideView).visibility = View.GONE
+                    view.findViewById<ProgressBar>(R.id.pbViewGem).visibility = View.GONE
+
                 }
-            }
-        })
-
-        //setting rating buttons
-        btnRating1 = view.findViewById<MaterialButton>(R.id.btnRating1)
-        btnRating2 = view.findViewById<MaterialButton>(R.id.btnRating2)
-        btnRating3 = view.findViewById<MaterialButton>(R.id.btnRating3)
-        btnRating4 = view.findViewById<MaterialButton>(R.id.btnRating4)
-        btnRating5 = view.findViewById<MaterialButton>(R.id.btnRating5)
-
-        //creating list of rating buttons to access them by index
-        val ratingBtnList:MutableList<MaterialButton?> = mutableListOf(btnRating1,btnRating2,btnRating3,btnRating4,btnRating5)
-
-        // for every rating button, sets its on click listener to rate with rate function and change appearance to rated with markRating function
-        for (i in 1..5) {
-            ratingBtnList[i-1]?.setOnClickListener() {
-                currGem?.let { it1 -> rate(it1, i) }
-                markRating(ratingBtnList, i)
-            }
-        }
-
-        //if user previously rated gem, sets it
-        if (currGem?.myRatingIdx != -1){
-            currGem?.let {
-                val myRating = it.ratings[it.myRatingIdx]
-                markRating(ratingBtnList, myRating)
-            }
-        }
-
-        //if user is Gem's creator, set up edit/delete
-        //if not, set up visited
-        if(Model.instance.currUser.uId == currGem?.uId) {
-            //setting edit gem button and making it visible
-            btnEditGem = view.findViewById<MaterialButton>(R.id.btnEditGem)
-            btnEditGem?.visibility = View.VISIBLE
-
-            //setting edit add fragment
-            fragmentAddEditGem = AddEditGemFragment()
-
-            //setting on click listener of edit gem button to display addeditgem fragment in edit mode (by passing id as argument)
-            btnEditGem?.setOnClickListener() {
-                fragmentAddEditGem?.let {
-                    (activity as MainActivity).displayFragment(
-                        it,
-                        arg = currGem?.gId.toString(),
-                        savePrevGem = true
-                    )
-                }
-            }
-
-            //setting delete gem button and making it visible
-            btnDeleteGem = view.findViewById<MaterialButton>(R.id.btnDeleteGem)
-            btnDeleteGem?.visibility = View.VISIBLE
-
-            //setting on click listener of delete gem button to delete gem and go back to homepage
-            btnDeleteGem?.setOnClickListener() {
-               // gems.remove(currGem)
-                currGem?.let {
-                    Model.instance.deleteGem(it) {}
-                    (activity as MainActivity).goBack()
-                }
-            }
-
-        }
-        else{
-            //getting visited button and setting it to visible
-            btnVisitedGem = view.findViewById<MaterialButton>(R.id.btnVisitedGem)
-            btnVisitedGem?.visibility = View.VISIBLE
-
-            //setting visited button to add or remove visited gem on click
-            btnVisitedGem?.setOnClickListener(){
-                currGem?.let { it1 -> addRemoveVisited(it1.gId) }
-            }
-
-            //setting appearance of visited if gem is in faves
-            if (currGem?.gId in Model.instance.currUser.visitedGems){
-                btnVisitedGem?.text = "Visited!"
-                context?.let {
-                    btnVisitedGem?.backgroundTintList =
-                        AppCompatResources.getColorStateList(it, R.color.secondary)
-                }
-            }
-        }
-        //getting fave button
-        ivFavorite = view.findViewById<ShapeableImageView>(R.id.ivFavorite)
-
-        //setting fave button to add or remove fave gem on click
-        ivFavorite?.setOnClickListener(){
-            currGem?.let { it1 -> addRemoveFave(it1.gId) }
-        }
-
-        //setting icon of fave if gem is in faves
-        if (currGem?.gId in Model.instance.currUser.favoriteGems){
-            ivFavorite?.setImageResource(R.drawable.heart_svgrepo_com)
-        }
-
-                view.findViewById<TextView>(R.id.tvHideView).visibility = View.GONE
-                view.findViewById<ProgressBar>(R.id.pbViewGem).visibility = View.GONE
-
             }
         }
         return view
@@ -359,11 +386,15 @@ class ViewGemFragment : Fragment() {
     fun rate(gem:Gem, newRating:Int){
         val gemIndex = gems.indexOfFirst { it == gem }
         //gem.updateRating(newRating)
-        val (updatedRating, updatedMyRatingIdx, updatedRatings) = (activity as MainActivity).updateRating(newRating, gem.myRatingIdx, gem.ratings)
+        val (updatedRating, updatedMyRatingIdx, updatedRatings) = (activity as MainActivity).updateRating(newRating, myRatingIdx, gem.ratings)
 
-        val updatedGem = gem.copy(rating = updatedRating, myRatingIdx = updatedMyRatingIdx, ratings = updatedRatings)
+        val updatedGem = gem.copy(rating = updatedRating, ratings = updatedRatings)
 
         Model.instance.upsertGem(updatedGem){}
+
+
+        Model.instance.upsertRating(Ratings(gemIndex,Model.instance.currUser.uId,updatedMyRatingIdx)){}
+
 
         tvGemRating?.text = updatedRating.toString()
         //gems[gemIndex] = gem
