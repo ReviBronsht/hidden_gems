@@ -4,13 +4,15 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.example.hiddengems.Model.Category
 import com.example.hiddengems.Model.Gem
+import com.example.hiddengems.Model.User
 
-//defines a 1-M relationship between category and gems
-data class CategoryWithGems (
-    @Embedded val category: Category,
+//defines a 1-M relationship between user and gems
+data class UserWithGems (
+    @Embedded
+    val user: User,
     @Relation(
-        parentColumn = "name",
-        entityColumn = "type"
+        parentColumn = "uId",
+        entityColumn = "uId"
     )
     val gems: List<Gem>
-    )
+)

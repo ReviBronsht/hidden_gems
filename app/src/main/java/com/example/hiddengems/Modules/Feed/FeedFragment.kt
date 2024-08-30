@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources.getColorStateList
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +16,7 @@ import com.example.hiddengems.MainActivity
 import com.example.hiddengems.Model.Category
 import com.example.hiddengems.Model.Gem
 import com.example.hiddengems.Model.Model
+import com.example.hiddengems.Model.relationships.GemWithUser
 import com.example.hiddengems.Modules.Adapters.CategoriesAdapter
 import com.example.hiddengems.Modules.Adapters.GemsAdapter
 import com.example.hiddengems.Modules.ViewGem.ViewGemFragment
@@ -24,7 +26,7 @@ import com.example.hiddengems.R
 //declaring class and implementing OnCategoryClickListener and OnGemClickListener interfaces from relevant adapters
 class FeedFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener, GemsAdapter.OnGemClickListener{
 
-    var gems:MutableList<Gem> = mutableListOf()
+    var gems:MutableList<GemWithUser> = mutableListOf()
     var categories:MutableList<Category> = mutableListOf()
     var catsAdapter: CategoriesAdapter?=null
 
@@ -34,29 +36,6 @@ class FeedFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener, Gems
     var fragmentViewGem:  ViewGemFragment?= null
     var rvGems: RecyclerView?= null
 
-  //    var categories: MutableList<Category> ?= null
-//    var tvFeedTitle: TextView ?= null
-//    var title:String?= null
-//
-//    companion object {
-//
-//        const val TITLE = "TITLE"
-//        fun newInstance(title:String) =
-//            FeedFragment().apply {
-//                arguments = Bundle().apply {
-//                    putString(TITLE,title)
-//                }
-//            }
-//    }
-
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        arguments?.let{
-//            title = it.getString(TITLE)
-//        }
-//    }
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -64,28 +43,27 @@ class FeedFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener, Gems
         // Inflate the layout for this fragment
     val view = inflater.inflate(R.layout.fragment_feed, container, false)
 
-//        tvFeedTitle = view.findViewById(R.id.tvFeedTitle)
-//        tvFeedTitle?.text = title ?: "default value"
+
+    //sets welcome message to user's name
+    view.findViewById<TextView>(R.id.tvHelloFirst).text="Hey " +Model.instance.currUser.user + ","
 
     //viewgem fragment to access gem details
     fragmentViewGem = ViewGemFragment()
 
-    //setting up categories recycler view by getting categories, initialising adapter with them and this onclicklistennr, setting the adapter of recyclerview, and setting layout manager
+    //setting up categories recycler view by getting categories from db, initialising adapter with them and this onclicklistennr, setting the adapter of recyclerview, and setting layout manager
     Model.instance.getAllCategories { resCategories ->
         categories = resCategories as MutableList<Category>
         catsAdapter?.setCategories(categories)
         view.findViewById<ProgressBar>(R.id.pbCats).visibility = View.GONE
     }
-
-   // val categories = Model.instance.categories ?: mutableListOf()
     catsAdapter = CategoriesAdapter(categories,this)
     val rvCategories = view.findViewById<RecyclerView>(R.id.rvCategories)
     rvCategories.adapter = catsAdapter
     rvCategories.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
 
-    //setting up gems recycler view by getting gems, initialising adapter with them and this onclicklistennr, setting the adapter of recyclerview, and setting layout manager
+    //setting up gems recycler view by getting gems from db, initialising adapter with them and this onclicklistennr, setting the adapter of recyclerview, and setting layout manager
     Model.instance.getLatestGems { resGems ->
-            gems = resGems as MutableList<Gem>
+            gems = resGems as MutableList<GemWithUser>
             gemsAdapter?.setGems(gems)
             view.findViewById<ProgressBar>(R.id.pbGems).visibility = View.GONE
         }
@@ -159,11 +137,11 @@ class FeedFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener, Gems
 
     //filterGemsByType filters gems by passed type
     //unless type is All, in which case returns all gems
-    fun filterGemsByType(gems: MutableList<Gem>, type: String): List<Gem> {
+    fun filterGemsByType(gems: MutableList<GemWithUser>, type: String): List<GemWithUser> {
         return if (type == "All") {
             gems
         } else {
-            gems.filter { it.type == type }
+            gems.filter { it.gem.type == type }
         }
     }
 }

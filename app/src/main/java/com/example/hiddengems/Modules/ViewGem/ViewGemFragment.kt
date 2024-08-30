@@ -15,10 +15,10 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hiddengems.MainActivity
-import com.example.hiddengems.Model.Category
 import com.example.hiddengems.Model.Comment
 import com.example.hiddengems.Model.Gem
 import com.example.hiddengems.Model.Model
+import com.example.hiddengems.Model.views.CommentWithUser
 import com.example.hiddengems.Modules.AddEditGem.AddEditGemFragment
 import com.example.hiddengems.Modules.Adapters.CommentsAdapter
 import com.example.hiddengems.R
@@ -66,8 +66,9 @@ class ViewGemFragment : Fragment() {
     //initializing add/remove gems to visited button
     var btnVisitedGem:MaterialButton?=null
 
+    //initializing currGem and currComments
     var currGem:Gem ?= null
-    var currComments:MutableList<Comment> = mutableListOf()
+    var currComments:MutableList<CommentWithUser> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,6 +77,7 @@ class ViewGemFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_view_gem, container, false)
 
+        //tuurning on spinners
         view.findViewById<TextView>(R.id.tvHideView).visibility = View.VISIBLE
         view.findViewById<ProgressBar>(R.id.pbViewGem).visibility = View.VISIBLE
 
@@ -84,12 +86,16 @@ class ViewGemFragment : Fragment() {
 
         //getting the id of the Gem from argument and finding the gem by id in gems list
         id = arguments?.getString("arg")
-       // var currGem: Gem = gems.filter { it.gId == id?.toInt() }[0]
+       //getting current gem and comments from db
         id?.let {
             Model.instance.getGemById(it) { resGem ->
                 currGem = resGem.gem
-                if(!resGem.comments.isEmpty()) {
-                    currComments = resGem.comments.reversed() as MutableList<Comment>
+                val currUser = resGem.user
+                if(!resGem.commentsWithUsers.isEmpty()) {
+                    currComments = resGem.commentsWithUsers.reversed() as MutableList<CommentWithUser>
+                }
+                else{
+                    currComments = mutableListOf()
                 }
 
                 //view.findViewById<ProgressBar>(R.id.pbCats).visibility = View.GONE
@@ -112,7 +118,7 @@ class ViewGemFragment : Fragment() {
         tvGemCity = view.findViewById<TextView>(R.id.tvGemCity)
         tvGemType = view.findViewById<TextView>(R.id.tvGemType)
         //setting text of gem data views from current gem
-        tvUserName?.text = currGem?.user
+        tvUserName?.text = currUser?.user
         tvGemName?.text = currGem?.name
         tvGemDesc?.text = currGem?.desc
         tvAddress?.text = currGem?.address
@@ -122,12 +128,13 @@ class ViewGemFragment : Fragment() {
 
         //getting comments number view, calculating number of comments, and setting comments number view text to number of comments
         tvCommentsNum = view.findViewById<TextView>(R.id.tvCommentsNum)
-        commentsNum = currComments?.size
+        commentsNum = currComments.size
         tvCommentsNum?.text = "("+ commentsNum.toString() +")"
 
         //setting up comments recycler view by getting comments, initialising adapter with them, setting the adapter of recyclerview, and setting layout manager
         val comments = currComments
-        commentsAdapter = comments?.let { CommentsAdapter(it) }
+
+        commentsAdapter = CommentsAdapter(comments)
         rvComments = view.findViewById<RecyclerView>(R.id.rvComments)
         rvComments?.adapter = commentsAdapter
         rvComments?.layoutManager = LinearLayoutManager(requireContext())
@@ -139,7 +146,9 @@ class ViewGemFragment : Fragment() {
         btnPost?.setOnClickListener(){
             val commentText = etComment?.text.toString()
             if (!commentText.isEmpty()) {
-                onPostClicked(Model.instance.currUser.user, commentText)
+                currGem?.let {
+                    onPostClicked(it.gId, Model.instance.currUser.uId, commentText)
+                }
             }
         }
 
@@ -198,7 +207,7 @@ class ViewGemFragment : Fragment() {
 
         //if user is Gem's creator, set up edit/delete
         //if not, set up visited
-        if(Model.instance.currUser.user == currGem?.user) {
+        if(Model.instance.currUser.uId == currGem?.uId) {
             //setting edit gem button and making it visible
             btnEditGem = view.findViewById<MaterialButton>(R.id.btnEditGem)
             btnEditGem?.visibility = View.VISIBLE
@@ -290,6 +299,7 @@ class ViewGemFragment : Fragment() {
                     AppCompatResources.getColorStateList(it, R.color.secondary)
             }
         }
+        Model.instance.upsertUser(currUser){}
     }
 
     //function that adds or removes id of gem to/from user's favorite gems and sets icon accordingly
@@ -303,18 +313,19 @@ class ViewGemFragment : Fragment() {
             currUser.favoriteGems.add(0,id)
             ivFavorite?.setImageResource(R.drawable.heart_svgrepo_com)
         }
+        Model.instance.upsertUser(currUser){}
     }
 
     // on post clicked function creates a comment from passed user and text,
-    // adds comment with commentsAdapter function
+    // adds comment with commentsAdapter function and to db
     // setts text of comments input field to null
     // scrolls to top of comments recycler view
     // culculates new comments num and sets the relevant view to display it
-    fun onPostClicked(user:String,commentText:String){
-        val newComment: Comment? = id?.toInt()?.let { Comment(it,user,commentText) }
+    fun onPostClicked(gId:Int, uId:Int,commentText:String){
+        val newComment =  Comment(gId,uId,commentText)
         if (newComment != null) {
             Model.instance.insertComment(newComment) {}
-            commentsAdapter?.addComment(newComment)
+            commentsAdapter?.addComment(newComment,Model.instance.currUser)
         }
         etComment?.text = null
         rvComments?.scrollToPosition(0)
@@ -344,7 +355,7 @@ class ViewGemFragment : Fragment() {
         }
     }
 
-    //rate function gets new rating, updates rating of passed gem and of rating view, and updates the gem at index of gems list
+    //rate function gets new rating, updates rating of passed gem and of rating view, and updates the gem at index of gems list and db
     fun rate(gem:Gem, newRating:Int){
         val gemIndex = gems.indexOfFirst { it == gem }
         //gem.updateRating(newRating)

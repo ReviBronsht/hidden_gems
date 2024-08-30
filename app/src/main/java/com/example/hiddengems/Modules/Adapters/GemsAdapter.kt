@@ -8,14 +8,15 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.hiddengems.Model.Category
 import com.example.hiddengems.Model.Gem
+import com.example.hiddengems.Model.relationships.GemWithUser
 import com.example.hiddengems.R
 import com.google.android.material.imageview.ShapeableImageView
 
 //Declaring RecyclerView.Adapter subclass for Gems
 class GemsAdapter (
 
-    //setting parameters as gems list, an instance of OnGemClickListener interface, and the id of the layout that will be used for each gem
-    private var gems:MutableList<Gem>,
+    //setting parameters as gem with user list, an instance of OnGemClickListener interface, and the id of the layout that will be used for each gem
+    private var gems:MutableList<GemWithUser>,
     private val onItemClickListener: OnGemClickListener,
     private val layout:Int
 
@@ -67,17 +68,17 @@ class GemsAdapter (
     //sets onClickListener to onGemClick
     override fun onBindViewHolder(holder: GemsViewHolder, position: Int) {
         val currGem = gems[position]
-        holder.tvUserName?.text =  currGem.user
-        holder.tvGemName?.text =  currGem.name
-        holder.tvGemRating?.text =  currGem.rating.toString()
-        holder.tvGemCity?.text =  currGem.city
-        holder.tvGemType?.text =  currGem.type
+        holder.tvUserName?.text =  currGem.user.user
+        holder.tvGemName?.text =  currGem.gem.name
+        holder.tvGemRating?.text =  currGem.gem.rating.toString()
+        holder.tvGemCity?.text =  currGem.gem.city
+        holder.tvGemType?.text =  currGem.gem.type
 
     holder.ivGemImg?.setOnClickListener(){
-            onItemClickListener.onGemClick(currGem.gId)
+            onItemClickListener.onGemClick(currGem.gem.gId)
         }
     holder.ivGemContainer?.setOnClickListener(){
-            onItemClickListener.onGemClick(currGem.gId)
+            onItemClickListener.onGemClick(currGem.gem.gId)
         }
     }
 
@@ -87,12 +88,13 @@ class GemsAdapter (
     }
 
     // update the list and notify changes
-    fun updateGems(newGems: List<Gem>) {
+    fun updateGems(newGems: List<GemWithUser>) {
         gems = newGems.toMutableList()
         notifyDataSetChanged()  // Notify the adapter that the data has changed
     }
 
-    fun setGems(gems:MutableList<Gem>){
+    //set the gems and notify changes
+    fun setGems(gems:MutableList<GemWithUser>){
         this.gems = gems
         notifyDataSetChanged()
     }

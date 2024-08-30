@@ -6,6 +6,7 @@ import com.example.hiddengems.Model.Category
 import com.example.hiddengems.Model.City
 import com.example.hiddengems.Model.Gem
 
+//defines a 1-M relationship between city and gems
 data class CityWithGems (
     @Embedded
     val city: City,

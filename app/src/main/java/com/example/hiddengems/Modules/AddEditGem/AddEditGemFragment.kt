@@ -89,8 +89,6 @@ class AddEditGemFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_add_edit_gem, container, false)
 
-        //getting gems from instance of Model
-        //gems = Model.instance.gems
 
         //trying to get the id of the Gem from argument
         //if exists, edit mode, if not, add mode
@@ -139,7 +137,7 @@ class AddEditGemFragment : Fragment() {
             }
         })
 
-        //getting autocompletetextview for city, getting all cities from instance of Model,
+        //getting autocompletetextview for city, getting all cities from local db,
         // initializing array adapter with context, drop_down_item layout and cities
         // setting adapter of actvCity as new adapter
         cities = mutableListOf()
@@ -160,7 +158,7 @@ class AddEditGemFragment : Fragment() {
         }
 
 
-        //getting autocompletetextview for type, getting all types from instance of Model,
+        //getting autocompletetextview for type, getting all types from local db,
         //using for loop to only get their names as strings,
         // initializing array adapter with context, drop_down_item layout and types
         // setting adapter of actvType as new adapter
@@ -243,7 +241,7 @@ class AddEditGemFragment : Fragment() {
 
             }
 
-            //finding the gem by id in gems list
+            //finding the gem by id in local db
             id?.let {
                 Model.instance.getGemById(it) { resGem ->
                     var currGem = resGem.gem
@@ -274,6 +272,7 @@ class AddEditGemFragment : Fragment() {
                         editGem(currGem)
                     }
 
+                    //setting spinners to gone
                     view.findViewById<TextView>(R.id.tvHideView).visibility = View.GONE
                     view.findViewById<ProgressBar>(R.id.pbViewGem).visibility = View.GONE
                 }
@@ -358,7 +357,7 @@ class AddEditGemFragment : Fragment() {
     //function to add gem
     //first clears past errors
     // calls checkerrors function to set new errors if they exist and checks if there were errors
-    //if not, creates new gem from values and adds it to gems at first position
+    //if not, creates new gem from values and adds it to local db
     //clears the form with clearform function
     //puts user in homepage with displayfragment function
     fun addGem(){
@@ -370,11 +369,9 @@ class AddEditGemFragment : Fragment() {
         if (isErrors == false) {
 
             val newGem: Gem = Gem(
-                 Model.instance.currUser.user, name, desc, address, city, type, rating.toDouble(),0,
+                 Model.instance.currUser.uId, name, desc, address, city, type, rating.toDouble(),0,
                 mutableListOf<Int>(rating)
             )
-
-            //gems.add(0,newGem)
 
             Model.instance.upsertGem(newGem){}
 
@@ -389,7 +386,7 @@ class AddEditGemFragment : Fragment() {
     //function to edit gem
     //first clears past errors
     // calls checkerrors function to set new errors if they exist and checks if there were errors
-    //if not, creates new gem from values and adds it to gems at first position
+    //if not, creates new gem from values and edits gem in local db
     //clears the form with clearform function
     //puts user in view gem page with displayfragment function
     fun editGem(gem: Gem){
@@ -405,18 +402,12 @@ class AddEditGemFragment : Fragment() {
 
 
             val editedGem = gem.copy(name=name, desc = desc, address = address, city = city, type = type, rating = updatedRating, myRatingIdx = updatedMyRatingIdx, ratings = updatedRatings)
-           // editedGem.updateRating(rating)
 
-           // gems[gemIndex] = editedGem
-
-            //clearForm()
 
             Model.instance.upsertGem(editedGem){}
 
             (activity as MainActivity).goBack(editedGem.gId.toString())
-//            fragmentViewGem?.let {
-//                (activity as MainActivity).displayFragment(it, arg = editedGem.id.toString())
-//            }
+
         }
     }
 

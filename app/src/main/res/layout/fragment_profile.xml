@@ -126,4 +126,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvMyGemsTitle" />
 
+    <ProgressBar
+        android:id="@+id/pbVisitedGems"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/rvVisitedGems"
+        app:layout_constraintEnd_toEndOf="@+id/rvVisitedGems"
+        app:layout_constraintStart_toStartOf="@+id/rvVisitedGems"
+        app:layout_constraintTop_toTopOf="@+id/rvVisitedGems" />
+
+    <ProgressBar
+        android:id="@+id/pbMyGems"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/rvMyGems"
+        app:layout_constraintEnd_toEndOf="@+id/rvMyGems"
+        app:layout_constraintStart_toStartOf="@+id/rvMyGems"
+        app:layout_constraintTop_toTopOf="@+id/rvMyGems" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

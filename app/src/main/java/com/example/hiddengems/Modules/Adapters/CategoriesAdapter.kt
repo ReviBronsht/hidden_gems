@@ -75,6 +75,7 @@ class CategoriesAdapter (
         return categories.size
     }
 
+    //set categories and notify changes
     fun setCategories(categories:MutableList<Category>){
         this.categories = categories
         notifyDataSetChanged()

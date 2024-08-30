@@ -5,11 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hiddengems.MainActivity
 import com.example.hiddengems.Model.Model
+import com.example.hiddengems.Model.relationships.GemWithUser
 import com.example.hiddengems.Modules.EditProfile.EditProfileFragment
 import com.example.hiddengems.Modules.Adapters.GemsAdapter
 import com.example.hiddengems.Modules.LogIn.LogInFragment
@@ -56,27 +58,43 @@ class ProfileFragment : Fragment() , GemsAdapter.OnGemClickListener{
         tvUserName?.text = currUser.user
         tvBio?.text = currUser.bio
 
-        val gems = Model.instance.gems
 
         //if visited gems isn't empty, setting up visited gems
+        //if found favorite gems or if there are none, makes spinner gone
         if(currUser.visitedGems.size != 0) {
-            //setting up gems recycler view by getting gems, filtering them to get the user's favorite gems,
+            //setting up gems recycler view by getting gems from db based on user's favorite gems ids,
             // initialising adapter with them, this onclicklistennr and row layout, setting the adapter of recyclerview, and setting layout manager
-            val visitedGems = (activity as MainActivity).filterGemsById(gems, currUser.visitedGems)
-            visitedGemsAdapter = GemsAdapter(visitedGems, this, R.layout.layout_gem_square)
-            val rvVisitedGems = view.findViewById<RecyclerView>(R.id.rvVisitedGems)
-            rvVisitedGems.adapter = visitedGemsAdapter
-            rvVisitedGems.layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            Model.instance.getGemsInIds(Model.instance.currUser.visitedGems) { resGems ->
+                val visitedGems = resGems as MutableList
+                visitedGemsAdapter = GemsAdapter(visitedGems, this, R.layout.layout_gem_square)
+                val rvVisitedGems = view.findViewById<RecyclerView>(R.id.rvVisitedGems)
+                rvVisitedGems.adapter = visitedGemsAdapter
+                rvVisitedGems.layoutManager =
+                    LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+                view.findViewById<ProgressBar>(R.id.pbVisitedGems).visibility = View.GONE
+            }
+        }
+        else{
+            view.findViewById<ProgressBar>(R.id.pbVisitedGems).visibility = View.GONE
         }
 
-        //setting up gems recycler view by getting gems, filtering them to get the user's favorite gems,
+        //setting up gems recycler view by getting gems that user created from db
         // initialising adapter with them, this onclicklistennr and row layout, setting the adapter of recyclerview, and setting layout manager
-        val myGems = (activity as MainActivity).filterGemsByUser(gems,currUser.user)
-        myGemsAdapter = GemsAdapter(myGems,this,R.layout.layout_gem_row)
-        val rvMyGems = view.findViewById<RecyclerView>(R.id.rvMyGems)
-        rvMyGems.adapter = myGemsAdapter
-        rvMyGems.layoutManager = LinearLayoutManager(requireContext())
+        //setting spinner to gone
+        Model.instance.getGemsOfUser(currUser.uId.toString()) { resUserWithGems ->
+            val myGems = mutableListOf<GemWithUser>()
+            for (i in resUserWithGems.gems)
+            {
+                myGems.add(GemWithUser(i,currUser))
+            }
+            myGemsAdapter = GemsAdapter(myGems,this,R.layout.layout_gem_row)
+            val rvMyGems = view.findViewById<RecyclerView>(R.id.rvMyGems)
+            rvMyGems.adapter = myGemsAdapter
+            rvMyGems.layoutManager = LinearLayoutManager(requireContext())
+
+            view.findViewById<ProgressBar>(R.id.pbMyGems).visibility = View.GONE
+        }
 
 
         //setting edit profile button
@@ -109,6 +127,7 @@ class ProfileFragment : Fragment() , GemsAdapter.OnGemClickListener{
     //function that removes current user details in Model instance and moves user to log in
     fun onLogOut(){
 
+        Model.instance.currUser.uId = -1
         Model.instance.currUser.user = ""
         Model.instance.currUser.bio = ""
         Model.instance.currUser.favoriteGems = mutableListOf()

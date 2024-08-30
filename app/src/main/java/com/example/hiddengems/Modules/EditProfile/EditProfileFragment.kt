@@ -116,6 +116,7 @@ class EditProfileFragment : Fragment() {
         tilBioLayout?.error = null
     }
 
+
     //check errors checks for errors in every field and sets the error or toasts accordingly
     //returns if there were errors or not
     fun checkErrors():Boolean{
@@ -131,48 +132,48 @@ class EditProfileFragment : Fragment() {
             flag = true
         }
 
+
+
         return flag
+
     }
 
     //function to save profile
     //first clears past errors
+    //checks if user by the same name exists, if it is shows error, if not continues
     // calls checkerrors function to set new errors if they exist and checks if there were errors
-    //if not, creates new gem from values and adds it to gems at first position
+    //if not, edits user in local db
     //clears the form with clearform function
     //puts user in profile with displayfragment function
-    fun saveProfile(){
+    fun saveProfile() {
 
         clearErrors()
 
-        var isErrors = checkErrors()
+        Model.instance.getUserByName(name) { foundUser ->
+            if (foundUser != null) {
+                tilNameLayout?.error = "This user already exists"
+            } else {
 
-        if (isErrors == false) {
-            //val editedProfile = currUser?.copy(user=name, bio=bio)
 
-            var gems = Model.instance.gems
+                var isErrors = checkErrors()
 
-            for (gem in gems){
-                if (gem.user == currUser?.user) {
-                    gem.user = name
+                if (isErrors == false) {
+                    val editedUser = currUser?.copy(user = name, bio = bio)
+
+                    editedUser?.let {
+                        Model.instance.upsertUser(editedUser) {
+                            currUser?.user = name
+                            currUser?.bio = bio
+
+                            //clearForm()
+
+                            (activity as MainActivity).goBack()
+                        }
+                    }
                 }
-//                for (comment in gem.comments){
-//                    if (comment.user == currUser?.user) {
-//                        comment.user = name
-//                    }
-//                }
             }
-
-            currUser?.user = name
-            currUser?.bio = bio
-
-            //clearForm()
-
-            (activity as MainActivity).goBack()
-//            fragmentViewGem?.let {
-//                (activity as MainActivity).displayFragment(it, arg = editedGem.id.toString())
-//            }
         }
+    }
     }
 
 
-}

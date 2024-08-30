@@ -6,12 +6,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hiddengems.Model.Comment
+import com.example.hiddengems.Model.User
+import com.example.hiddengems.Model.views.CommentWithUser
 import com.example.hiddengems.R
 
 class CommentsAdapter  (
 
-    //setting parameters as comments list
-    private var comments:MutableList<Comment>
+    //setting parameters as comment with user list
+    private var comments:MutableList<CommentWithUser>
 
 ): RecyclerView.Adapter<CommentsAdapter.CommentsViewHolder>(){
 
@@ -40,8 +42,9 @@ class CommentsAdapter  (
     }
 
     //function that adds a new comment to the beginning of comments list
-    fun addComment(comment: Comment){
-       comments.add(0,comment)
+    fun addComment(comment: Comment,user: User){
+        val newCommentWithUser = CommentWithUser(comment.gId,comment.comId,comment.comment,user.uId,user.user,user.bio)
+       comments.add(0,newCommentWithUser)
         notifyItemInserted(0)
     }
 
@@ -49,9 +52,9 @@ class CommentsAdapter  (
     //finds the current comment from list by position
     // uses it to set the user, and comment
     override fun onBindViewHolder(holder: CommentsViewHolder, position: Int) {
-        val currGem = comments[position]
-        holder.tvUserName?.text =  currGem.user
-        holder.tvComment?.text =  currGem.comment
+        val currComment = comments[position]
+        holder.tvUserName?.text =  currComment.user
+        holder.tvComment?.text =  currComment.comment
     }
 
     //returns the number of items in comments list so recyclerview determines how many items to display

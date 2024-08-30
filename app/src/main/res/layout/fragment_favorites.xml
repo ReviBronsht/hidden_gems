@@ -27,6 +27,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvFavoritesTitle" />
 
+    <ProgressBar
+        android:id="@+id/pbGems"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/rvFavoriteGems"
+        app:layout_constraintEnd_toEndOf="@+id/rvFavoriteGems"
+        app:layout_constraintStart_toStartOf="@+id/rvFavoriteGems"
+        app:layout_constraintTop_toTopOf="@+id/rvFavoriteGems" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

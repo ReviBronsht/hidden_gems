@@ -8,13 +8,18 @@ import com.example.hiddengems.Model.Category
 import com.example.hiddengems.Model.City
 import com.example.hiddengems.Model.Comment
 import com.example.hiddengems.Model.Gem
+import com.example.hiddengems.Model.User
 import com.example.hiddengems.Model.converters.RoomConverters
-import com.example.hiddengems.Model.relationships.CategoryWithGems
+import com.example.hiddengems.Model.views.CommentWithUser
 import com.example.hiddengems.base.MyApplication
 
 
-@Database(entities = [Category::class,Gem::class,Comment::class, City::class], version = 15)
-@TypeConverters(RoomConverters::class)
+//defining local room database tables, views and version
+@Database(entities = [Category::class,Gem::class,Comment::class, City::class, User::class],
+    views = [CommentWithUser::class], version = 42)
+
+@TypeConverters(RoomConverters::class) //defines type converters to handle non default types
+//creates app database singleton
 abstract class AppLocalDbRepository : RoomDatabase() {
     abstract fun hiddenGemsDao(): HiddenGemsDao
 }

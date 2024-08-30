@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.example.hiddengems.Model.Gem
 import com.example.hiddengems.Model.Model
+import com.example.hiddengems.Model.relationships.GemWithUser
 import com.example.hiddengems.Modules.AddEditGem.AddEditGemFragment
 import com.example.hiddengems.Modules.EditProfile.EditProfileFragment
 import com.example.hiddengems.Modules.Favorites.FavoritesFragment
@@ -274,9 +275,9 @@ class MainActivity : AppCompatActivity() {
             .sortedBy { idOrderMap[it.gId] } as MutableList<Gem>
     }
 
-    fun filterGemsByUser(gems: MutableList<Gem>, user:String): MutableList<Gem> {
+    fun filterGemsByUser(gems: MutableList<GemWithUser>, user:String): MutableList<GemWithUser> {
         return gems
-            .filter { it.user == user } as MutableList<Gem>
+            .filter { it.user.user == user } as MutableList<GemWithUser>
     }
 
     //viewGem function calls displayFragment function from MainActivity to display ViewGem fragment
@@ -312,6 +313,7 @@ class MainActivity : AppCompatActivity() {
     //if in view gem page, which can be accessed from multiple pages, goes back to previous fragment
     //if in edit profile, go back to profile
     //if in other pages that aren't homepage, goes back to homepage
+    //if set to turn on home button, does (for log in page)
     internal fun goBack(currPrevGem:String?=null){
         println(inDisplayFragment)
         if (currPrevGem!=null)
@@ -341,7 +343,7 @@ class MainActivity : AppCompatActivity() {
     //if an argument is passed, uses Bundle to put it to new fragment
     //if savePrev is true, saves previous fragment
     //if savePrevGem is true, saves gem id in current passed argument
-    internal fun displayFragment(fragment: Fragment, button: Button? = inDisplayButton,arg:String?=null,savePrev:Boolean=false,savePrevGem:Boolean=false){
+    internal fun displayFragment(fragment: Fragment, button: Button? = inDisplayButton,arg:String?=null,savePrev:Boolean=false,savePrevGem:Boolean=false,displayHomeButton:Boolean=false){
         println(inDisplayFragment)
         val b = Bundle()
         if (arg != null){
@@ -369,6 +371,10 @@ class MainActivity : AppCompatActivity() {
         //recoloring selected button
         button?.let {
             displayButton(it)
+        }
+
+        if (displayHomeButton){
+            btnHome?.let { displayButton(it) }
         }
         transaction.commit()
         println(inDisplayFragment)

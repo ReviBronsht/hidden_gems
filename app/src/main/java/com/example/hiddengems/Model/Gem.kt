@@ -4,10 +4,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.math.RoundingMode
 
+
 @Entity
-//class to define Gems
+//class to define Gems table
 data class Gem(
-    var user:String,
+    var uId:Int,
     val name:String,
     val desc:String,
     val address:String,
@@ -18,10 +19,3 @@ data class Gem(
     val ratings:MutableList<Int> = ArrayList(),
     @PrimaryKey(autoGenerate = true) val gId:Int = 0
 )
-//{
-
-//    fun addRating(rating:Int){
-//
-//        ratings.add(rating)
-//    }
-//}

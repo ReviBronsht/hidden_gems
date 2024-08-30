@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.hiddengems.MainActivity
+import com.example.hiddengems.Model.Comment
 import com.example.hiddengems.Model.Model
 import com.example.hiddengems.Model.User
 import com.example.hiddengems.Modules.Feed.FeedFragment
@@ -24,6 +25,7 @@ class LogInFragment : Fragment() {
     var fragmentFeed:  FeedFragment?= null
     var fragmentSignUp: SignUpFragment ?=null
     var fragmentLogIn: LogInFragment ?= null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,22 +64,28 @@ class LogInFragment : Fragment() {
             (activity as MainActivity).displayFragment(it)
         }
     }
-    //function that sets current user in Model instance and moves user to homepage
+    //function that gets the user by id from db, sets current user in Model instance and moves user to homepage
     fun onLogIn(){
 
-        Model.instance.currUser.user = "Billy"
-        Model.instance.currUser.bio = "Experienced Traveller"
-        Model.instance.currUser.favoriteGems = mutableListOf(0,2)
-        Model.instance.currUser.visitedGems =mutableListOf(1)
+        Model.instance.getUserById("1") { resUser ->
+            Model.instance.currUser.uId = resUser.uId
+            Model.instance.currUser.user = resUser.user
+            Model.instance.currUser.bio = resUser.bio
+            Model.instance.currUser.favoriteGems = resUser.favoriteGems
+            Model.instance.currUser.visitedGems = resUser.visitedGems
 
-        fragmentLogIn?.let{
-            (activity as MainActivity).removeFragment(it)
+
+            fragmentLogIn?.let {
+                (activity as MainActivity).removeFragment(it)
+            }
+
+
+            (activity as MainActivity).bottomNavShow()
+            fragmentFeed?.let {
+                (activity as MainActivity).displayFragment(it, displayHomeButton = true)
+            }
         }
 
-        (activity as MainActivity).bottomNavShow()
-        fragmentFeed?.let {
-            (activity as MainActivity).displayFragment(it)
-        }
     }
 
 }

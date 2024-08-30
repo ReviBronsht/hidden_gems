@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.ProgressBar
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -40,6 +41,9 @@ class SearchFragment : Fragment(), GemsAdapter.OnGemClickListener {
     var type:String?= null
     var ratingSort: Boolean ?= null
 
+    //initializing progress bar
+    var pbGems:ProgressBar ?= null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,7 +66,7 @@ class SearchFragment : Fragment(), GemsAdapter.OnGemClickListener {
             }
         })
 
-        //getting autocompletetextview for city, getting all cities from instance of Model, 
+        //getting autocompletetextview for city, getting all cities from local db,
         // initializing array adapter with context, drop_down_item layout and cities
         // setting adapter of actvCity as new adapter
         actvCity = view.findViewById<MaterialAutoCompleteTextView>(R.id.actvCity)
@@ -85,7 +89,7 @@ class SearchFragment : Fragment(), GemsAdapter.OnGemClickListener {
             onFilterAndSortClick()
         }
 
-        //getting autocompletetextview for type, getting all types from instance of Model, 
+        //getting autocompletetextview for type, getting all types from local db,
         //using for loop to only get their names as strings,
         // initializing array adapter with context, drop_down_item layout and types
         // setting adapter of actvType as new adapter
@@ -96,7 +100,6 @@ class SearchFragment : Fragment(), GemsAdapter.OnGemClickListener {
             for (i in categories){
                 types.add(i.name)
             }
-            types.removeFirst()//removing first "All" item
             val typesAdapter = ArrayAdapter(requireContext(),R.layout.drop_down_item,types)
             actvType?.setAdapter(typesAdapter)
         }
@@ -118,13 +121,19 @@ class SearchFragment : Fragment(), GemsAdapter.OnGemClickListener {
             onFilterAndSortClick()
         }
 
+        //setting spinner
+        pbGems = view.findViewById<ProgressBar>(R.id.pbGems)
 
-        //setting up gems recycler view by getting gems, initialising adapter with them, this onclicklistennr and row layout, setting the adapter of recyclerview, and setting layout manager
-        val gems = Model.instance.gems
-        gemsAdapter = GemsAdapter(gems,this,R.layout.layout_gem_row)
-        val rvGems = view.findViewById<RecyclerView>(R.id.rvSuggestedGems)
-        rvGems.adapter = gemsAdapter
-        rvGems.layoutManager = LinearLayoutManager(requireContext())
+        //setting up gems recycler view by getting gems from db, initialising adapter with them, this onclicklistennr and row layout, setting the adapter of recyclerview, and setting layout manager
+        //val gems = Model.instance.gems
+        Model.instance.getLatestGems { resGems ->
+            val gems = resGems as MutableList
+            gemsAdapter = GemsAdapter(gems, this, R.layout.layout_gem_row)
+            val rvGems = view.findViewById<RecyclerView>(R.id.rvSuggestedGems)
+            rvGems.adapter = gemsAdapter
+            rvGems.layoutManager = LinearLayoutManager(requireContext())
+            pbGems?.visibility = View.GONE
+        }
 
 
         return view
@@ -161,34 +170,16 @@ class SearchFragment : Fragment(), GemsAdapter.OnGemClickListener {
         (activity as MainActivity).viewGem(position)
     }
 
-    //onFilterAndSortClick gets gems from instance of Model, filters and sorts them with filterAndSortGems and filter and sort parameters
+    //onFilterAndSortClick returns sorted gems using filter and sort query from db and turns spinner on to load and off when loaded
     //updates on adapter
     fun onFilterAndSortClick()
     {
-        val originalGems = Model.instance.gems
-        val filteredGems = filterAndSortGems(originalGems,searchString,type, city,ratingSort)
-        gemsAdapter?.updateGems(filteredGems)
-    }
-    
-    //filterAndSortGems gets list of gems and filter and sort parameters
-    //if filter parameter is not null, filters by it and ignores case
-    //if sort parameter is true sorts by descending, if its false sorts by ascending, if its null, doesn't sort
-    fun filterAndSortGems(gems: MutableList<Gem>, searchString: String? = null, type: String? = null, city: String? = null, ratingSort: Boolean? = null
-    ): List<Gem> {
-
-        return gems
-            .filter { gem ->
-                (searchString == null || gem.name.contains(searchString, ignoreCase = true)) &&
-                        (type == null || gem.type.equals(type, ignoreCase = true)) &&
-                        (city == null || gem.city.equals(city, ignoreCase = true))
-            }
-            .let { filteredGems ->
-                when (ratingSort) {
-                    true -> filteredGems.sortedByDescending { gem -> gem.rating }
-                    false -> filteredGems.sortedBy { gem -> gem.rating }
-                    null -> filteredGems
-                }
-            }
+        gemsAdapter?.updateGems(mutableListOf())
+        pbGems?.visibility = View.VISIBLE
+        Model.instance.filterAndSortGems(searchString,type,city,ratingSort) { filteredGems ->
+            gemsAdapter?.updateGems(filteredGems)
+            pbGems?.visibility = View.GONE
+        }
     }
 
 }

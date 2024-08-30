@@ -3,26 +3,22 @@ package com.example.hiddengems.Model.converters
 import androidx.room.TypeConverter
 import com.example.hiddengems.Model.Comment
 
+//type converters so room handles lists of ints
 class RoomConverters {
 
     @TypeConverter
-    fun convertRatingsToString(ratings:MutableList<Int>):String{
-        return ratings.joinToString(separator = ",")
+    fun convertIntsToString(ints:MutableList<Int>):String{
+        return ints.joinToString(separator = ",")
     }
 
     @TypeConverter
-    fun convertStringToRatings(ratingString: String):MutableList<Int>{
-        return ratingString.split(",").map { it.toInt() } as MutableList<Int>
+    fun convertStringToInts(str: String):MutableList<Int>{
+        if (str.isNullOrEmpty()) {
+            return mutableListOf<Int>()
+        }
+        else {
+            return str.split(",").map { it.toInt() } as MutableList<Int>
+        }
     }
-
-//    @TypeConverter
-//    fun convertCommentToString(comments:MutableList<Comment>):String{
-//        return "hoi"
-//    }
-//
-//    @TypeConverter
-//    fun convertStringToComment(comment:String):MutableList<Comment>{
-//        return mutableListOf( Comment("hi","hoi"))
-//    }
 
 }
