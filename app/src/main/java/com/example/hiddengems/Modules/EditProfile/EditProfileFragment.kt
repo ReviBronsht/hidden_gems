@@ -99,7 +99,7 @@ class EditProfileFragment : Fragment() {
         etBio?.setText(bio)
 
         //loading image if exists
-        if (image!="") {
+        if (image!="" && ivUserImg != null) {
             Picasso.with(context).load(image).fit().centerCrop().into(ivUserImg)
         }
 
@@ -224,8 +224,9 @@ class EditProfileFragment : Fragment() {
 
         clearErrors()
 
+
         Model.instance.getUserByName(name) { foundUser ->
-            if (foundUser != null) {
+            if (foundUser != null && name != Model.instance.currUser.user) {
                 tilNameLayout?.error = "This user already exists"
             } else {
 
@@ -246,7 +247,7 @@ class EditProfileFragment : Fragment() {
 
 
                                 editedUser?.let {
-                                    Model.instance.upsertUser(editedUser) {
+                                    Model.instance.upsertUser(editedUser, oldId = currUser?.uId) {
                                         currUser?.user = name
                                         currUser?.bio = bio
                                         currUser?.image = image

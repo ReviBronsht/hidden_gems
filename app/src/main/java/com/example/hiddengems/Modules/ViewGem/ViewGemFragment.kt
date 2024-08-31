@@ -348,7 +348,7 @@ class ViewGemFragment : Fragment() {
                     AppCompatResources.getColorStateList(it, R.color.secondary)
             }
         }
-        Model.instance.upsertUser(currUser){}
+        Model.instance.upsertUser(currUser, oldId = currUser.uId){}
     }
 
     //function that adds or removes id of gem to/from user's favorite gems and sets icon accordingly
@@ -362,7 +362,7 @@ class ViewGemFragment : Fragment() {
             currUser.favoriteGems.add(0,id)
             ivFavorite?.setImageResource(R.drawable.heart_svgrepo_com)
         }
-        Model.instance.upsertUser(currUser){}
+        Model.instance.upsertUser(currUser, oldId = currUser.uId){}
     }
 
     // on post clicked function creates a comment from passed user and text,
@@ -412,7 +412,7 @@ class ViewGemFragment : Fragment() {
 
         val updatedGem = gem.copy(rating = updatedRating, ratings = updatedRatings)
 
-        Model.instance.upsertGem(updatedGem){}
+        Model.instance.upsertGem(updatedGem, oldId = updatedGem.gId){}
 
 
         Model.instance.upsertRating(Ratings(gemIndex,Model.instance.currUser.uId,updatedMyRatingIdx)){}

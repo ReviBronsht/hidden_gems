@@ -14,24 +14,29 @@ data class User (
     @PrimaryKey(autoGenerate = true) var uId:Int = 0
 )
 {
-    fun fromJson(json: Map<String, Any>): User {
-        val uId = json.get("uId") as Int
-        val user = json.get("user").toString()
-        val bio = json.get("bio").toString()
-        val image = json.get("image").toString()
-        val favoriteGems = json.get("favoriteGems")  as MutableList<Int>
-        val visitedGems = json.get("visitedGems") as MutableList<Int>
-        val newUser = User(user,bio,favoriteGems,visitedGems,image,uId)
-        return newUser
+    companion object {
+        //function that converts json to user
+        fun fromJson(json: Map<String, Any>): User {
+            val uId = (json.get("uId") as? Long)?.toInt() ?: 0
+            val user = json.get("user").toString()
+            val bio = json.get("bio").toString()
+            val image = json.get("image").toString()
+            val favoriteGems = json.get("favoriteGems") as MutableList<Int>
+            val visitedGems = json.get("visitedGems") as MutableList<Int>
+            val newUser = User(user, bio, favoriteGems, visitedGems, image, uId)
+            return newUser
+        }
     }
+
+    //function to convert user to json
     fun toJson(): HashMap<String, Any> {
-        val json = hashMapOf(
+        return hashMapOf(
             "uId" to uId,
             "user" to user,
             "bio" to bio,
+            "image" to image,
             "favoriteGems" to favoriteGems,
             "visitedGems" to visitedGems
         )
-        return json
     }
 }

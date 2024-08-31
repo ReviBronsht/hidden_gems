@@ -64,7 +64,7 @@ interface HiddenGemsDao {
 
     //adds new comment
     @Insert
-    fun insertComment(comment: Comment)
+    fun insertComment(comment: Comment):Long
 
     //getting all comments
     @Query("SELECT * FROM Comment")
@@ -73,6 +73,22 @@ interface HiddenGemsDao {
     //deletes a gem
     @Delete
     fun deleteGem(gem: Gem)
+
+    //deletes a comment
+    @Delete
+    fun deleteComment(comment: Comment)
+
+    //deletes a rating
+    @Delete
+    fun deleteRating(rating: Ratings)
+
+    //gets ratings by gId
+    @Query("SELECT * FROM Ratings WHERE gId =:id")
+    fun getRatingsByGId(id: String): List<Ratings>
+
+    //gets comments by gId
+    @Query("SELECT * FROM Comment WHERE gId =:id")
+    fun getCommentsByGId(id: String): List<Comment>
 
     //filtering and sorting gem by name, type and city if they're not null
     //if rating not null, sorts according to its boolean value
@@ -98,7 +114,7 @@ interface HiddenGemsDao {
 
     //adding new user if doesn't exist, editing if does
     @Upsert
-    fun upsertUser(user:User)
+    fun upsertUser(user:User):Long
 
     //gets user by id
     @Query("SELECT * FROM User WHERE uId =:id")

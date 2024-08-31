@@ -172,7 +172,7 @@ class AddEditGemFragment : Fragment() {
             for (i in tempCities){
                 cities.add(i.name)
             }
-            cities.removeFirst() //removing first "All" item
+            if (cities.isNotEmpty()){cities.removeFirst()} //removing first "All" item
             val citiesAdapter = ArrayAdapter(requireContext(), R.layout.drop_down_item, cities)
             actvCity?.setAdapter(citiesAdapter)
         }
@@ -466,7 +466,7 @@ class AddEditGemFragment : Fragment() {
                         val image = url.toString()
                         val editedGem = gem.copy(name=name, desc = desc, address = address, city = city, type = type, image = image, rating = updatedRating, ratings = updatedRatings)
 
-                        Model.instance.upsertGem(editedGem){id ->
+                        Model.instance.upsertGem(editedGem,oldId=editedGem.gId){id ->
                             Model.instance.upsertRating(Ratings(id,Model.instance.currUser.uId,myRatingIdx)){}
                         }
 
@@ -479,7 +479,7 @@ class AddEditGemFragment : Fragment() {
             val editedGem = gem.copy(name=name, desc = desc, address = address, city = city, type = type, rating = updatedRating, ratings = updatedRatings)
 
 
-            Model.instance.upsertGem(editedGem){id ->
+            Model.instance.upsertGem(editedGem, oldId = editedGem.gId){id ->
                 Model.instance.upsertRating(Ratings(id,Model.instance.currUser.uId,myRatingIdx)){}
             }
 
