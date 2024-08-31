@@ -141,4 +141,6 @@ interface HiddenGemsDao {
     @Query("SELECT * FROM Ratings WHERE gId =:gId AND uId =:uId")
     fun getRatingByGIdAndUId(gId: String, uId:String): Ratings?
 
+
+
 }

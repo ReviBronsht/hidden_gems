@@ -1,7 +1,10 @@
 package com.example.hiddengems.Model
 
+import android.content.Context
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.hiddengems.base.MyApplication
+import com.google.firebase.firestore.FieldValue
 import java.math.RoundingMode
 
 
@@ -17,10 +20,24 @@ data class Gem(
     val image:String,
     var rating:Double,
     val ratings:MutableList<Int> = ArrayList(),
-    @PrimaryKey(autoGenerate = true) var gId:Int = 0
+    @PrimaryKey(autoGenerate = true) var gId:Int = 0,
+
 ) {
 
     companion object {
+
+        //using shared references to define funcions that get and set lastUpdated to check for updates
+        fun getLocalLastUpdate():Long{
+            return MyApplication.Globals
+                .appContext?.getSharedPreferences("TAG",Context.MODE_PRIVATE)
+                ?.getLong("LAST_LOCAL_GEM",0)?:0
+        }
+        fun setLastLocalUpdate(num:Long){
+            MyApplication.Globals
+                .appContext?.getSharedPreferences("TAG", Context.MODE_PRIVATE)?.edit()
+                ?.putLong("LAST_LOCAL_GEM",num)
+                ?.apply()
+        }
         //function that converts json to gem
         fun fromJson(json: Map<String, Any>): Gem {
             val gId = (json.get("gId") as? Long)?.toInt() ?: 0
@@ -38,7 +55,7 @@ data class Gem(
         }
     }
 
-    //function to convert gem to json
+    //function to convert gem to json with timestamp to check updates
     fun toJson(): HashMap<String, Any> {
         return hashMapOf(
             "gId" to gId,
@@ -50,7 +67,8 @@ data class Gem(
             "type" to type,
             "image" to image,
             "rating" to rating,
-            "ratings" to ratings
+            "ratings" to ratings,
+            "lastUpdated" to FieldValue.serverTimestamp()
         )
     }
 

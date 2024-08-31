@@ -1,7 +1,10 @@
 package com.example.hiddengems.Model
 
+import android.content.Context
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.hiddengems.base.MyApplication
+import com.google.firebase.firestore.FieldValue
 
 //class to define users table
 @Entity
@@ -15,6 +18,20 @@ data class User (
 )
 {
     companion object {
+
+        //using shared references to define funcions that get and set lastUpdated to check for updates
+        fun getLocalLastUpdate():Long{
+            return MyApplication.Globals
+                .appContext?.getSharedPreferences("TAG", Context.MODE_PRIVATE)
+                ?.getLong("LAST_LOCAL_USER",0)?:0
+        }
+        fun setLastLocalUpdate(num:Long){
+            MyApplication.Globals
+                .appContext?.getSharedPreferences("TAG", Context.MODE_PRIVATE)?.edit()
+                ?.putLong("LAST_LOCAL_USER",num)
+                ?.apply()
+        }
+
         //function that converts json to user
         fun fromJson(json: Map<String, Any>): User {
             val uId = (json.get("uId") as? Long)?.toInt() ?: 0
@@ -28,7 +45,7 @@ data class User (
         }
     }
 
-    //function to convert user to json
+    //function to convert user to json with timestamp to check updates
     fun toJson(): HashMap<String, Any> {
         return hashMapOf(
             "uId" to uId,
@@ -36,7 +53,8 @@ data class User (
             "bio" to bio,
             "image" to image,
             "favoriteGems" to favoriteGems,
-            "visitedGems" to visitedGems
+            "visitedGems" to visitedGems,
+            "lastUpdated" to FieldValue.serverTimestamp()
         )
     }
 }

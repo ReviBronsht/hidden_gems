@@ -98,10 +98,7 @@ class EditProfileFragment : Fragment() {
         etName?.setText(name)
         etBio?.setText(bio)
 
-        //loading image if exists
-        if (image!="" && ivUserImg != null) {
-            Picasso.with(context).load(image).fit().centerCrop().into(ivUserImg)
-        }
+
 
 
         //setting on text changed listeners of edit text input fields to varibles
@@ -139,6 +136,11 @@ class EditProfileFragment : Fragment() {
         //setting edit icon button and image view
         btnEditImg = view.findViewById<MaterialButton>(R.id.btnEditImg)
         ivUserImg = view.findViewById<ShapeableImageView>(R.id.ivUserImg)
+
+        //loading image if exists
+        if (image!="" ) {
+            Picasso.with(context).load(image).fit().centerCrop().into(ivUserImg)
+        }
 
         //setting on click of edit icon button
         btnEditImg?.setOnClickListener(){

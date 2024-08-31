@@ -33,7 +33,7 @@ class Model private constructor() {
         }
     }
 
-    //executes background task of insertCategory query and posting the result back to main thread
+    //executes background task of insertCategory query and posting the result back to main thread with same in firebase
     private fun insertCategory(category: Category, insertToFirebase:Boolean = true,callback: () -> Unit){
         executor.execute{
             AppLocalDatabase.db.hiddenGemsDao().insertCategory(category)
@@ -63,7 +63,7 @@ class Model private constructor() {
         }
     }
 
-    //executes background task of insertCity query and posting the result back to main thread
+    //executes background task of insertCity query and posting the result back to main thread  with same in firebase
     private fun insertCity(city: City, insertToFirebase:Boolean = true, callback: () -> Unit){
         executor.execute{
             AppLocalDatabase.db.hiddenGemsDao().insertCity(city)
@@ -104,7 +104,7 @@ class Model private constructor() {
         }
     }
 
-    //executes background task of upsertGem query and posting the result back to main thread
+    //executes background task of upsertGem query and posting the result back to main thread  with same in firebase
     fun upsertGem(gem: Gem, insertToFirebase:Boolean = true, oldId:Int? = null,callback: (Int) -> Unit){
         executor.execute{
             val idLong = AppLocalDatabase.db.hiddenGemsDao().upsertGem(gem)
@@ -161,7 +161,7 @@ class Model private constructor() {
         }
     }
 
-    //executes background task of insertComment query and posting the result back to main thread
+    //executes background task of insertComment query and posting the result back to main thread  with same in firebase
     fun insertComment(comment: Comment, insertToFirebase:Boolean = true, callback: () -> Unit){
         executor.execute{
             val newCommentId = AppLocalDatabase.db.hiddenGemsDao().insertComment(comment)
@@ -183,6 +183,7 @@ class Model private constructor() {
     }
 
     //executes background task of deleteGem query and posting the result back to main thread, and deleting ratings and comments of gem along with it
+    // with same in firebase
     fun deleteGem(gem: Gem, callback: () -> Unit){
         executor.execute{
             getCommentsByGId(gem.gId) { resComments ->
@@ -211,7 +212,7 @@ class Model private constructor() {
         }
     }
 
-    //executes background task of deleteComment query and posting the result back to main thread
+    //executes background task of deleteComment query and posting the result back to main thread  with same in firebase
     fun deleteComment(comment: Comment, callback: () -> Unit){
         executor.execute{
             AppLocalDatabase.db.hiddenGemsDao().deleteComment(comment)
@@ -224,7 +225,7 @@ class Model private constructor() {
         }
     }
 
-    //executes background task of deleteRatings query and posting the result back to main thread
+    //executes background task of deleteRatings query and posting the result back to main thread  with same in firebase
     fun deleteRatings(ratings: Ratings, callback: () -> Unit){
         executor.execute{
             AppLocalDatabase.db.hiddenGemsDao().deleteRating(ratings)
@@ -279,7 +280,7 @@ class Model private constructor() {
         }
     }
 
-    //executes background task of upsertUser query and posting the result back to main thread
+    //executes background task of upsertUser query and posting the result back to main thread  with same in firebase
     fun upsertUser(user: User, insertToFirebase:Boolean = true, oldId:Int? = null, callback: () -> Unit){
         executor.execute{
             val newUserId = AppLocalDatabase.db.hiddenGemsDao().upsertUser(user)
@@ -405,9 +406,9 @@ class Model private constructor() {
         }
     }
 
-    //gets all comments from firebase and adds them to room db
-    fun getAllCommentsFromFirebase(callback: (List<Comment>) -> Unit) {
-        firebaseModel.getAllComments {comments ->
+    //gets all updated comments from firebase and adds them to room db
+    fun getAllCommentsFromFirebase(localLastUpdate:Long,callback: (List<Comment>) -> Unit) {
+        firebaseModel.getAllComments(localLastUpdate) {comments ->
             if (comments.isNotEmpty()){
                 for (comment in comments){
                     insertComment(comment, insertToFirebase = false) {}
@@ -419,9 +420,9 @@ class Model private constructor() {
         }
     }
 
-    //gets all gems from firebase and adds them to room db
-    fun getAllGemsFromFirebase(callback: (List<Gem>) -> Unit) {
-        firebaseModel.getAllGems {gems ->
+    //gets all updated gems from firebase and adds them to room db
+    fun getAllGemsFromFirebase(localLastUpdate:Long, callback: (List<Gem>) -> Unit) {
+        firebaseModel.getAllGems(localLastUpdate) {gems ->
             if (gems.isNotEmpty()){
                 for (gem in gems){
                     upsertGem(gem, insertToFirebase = false) {}
@@ -433,9 +434,9 @@ class Model private constructor() {
         }
     }
 
-    //gets all ratings from firebase and adds them to room db
-    fun getAllRatingsFromFirebase(callback: (List<Ratings>) -> Unit) {
-        firebaseModel.getAllRatings {ratings ->
+    //gets all updated ratings from firebase and adds them to room db
+    fun getAllRatingsFromFirebase(localLastUpdate:Long,callback: (List<Ratings>) -> Unit) {
+        firebaseModel.getAllRatings(localLastUpdate) {ratings ->
             if (ratings.isNotEmpty()){
                 for (rat in ratings){
                     upsertRating(rat, insertToFirebase = false) {}
@@ -447,9 +448,9 @@ class Model private constructor() {
         }
     }
 
-    //gets all users from firebase and adds them to room db
-    fun getAllUsersFromFirebase(callback: (List<User>) -> Unit) {
-        firebaseModel.getAllUsers {users ->
+    //gets all updated users from firebase and adds them to room db
+    fun getAllUsersFromFirebase(localLastUpdate:Long,callback: (List<User>) -> Unit) {
+        firebaseModel.getAllUsers(localLastUpdate) {users ->
             if (users.isNotEmpty()){
                 for (user in users){
                     upsertUser(user, insertToFirebase = false) {}
@@ -472,15 +473,32 @@ class Model private constructor() {
         val instance: Model = Model()
     }
 
+
     init {
 
 
         val user:User = User()
         currUser = user
 
-        //on init - get last update from firebase
+        //setting last local updates to 0 for testing
+//        Gem.setLastLocalUpdate(0)
+//        User.setLastLocalUpdate(0)
+//        Comment.setLastLocalUpdate(0)
+//        Ratings.setLastLocalUpdate(0)
+
+        //get local last updates
+        val gemLocalLastUpdate = Gem.getLocalLastUpdate()
+        val commentLocalLastUpdate = Comment.getLocalLastUpdate()
+        val userLocalLastUpdate = User.getLocalLastUpdate()
+        val ratingsLocalLastUpdate = Ratings.getLocalLastUpdate()
 
         //get all records since last local update
+        getAllGemsFromFirebase(gemLocalLastUpdate) {}
+        getAllCommentsFromFirebase(commentLocalLastUpdate) {}
+        getAllUsersFromFirebase(userLocalLastUpdate) {}
+        getAllRatingsFromFirebase (ratingsLocalLastUpdate){}
+
+        //categories and cities don't change so only get them if they're not in room
         getAllCategories { categoriesRes ->
             if (categoriesRes.isEmpty()) {
                 getAllCategoriesFromFirebase {}
@@ -491,26 +509,26 @@ class Model private constructor() {
                 getAllCitiesFromFirebase {}
             }
         }
-        getAllComments { commentsRes ->
-            if (commentsRes.isEmpty()) {
-                getAllCommentsFromFirebase {}
-            }
-        }
-        getAllGems { gemsRes ->
-            if (gemsRes.isEmpty()) {
-                getAllGemsFromFirebase {}
-            }
-        }
-        getAllRatings { ratingsRes ->
-            if (ratingsRes.isEmpty()) {
-                getAllRatingsFromFirebase {}
-            }
-        }
-        getAllUsers { usersRes ->
-            if (usersRes.isEmpty()) {
-                getAllUsersFromFirebase {}
-            }
-        }
+//        getAllComments { commentsRes ->
+//            if (commentsRes.isEmpty()) {
+//                getAllCommentsFromFirebase {}
+//            }
+//        }
+//        getAllGems { gemsRes ->
+//            if (gemsRes.isEmpty()) {
+//                getAllGemsFromFirebase {}
+//            }
+//        }
+//        getAllRatings { ratingsRes ->
+//            if (ratingsRes.isEmpty()) {
+//                getAllRatingsFromFirebase {}
+//            }
+//        }
+//        getAllUsers { usersRes ->
+//            if (usersRes.isEmpty()) {
+//                getAllUsersFromFirebase {}
+//            }
+//        }
 
         //insert new records into room
 

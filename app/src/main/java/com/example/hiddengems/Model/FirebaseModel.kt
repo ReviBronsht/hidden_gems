@@ -4,6 +4,7 @@ import android.content.ContentValues.TAG
 import android.graphics.Bitmap
 import android.util.Log
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.firestore
@@ -11,14 +12,17 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.storage
 import java.io.ByteArrayOutputStream
 
+//initiating firebase class with firestore and firebase storage
 class FirebaseModel {
     var db:FirebaseFirestore ?= null
     var storage:FirebaseStorage ?= null
 
+    //initializing with firestore and storage
     init {
         db = Firebase.firestore
         storage = Firebase.storage
 
+        //disabling cache and building
         val settings = FirebaseFirestoreSettings.Builder()
             .setPersistenceEnabled(false) // Set to false to disable
             .build()
@@ -26,15 +30,27 @@ class FirebaseModel {
     }
 
 
-    fun getAllUsers(callback: (List<User>) -> Unit) {
+    //gets all users from firestore
+    //after checking that they've been updated after last update user got
+    fun getAllUsers(lastLocalUpdate:Long,callback: (List<User>) -> Unit) {
+        var lastUser:Long = 0
         var list = mutableListOf<User>()
         db?.collection("users")
+           // ?.whereGreaterThan("uId", lastLocalUpdate)
             ?.get()
             ?.addOnSuccessListener { result ->
                 for (document in result) {
                     Log.d(TAG, "${document.id} => ${document.data}")
                     var user = User.fromJson(document.data)
-                    list.add(user)
+                    val time = document.data.get("lastUpdated") as Timestamp
+                    println(time.seconds)
+
+                    if (time.seconds > lastLocalUpdate){
+                        list.add(user)
+                        lastUser = time.seconds}
+                }
+                if (lastUser > lastLocalUpdate){
+                    User.setLastLocalUpdate(lastUser)
                 }
                 callback(list)
             }
@@ -44,15 +60,26 @@ class FirebaseModel {
             }
     }
 
-    fun getAllRatings(callback: (List<Ratings>) -> Unit) {
+    //gets all ratings from firestore
+    //after checking that they've been updated after last update user got
+    fun getAllRatings(lastLocalUpdate:Long,callback: (List<Ratings>) -> Unit) {
         var list = mutableListOf<Ratings>()
+        var lastRatings:Long = 0
         db?.collection("ratings")
+            //?.whereGreaterThan("lastUpdated", lastLocalUpdate)
             ?.get()
             ?.addOnSuccessListener { result ->
                 for (document in result) {
                     Log.d(TAG, "${document.id} => ${document.data}")
                     var rats = Ratings.fromJson(document.data)
-                    list.add(rats)
+                    val time = document.data.get("lastUpdated") as Timestamp
+                    if (time.seconds > lastLocalUpdate){
+                        list.add(rats)
+                        lastRatings = time.seconds
+                    }
+                }
+                if (lastRatings > lastLocalUpdate){
+                    Ratings.setLastLocalUpdate(lastRatings)
                 }
                 callback(list)
             }
@@ -62,15 +89,26 @@ class FirebaseModel {
             }
     }
 
-    fun getAllGems(callback: (List<Gem>) -> Unit) {
+    //gets all gems from firestore
+    //after checking that they've been updated after last update user got
+    fun getAllGems(lastLocalUpdate:Long, callback: (List<Gem>) -> Unit) {
+        var lastGem:Long = 0
         var list = mutableListOf<Gem>()
         db?.collection("gems")
+            //?.whereGreaterThan("gId", lastLocalUpdate)
             ?.get()
             ?.addOnSuccessListener { result ->
                 for (document in result) {
                     Log.d(TAG, "${document.id} => ${document.data}")
                     var gem = Gem.fromJson(document.data)
-                    list.add(gem)
+                    val time = document.data.get("lastUpdated") as Timestamp
+
+                    if (time.seconds > lastLocalUpdate){
+                        list.add(gem)
+                        lastGem = time.seconds}
+                }
+                if (lastGem > lastLocalUpdate){
+                    Gem.setLastLocalUpdate(lastGem)
                 }
                 callback(list)
             }
@@ -80,15 +118,25 @@ class FirebaseModel {
             }
     }
 
-    fun getAllComments(callback: (List<Comment>) -> Unit) {
+    //gets all comments from firestore
+    //after checking that they've been updated after last update user got
+    fun getAllComments(lastLocalUpdate:Long, callback: (List<Comment>) -> Unit) {
+        var lastComment:Long = 0
         var list = mutableListOf<Comment>()
         db?.collection("comments")
+           // ?.whereGreaterThan("comId", lastLocalUpdate)
             ?.get()
             ?.addOnSuccessListener { result ->
                 for (document in result) {
                     Log.d(TAG, "${document.id} => ${document.data}")
                     var comment = Comment.fromJson(document.data)
-                    list.add(comment)
+                    val time = document.data.get("lastUpdated") as Timestamp
+                    if (time.seconds > lastLocalUpdate){
+                        list.add(comment)
+                        lastComment = time.seconds}
+                }
+                if (lastComment > lastLocalUpdate) {
+                    Comment.setLastLocalUpdate(lastComment)
                 }
                 callback(list)
             }
@@ -98,6 +146,7 @@ class FirebaseModel {
             }
     }
 
+    //gets all cities from firestore
     fun getAllCities(callback: (List<City>) -> Unit) {
         var list = mutableListOf<City>()
         db?.collection("cities")
@@ -115,6 +164,7 @@ class FirebaseModel {
                 callback(list)
             }
     }
+    //gets all categories from firestore
     fun getAllCategories(callback: (List<Category>) -> Unit) {
         var list = mutableListOf<Category>()
         db?.collection("categories")
@@ -133,12 +183,14 @@ class FirebaseModel {
             }
     }
 
+    //adding user to firestore collection
     fun upsertUser(user: User, callback: () -> Unit) {
         db?.collection("users")?.document(user.uId.toString())?.set(user.toJson())?.addOnCompleteListener{
             callback()
         }
     }
 
+    //adding ratings to firestore collection
     fun upsertRatings(ratings: Ratings, callback: () -> Unit) {
         val documentId = "${ratings.uId}_${ratings.gId}"
         db?.collection("ratings")?.document(documentId)?.set(ratings.toJson())?.addOnCompleteListener{
@@ -146,30 +198,35 @@ class FirebaseModel {
         }
     }
 
+    //adding gem to firestore collection
     fun upsertGem(gem: Gem, callback: () -> Unit) {
         db?.collection("gems")?.document(gem.gId.toString())?.set(gem.toJson())?.addOnCompleteListener{
             callback()
         }
     }
 
+    //adding comment to firestore collection
     fun upsertComment(comment: Comment, callback: () -> Unit) {
         db?.collection("comments")?.document(comment.comId.toString())?.set(comment.toJson())?.addOnCompleteListener{
             callback()
         }
     }
 
+    //adding city to firestore collection
     fun upsertCity(city: City, callback: () -> Unit) {
         db?.collection("cities")?.document(city.name)?.set(city.toJson())?.addOnCompleteListener{
             callback()
         }
     }
 
+    //adding category to firestore collection
     fun upsertCategory(category: Category, callback: () -> Unit) {
         db?.collection("categories")?.document(category.name)?.set(category.toJson())?.addOnCompleteListener{
             callback()
         }
     }
 
+    //deletes gem from firestore collection
     fun deleteGem(gId: Int,callback: () -> Unit){
         db?.collection("gems")?.document(gId.toString())
             ?.delete()
@@ -177,6 +234,7 @@ class FirebaseModel {
             ?.addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
     }
 
+    //deletes ratings from firestore collection
     fun deleteRatings(ratingsId: String,callback: () -> Unit){
         db?.collection("ratings")?.document(ratingsId)
             ?.delete()
@@ -184,6 +242,7 @@ class FirebaseModel {
             ?.addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
     }
 
+    //deletes comments from firestore collection
     fun deleteComments(comId: Int,callback: () -> Unit){
         db?.collection("comments")?.document(comId.toString())
             ?.delete()
