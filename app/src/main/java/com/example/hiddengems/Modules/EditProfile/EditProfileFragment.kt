@@ -1,6 +1,10 @@
 package com.example.hiddengems.Modules.EditProfile
 
+import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
@@ -9,13 +13,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import com.example.hiddengems.MainActivity
-import com.example.hiddengems.Model.Gem
 import com.example.hiddengems.Model.Model
 import com.example.hiddengems.Model.User
 import com.example.hiddengems.R
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textfield.TextInputLayout
+import com.squareup.picasso.Picasso
 
 
 class EditProfileFragment : Fragment() {
@@ -27,9 +35,10 @@ class EditProfileFragment : Fragment() {
     var etName: EditText?= null
     var etBio: EditText?= null
 
-    //setting gem parameters as null
+    //setting profile parameters as null
     var name:String = ""
     var bio:String = ""
+    var image:String = ""
 
     //initializing save button
     var btnSave:MaterialButton ?= null
@@ -41,7 +50,21 @@ class EditProfileFragment : Fragment() {
     //initializes user
     var currUser: User ?= null
 
+    //initializes edit icon button and image view
+    var btnEditImg: MaterialButton ?= null
+    var ivUserImg: ShapeableImageView?= null
 
+    //declaring launcher
+    lateinit var resultLauncher: ActivityResultLauncher<Intent>
+
+    //boolean if image was changed
+    var wasImageChanged:Boolean = false
+
+    //registers launcher on create
+    override fun onCreate(savedInstanceState: Bundle?) {
+        registerResult()
+        super.onCreate(savedInstanceState)
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -68,11 +91,18 @@ class EditProfileFragment : Fragment() {
         currUser?.let {
             name = it.user
             bio = it.bio
+            image = it.image
         }
 
-        //setting input fields to show current gem's data
+        //setting input fields to show current gem's data and current uploaded image
         etName?.setText(name)
         etBio?.setText(bio)
+
+        //loading image if exists
+        if (image!="") {
+            Picasso.with(context).load(image).fit().centerCrop().into(ivUserImg)
+        }
+
 
         //setting on text changed listeners of edit text input fields to varibles
         etName?.addTextChangedListener(object : TextWatcher {
@@ -106,9 +136,53 @@ class EditProfileFragment : Fragment() {
         tilBioLayout = view.findViewById<TextInputLayout>(R.id.tilBioLayout)
 
 
+        //setting edit icon button and image view
+        btnEditImg = view.findViewById<MaterialButton>(R.id.btnEditImg)
+        ivUserImg = view.findViewById<ShapeableImageView>(R.id.ivUserImg)
+
+        //setting on click of edit icon button
+        btnEditImg?.setOnClickListener(){
+            pickImageGallery()
+        }
+
+
         return view
     }
 
+    //launches to pick images with intent
+    fun pickImageGallery(){
+        var intent:Intent= Intent(MediaStore.ACTION_PICK_IMAGES)
+        resultLauncher.launch(intent)
+    }
+
+    //registering launcher result to set the image and mark it was changed
+   fun registerResult(){
+        resultLauncher=registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult(),
+            ActivityResultCallback {
+                var imageUri:Uri? = it.data?.data
+                if (imageUri != null){
+                    ivUserImg?.setImageURI(imageUri)
+                    wasImageChanged = true
+                }
+
+            }
+        )
+
+   }
+
+//    fun uploadImage(){
+//        ivUserImg?.isDrawingCacheEnabled = true
+//        ivUserImg?.buildDrawingCache()
+//        val bitmap = (ivUserImg?.drawable as BitmapDrawable).bitmap
+//        val imgName = currUser?.uId.toString()+"ProfileImg"
+//        Model.instance.uploadImage(imgName,bitmap){url->
+//            if(url != null) {
+//
+//                image = url.toString()
+//            }
+//        }
+//    }
 
     //clear errors sets all errors to null
     fun clearErrors(){
@@ -145,6 +219,7 @@ class EditProfileFragment : Fragment() {
     //if not, edits user in local db
     //clears the form with clearform function
     //puts user in profile with displayfragment function
+    //if user changed the image, uploads it and saves user with new image
     fun saveProfile() {
 
         clearErrors()
@@ -158,16 +233,44 @@ class EditProfileFragment : Fragment() {
                 var isErrors = checkErrors()
 
                 if (isErrors == false) {
-                    val editedUser = currUser?.copy(user = name, bio = bio)
+                    if (wasImageChanged) {
+                        ivUserImg?.isDrawingCacheEnabled = true
+                        ivUserImg?.buildDrawingCache()
+                        val bitmap = (ivUserImg?.drawable as BitmapDrawable).bitmap
+                        val imgName = currUser?.uId.toString() + "ProfileImg"
+                        Model.instance.uploadImage(imgName, bitmap) { url ->
+                            if (url != null) {
+                                image = url.toString()
+                                val editedUser =
+                                    currUser?.copy(user = name, bio = bio, image = image)
 
-                    editedUser?.let {
-                        Model.instance.upsertUser(editedUser) {
-                            currUser?.user = name
-                            currUser?.bio = bio
 
-                            //clearForm()
+                                editedUser?.let {
+                                    Model.instance.upsertUser(editedUser) {
+                                        currUser?.user = name
+                                        currUser?.bio = bio
+                                        currUser?.image = image
 
-                            (activity as MainActivity).goBack()
+                                        //clearForm()
+
+                                        (activity as MainActivity).goBack()
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        val editedUser = currUser?.copy(user = name, bio = bio)
+
+
+                        editedUser?.let {
+                            Model.instance.upsertUser(editedUser) {
+                                currUser?.user = name
+                                currUser?.bio = bio
+
+                                //clearForm()
+
+                                (activity as MainActivity).goBack()
+                            }
                         }
                     }
                 }

@@ -17,6 +17,8 @@ import com.example.hiddengems.Modules.Adapters.GemsAdapter
 import com.example.hiddengems.Modules.LogIn.LogInFragment
 import com.example.hiddengems.R
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.imageview.ShapeableImageView
+import com.squareup.picasso.Picasso
 
 class ProfileFragment : Fragment() , GemsAdapter.OnGemClickListener{
 
@@ -43,6 +45,9 @@ class ProfileFragment : Fragment() , GemsAdapter.OnGemClickListener{
     //initializes log in fragment
     var fragmentLogIn: LogInFragment ?= null
 
+    //initializing image view
+    var ivUserImg:ShapeableImageView?=null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,13 +55,20 @@ class ProfileFragment : Fragment() , GemsAdapter.OnGemClickListener{
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
-        //setting user info text views
+        //setting user info  views
         tvUserName = view.findViewById<TextView>(R.id.tvUserName)
         tvBio = view.findViewById<TextView>(R.id.tvBio)
+        ivUserImg = view.findViewById<ShapeableImageView>(R.id.ivUserImg)
 
         //setting text views' text to user info
         tvUserName?.text = currUser.user
         tvBio?.text = currUser.bio
+
+        //loading image if exists
+        if (currUser.image!="") {
+            Picasso.with(context).load(currUser.image).fit().centerCrop().into(ivUserImg)
+        }
+
 
 
         //if visited gems isn't empty, setting up visited gems
@@ -130,6 +142,7 @@ class ProfileFragment : Fragment() , GemsAdapter.OnGemClickListener{
         Model.instance.currUser.uId = -1
         Model.instance.currUser.user = ""
         Model.instance.currUser.bio = ""
+        Model.instance.currUser.image = ""
         Model.instance.currUser.favoriteGems = mutableListOf()
         Model.instance.currUser.visitedGems =mutableListOf()
 

@@ -9,7 +9,7 @@
         android:id="@+id/ivUserImg"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:background="@drawable/img"
+        android:background="@drawable/sky2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/circular" />

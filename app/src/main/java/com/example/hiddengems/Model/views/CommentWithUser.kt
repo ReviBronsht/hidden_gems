@@ -11,7 +11,7 @@ import com.example.hiddengems.Model.User
 @DatabaseView(
     viewName = "CommentWithUserView",
     value = """
-        SELECT c.gId, c.comId, c.comment, c.uId, u.user, u.bio
+        SELECT c.gId, c.comId, c.comment, c.uId, u.user, u.image
         
         FROM Comment c
         INNER JOIN User u ON c.uId = u.uId
@@ -23,5 +23,5 @@ data class CommentWithUser(
     val comment: String,
     val uId: Int,
     val user: String, // User's name from the User table
-    val bio: String   // User's bio from the User table
+    val image: String   // User's bio from the User table
 )

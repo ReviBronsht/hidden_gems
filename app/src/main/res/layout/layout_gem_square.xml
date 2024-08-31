@@ -11,7 +11,7 @@
         android:id="@+id/ivGemImg"
         android:layout_width="110dp"
         android:layout_height="105dp"
-        android:background="@drawable/img"
+        android:background="@drawable/sky2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

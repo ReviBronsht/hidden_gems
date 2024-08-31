@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:layout_marginTop="12dp"
-        android:background="@drawable/img"
+        android:background="@drawable/sky2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +51,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/img"
+        android:background="@drawable/sky2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnBack"
         app:shapeAppearanceOverlay="@style/circular" />
@@ -358,7 +358,7 @@
         android:layout_height="35dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/img"
+        android:background="@drawable/sky2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvComments"
         app:shapeAppearanceOverlay="@style/circular" />

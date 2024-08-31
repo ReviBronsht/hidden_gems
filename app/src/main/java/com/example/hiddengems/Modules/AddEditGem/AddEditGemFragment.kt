@@ -1,6 +1,10 @@
 package com.example.hiddengems.Modules.AddEditGem
 
+import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
@@ -13,6 +17,9 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
 import com.example.hiddengems.MainActivity
 import com.example.hiddengems.Model.Category
@@ -26,6 +33,7 @@ import com.example.hiddengems.R
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputLayout
+import com.squareup.picasso.Picasso
 
 class AddEditGemFragment : Fragment() {
 
@@ -86,6 +94,18 @@ class AddEditGemFragment : Fragment() {
     //initializing default rating
     var myRatingIdx:Int = 0
 
+    //declaring launcher
+    lateinit var resultLauncher: ActivityResultLauncher<Intent>
+
+    //boolean if image was changed
+    var wasImageChanged:Boolean = false
+
+
+    //registers launcher on create
+    override fun onCreate(savedInstanceState: Bundle?) {
+        registerResult()
+        super.onCreate(savedInstanceState)
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -205,6 +225,15 @@ class AddEditGemFragment : Fragment() {
             }
         }
 
+        //setting on click of edit button & image view
+        ivGemImg?.setOnClickListener(){
+            pickImageGallery()
+        }
+        btnImg?.setOnClickListener(){
+            pickImageGallery()
+        }
+
+
         //getting save button that adds gem with add gem function if the mode is add
         btnSave = view.findViewById<MaterialButton>(R.id.btnSave)
         if (!isEditMode) {
@@ -269,7 +298,7 @@ class AddEditGemFragment : Fragment() {
                     //marking rating to user's rating
                     markRating(ratingBtnList, rating)
                     //showing the image with edit icon by calling showImage
-                    showImage()
+                    showImage(currGem.image)
 
                     //sets on click lisener of save button to edit
                     btnSave?.setOnClickListener() {
@@ -287,10 +316,12 @@ class AddEditGemFragment : Fragment() {
     }
 
     //shows the image, and shows relevant icon
-    fun showImage(){
+    fun showImage(image:String){
         ivGemImg?.visibility = View.VISIBLE
         btnEditImgIcon?.visibility = View.VISIBLE
-
+        if (image!="") {
+            Picasso.with(context).load(image).fit().centerCrop().into(ivGemImg)
+        }
     }
     //clear form resets variables, sets fields to empty text, and clears rating
     fun clearForm(){
@@ -372,19 +403,36 @@ class AddEditGemFragment : Fragment() {
 
         if (isErrors == false) {
 
-            val newGem: Gem = Gem(
-                 Model.instance.currUser.uId, name, desc, address, city, type, rating.toDouble(),
-                mutableListOf<Int>(rating)
-            )
+            if (wasImageChanged) {
+                ivGemImg?.isDrawingCacheEnabled = true
+                ivGemImg?.buildDrawingCache()
+                val bitmap = (ivGemImg?.drawable as BitmapDrawable).bitmap
+                val imgName = name + "GemImg"
+                Model.instance.uploadImage(imgName, bitmap) { url ->
+                    if (url != null) {
+                        val image = url.toString()
+                        val newGem: Gem = Gem(
+                            Model.instance.currUser.uId, name, desc, address, city, type,image, rating.toDouble(),
+                            mutableListOf<Int>(rating)
+                        )
 
-            Model.instance.upsertGem(newGem){id ->
-                Model.instance.upsertRating(Ratings(id,Model.instance.currUser.uId,myRatingIdx)){}
+                        Model.instance.upsertGem(newGem){id ->
+                            Model.instance.upsertRating(Ratings(id,Model.instance.currUser.uId,myRatingIdx)){}
+                        }
+
+
+                        clearForm()
+
+                        wasImageChanged = false
+                        (activity as MainActivity).goBack()
+                    }
+                }
+            }
+            else{
+                Toast.makeText(context,"Please upload an image",Toast.LENGTH_SHORT).show()
             }
 
 
-            clearForm()
-
-            (activity as MainActivity).goBack()
 
 
         }
@@ -396,6 +444,7 @@ class AddEditGemFragment : Fragment() {
     //if not, creates new gem from values and edits gem in local db
     //clears the form with clearform function
     //puts user in view gem page with displayfragment function
+    //if user changed the image, uploads it and saves gem with new image
     fun editGem(gem: Gem){
 
         clearErrors()
@@ -407,7 +456,26 @@ class AddEditGemFragment : Fragment() {
 
             val (updatedRating, updatedMyRatingIdx, updatedRatings) = (activity as MainActivity).updateRating(rating, myRatingIdx, gem.ratings)
 
+            if (wasImageChanged) {
+                ivGemImg?.isDrawingCacheEnabled = true
+                ivGemImg?.buildDrawingCache()
+                val bitmap = (ivGemImg?.drawable as BitmapDrawable).bitmap
+                val imgName = gem.name + "GemImg"
+                Model.instance.uploadImage(imgName, bitmap) { url ->
+                    if (url != null) {
+                        val image = url.toString()
+                        val editedGem = gem.copy(name=name, desc = desc, address = address, city = city, type = type, image = image, rating = updatedRating, ratings = updatedRatings)
 
+                        Model.instance.upsertGem(editedGem){id ->
+                            Model.instance.upsertRating(Ratings(id,Model.instance.currUser.uId,myRatingIdx)){}
+                        }
+
+                        wasImageChanged = false
+                        (activity as MainActivity).goBack(editedGem.gId.toString())
+                            }
+                        }
+                    }
+            else{
             val editedGem = gem.copy(name=name, desc = desc, address = address, city = city, type = type, rating = updatedRating, ratings = updatedRatings)
 
 
@@ -415,7 +483,9 @@ class AddEditGemFragment : Fragment() {
                 Model.instance.upsertRating(Ratings(id,Model.instance.currUser.uId,myRatingIdx)){}
             }
 
+                wasImageChanged = false
             (activity as MainActivity).goBack(editedGem.gId.toString())
+            }
 
         }
     }
@@ -439,6 +509,29 @@ class AddEditGemFragment : Fragment() {
                     AppCompatResources.getColorStateList(it, R.color.accent)
             }
         }
+    }
+
+    //launches to pick images with intent
+    fun pickImageGallery(){
+        var intent:Intent= Intent(MediaStore.ACTION_PICK_IMAGES)
+        resultLauncher.launch(intent)
+    }
+
+    //registering launcher result to set the image, mark it was changed and make it visible
+    fun registerResult(){
+        resultLauncher=registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult(),
+            ActivityResultCallback {
+                var imageUri: Uri? = it.data?.data
+                if (imageUri != null){
+                    ivGemImg?.visibility = View.VISIBLE
+                    ivGemImg?.setImageURI(imageUri)
+                    wasImageChanged = true
+                }
+
+            }
+        )
+
     }
 
 }

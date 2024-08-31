@@ -71,6 +71,7 @@ class LogInFragment : Fragment() {
             Model.instance.currUser.uId = resUser.uId
             Model.instance.currUser.user = resUser.user
             Model.instance.currUser.bio = resUser.bio
+            Model.instance.currUser.image = resUser.image
             Model.instance.currUser.favoriteGems = resUser.favoriteGems
             Model.instance.currUser.visitedGems = resUser.visitedGems
 

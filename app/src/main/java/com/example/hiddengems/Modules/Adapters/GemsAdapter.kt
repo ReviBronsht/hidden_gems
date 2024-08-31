@@ -1,5 +1,6 @@
 package com.example.hiddengems.Modules.Adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import com.example.hiddengems.Model.Gem
 import com.example.hiddengems.Model.relationships.GemWithUser
 import com.example.hiddengems.R
 import com.google.android.material.imageview.ShapeableImageView
+import com.squareup.picasso.Picasso
 
 //Declaring RecyclerView.Adapter subclass for Gems
 class GemsAdapter (
@@ -21,7 +23,7 @@ class GemsAdapter (
     private val layout:Int
 
 ):RecyclerView.Adapter<GemsAdapter.GemsViewHolder>(){
-
+    private lateinit var context: Context
     //GemsViewHolder holds references to the views for each item
     inner class GemsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
 
@@ -32,6 +34,7 @@ class GemsAdapter (
         var tvGemCity:TextView?=null
         var tvGemType:TextView?=null
         var ivGemImg: ShapeableImageView?=null
+        var ivUserImg:ShapeableImageView?=null
 
         init {
             ivGemContainer = itemView.findViewById<ConstraintLayout>(R.id.ivGemContainer)
@@ -41,12 +44,14 @@ class GemsAdapter (
             tvGemCity = itemView.findViewById<TextView>(R.id.tvGemCity)
             tvGemType = itemView.findViewById<TextView>(R.id.tvGemType)
             ivGemImg = itemView.findViewById<ShapeableImageView>(R.id.ivGemImg)
+            ivUserImg = itemView.findViewById<ShapeableImageView>(R.id.ivUserImg)
         }
     }
 
     //OnCreateViewHolder creates and returns a GemsViewHolder for a new item
     //inflates the layout and initializes context from parent.context
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GemsViewHolder {
+        context = parent.context
         return GemsViewHolder(
             LayoutInflater.from(parent.context).inflate(
                 layout,
@@ -73,6 +78,15 @@ class GemsAdapter (
         holder.tvGemRating?.text =  currGem.gem.rating.toString()
         holder.tvGemCity?.text =  currGem.gem.city
         holder.tvGemType?.text =  currGem.gem.type
+        if (holder.ivGemImg != null) {
+            Picasso.with(context).load(currGem.gem.image).fit().centerCrop().into(holder.ivGemImg)
+        }
+        if (holder.ivUserImg != null) {
+            if (currGem.user.image != "") {
+                Picasso.with(context).load(currGem.user.image).fit().centerCrop()
+                    .into(holder.ivUserImg)
+            }
+        }
 
     holder.ivGemImg?.setOnClickListener(){
             onItemClickListener.onGemClick(currGem.gem.gId)

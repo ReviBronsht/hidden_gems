@@ -25,6 +25,7 @@ import com.example.hiddengems.Modules.Adapters.CommentsAdapter
 import com.example.hiddengems.R
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.imageview.ShapeableImageView
+import com.squareup.picasso.Picasso
 
 class ViewGemFragment : Fragment() {
 
@@ -73,6 +74,11 @@ class ViewGemFragment : Fragment() {
 
     //initializing default rating
     var myRatingIdx:Int = -1
+
+    //initializing image views
+    var ivGemImg:ShapeableImageView?=null
+    var ivUserImg:ShapeableImageView?=null
+    var ivUserImgAddComment:ShapeableImageView?=null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -139,6 +145,22 @@ class ViewGemFragment : Fragment() {
                     tvGemRating?.text = currGem?.rating.toString()
                     tvGemCity?.text = currGem?.city
                     tvGemType?.text = currGem?.type
+
+                    //setting image views
+                    ivGemImg = view.findViewById<ShapeableImageView>(R.id.ivGemImg)
+                    ivUserImg = view.findViewById<ShapeableImageView>(R.id.ivUserImg)
+                    ivUserImgAddComment = view.findViewById<ShapeableImageView>(R.id.ivUserImgAddComment)
+
+                    //loading images with picasso
+                    currGem?.let {
+                        Picasso.with(context).load(it.image).fit().centerCrop().into(ivGemImg)
+                    }
+                    if (currUser.image!="") {
+                        Picasso.with(context).load(currUser.image).fit().centerCrop().into(ivUserImg)
+                    }
+                    if (Model.instance.currUser.image!="") {
+                        Picasso.with(context).load(Model.instance.currUser.image).fit().centerCrop().into(ivUserImgAddComment)
+                    }
 
                     //getting comments number view, calculating number of comments, and setting comments number view text to number of comments
                     tvCommentsNum = view.findViewById<TextView>(R.id.tvCommentsNum)

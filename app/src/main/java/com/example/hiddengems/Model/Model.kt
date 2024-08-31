@@ -1,15 +1,14 @@
 package com.example.hiddengems.Model
 
+import android.graphics.Bitmap
 import android.os.Looper
 import androidx.core.os.HandlerCompat
-import com.example.hiddengems.Model.relationships.GemWithComments
 import com.example.hiddengems.Model.relationships.GemWithUser
 import com.example.hiddengems.Model.relationships.GemWithUserAndComments
 import com.example.hiddengems.Model.relationships.UserWithGems
 import com.example.hiddengems.dao.AppLocalDatabase
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
-import java.util.logging.Handler
 
 class Model private constructor() {
 
@@ -242,7 +241,11 @@ class Model private constructor() {
         }
     }
 
-    companion object {
+//    implements upload image function from firebase model
+    fun uploadImage(name: String, bitmap: Bitmap, listener: (String?) -> Unit){
+        firebaseModel.uploadImage(name,bitmap,listener)
+    }
+        companion object {
         val instance: Model = Model()
     }
 
@@ -256,9 +259,9 @@ class Model private constructor() {
         getAllUsers { usersRes->
             if(usersRes.isEmpty()){
                 upsertUser(User("Billy","Experienced Traveller", mutableListOf(1,3), mutableListOf(2))){}
-                upsertUser(User("Bobby","")){}
+                upsertUser(User("Bobby","", image = "https://firebasestorage.googleapis.com/v0/b/hiddengems-f6992.appspot.com/o/images%20(1).jfif?alt=media&token=0da0183d-cbc4-486b-b4a0-b911eab2146d")){}
                 upsertUser(User("Jane","Blogger")){}
-                upsertUser(User("Alfy","")){}
+                upsertUser(User("Alfy","", image = "https://firebasestorage.googleapis.com/v0/b/hiddengems-f6992.appspot.com/o/profile-picture.jpeg?alt=media&token=9c993131-659c-48dc-9f0f-4c3d89041e3b")){}
             }
         }
 
@@ -294,13 +297,21 @@ class Model private constructor() {
         getAllGems { gemsRes ->
             if (gemsRes.isEmpty()){
                 upsertGem(Gem(1, "Grande Coffee", "Hidden coffee shop by the park, cozy and homey atmosphere with fantastic pastries!",
-                    "76 rue Leon Dierx","Paris, FR","Cafe/Restaurant", 2.5,mutableListOf(2, 3, 3))) {}
+                    "76 rue Leon Dierx","Paris, FR","Cafe/Restaurant",
+                    "https://firebasestorage.googleapis.com/v0/b/hiddengems-f6992.appspot.com/o/photo1jpg.jpg?alt=media&token=316752a0-8dae-4f68-87c7-f600efb9f90e"
+                    ,2.5,mutableListOf(2, 3, 3))) {}
                 upsertGem(Gem(3, "Illusion Museum","You won't believe your eyes in this illusion museum!",
-                          "70 Griffin St" ,"NYC, USA","Museum", 3.6,mutableListOf(5, 3, 3))) {}
+                          "70 Griffin St" ,"NYC, USA","Museum",
+                    "https://firebasestorage.googleapis.com/v0/b/hiddengems-f6992.appspot.com/o/2022-03-09-e-lee-stacy-rangel-stec-philadelphia-museum-of-illusions-opening-tunnel.webp?alt=media&token=935310a5-6be2-466b-8d30-f8a30636ad3a",
+                    3.6,mutableListOf(5, 3, 3))) {}
                 upsertGem(Gem(2, "Side Street Park","Beautiful park with pastoral views",
-                      "3 Via Nino Martoglio", "Rome, It","Park", 3.0,mutableListOf( 3, 3))) {}
+                      "3 Via Nino Martoglio", "Rome, It","Park",
+                    "https://firebasestorage.googleapis.com/v0/b/hiddengems-f6992.appspot.com/o/Halleyparknovember_b.jpg?alt=media&token=3c04e9bf-9a3a-4201-b230-07adb2a25aa5"
+                    ,3.0,mutableListOf( 3, 3))) {}
                 upsertGem(Gem(1, "Soup-y", "Tiny restaurant run by a small family, hidden just out of view!",
-                      "174 Quai de Jemmapes","Paris, FR","Cafe/Restaurant",1.0,mutableListOf(1))) {}
+                      "174 Quai de Jemmapes","Paris, FR","Cafe/Restaurant",
+                    "https://firebasestorage.googleapis.com/v0/b/hiddengems-f6992.appspot.com/o/homey-chinese-restaurant.jpg?alt=media&token=bdeb7499-e7db-441c-911d-2e843bdf7eda"
+                    ,1.0,mutableListOf(1))) {}
             }
         }
 
