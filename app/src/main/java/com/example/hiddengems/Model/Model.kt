@@ -190,6 +190,7 @@ class Model private constructor() {
             getCommentsByGId(gem.gId) { resComments ->
                 val comments = resComments as MutableList<Comment>
                 for (c in comments){
+                    println("look here" +c)
                     deleteComment(c){
                     }
                 }
@@ -218,7 +219,7 @@ class Model private constructor() {
         executor.execute{
             AppLocalDatabase.db.hiddenGemsDao().deleteComment(comment)
 
-            firebaseModel.deleteComments(comment.gId) {
+            firebaseModel.deleteComments(comment.comId) {
                 mainHandler.post {
                     callback()
                 }
@@ -284,16 +285,16 @@ class Model private constructor() {
     //executes background task of upsertUser query and posting the result back to main thread  with same in firebase
     fun upsertUser(user: User, insertToFirebase:Boolean = true, oldId:Int? = null, callback: () -> Unit){
         executor.execute{
-            AppLocalDatabase.db.hiddenGemsDao().upsertUser(user)
-            //val newUserId = AppLocalDatabase.db.hiddenGemsDao().upsertUser(user)
-            //val updatedUser = user.copy(uId = newUserId.toInt())
+            //AppLocalDatabase.db.hiddenGemsDao().upsertUser(user)
+            val newUserId = AppLocalDatabase.db.hiddenGemsDao().upsertUser(user)
+            val updatedUser = user.copy(uId = newUserId.toInt())
 
-//            if (oldId != null){
-//                updatedUser.uId = oldId
-//            }
+            if (oldId != null){
+                updatedUser.uId = oldId
+            }
 
             if (insertToFirebase) {
-                firebaseModel.upsertUser(user) {
+                firebaseModel.upsertUser(updatedUser) {
                     mainHandler.post {
                         callback()
                     }
@@ -497,10 +498,16 @@ class Model private constructor() {
 
 
     //function does sign up of firebase model, and when its done insers user into room and firebase db with upsert
-    fun doSignUp(user: User,email:String,password:String,callback: () -> Unit){
+    fun doSignUp(user: User,email:String,password:String,callback: (Boolean) -> Unit){
         firebaseModel.signUp(email,password) {it->
-            upsertUser(user){
-                callback()
+            if(it != null) {
+                upsertUser(user) {
+                    callback(true)
+                }
+            }
+            else
+            {
+                callback(false)
             }
         }
     }
@@ -563,104 +570,7 @@ class Model private constructor() {
                 getAllCitiesFromFirebase {}
             }
         }
-//        getAllComments { commentsRes ->
-//            if (commentsRes.isEmpty()) {
-//                getAllCommentsFromFirebase {}
-//            }
-//        }
-//        getAllGems { gemsRes ->
-//            if (gemsRes.isEmpty()) {
-//                getAllGemsFromFirebase {}
-//            }
-//        }
-//        getAllRatings { ratingsRes ->
-//            if (ratingsRes.isEmpty()) {
-//                getAllRatingsFromFirebase {}
-//            }
-//        }
-//        getAllUsers { usersRes ->
-//            if (usersRes.isEmpty()) {
-//                getAllUsersFromFirebase {}
-//            }
-//        }
 
-        //insert new records into room
-
-        //update local last update
-
-        //return complete list from room
-
-
-
-        //3. get last update
-
-
-//        getAllUsers { usersRes->
-//            if(usersRes.isEmpty()){
-//                upsertUser(User("Billy","Experienced Traveller", mutableListOf(1,3), mutableListOf(2))){}
-//                upsertUser(User("Bobby","", image = "https://firebasestorage.googleapis.com/v0/b/hiddengems-f6992.appspot.com/o/images%20(1).jfif?alt=media&token=0da0183d-cbc4-486b-b4a0-b911eab2146d")){}
-//                upsertUser(User("Jane","Blogger")){}
-//                upsertUser(User("Alfy","", image = "https://firebasestorage.googleapis.com/v0/b/hiddengems-f6992.appspot.com/o/profile-picture.jpeg?alt=media&token=9c993131-659c-48dc-9f0f-4c3d89041e3b")){}
-//            }
-//        }
-
-//        getAllCities { citiesRes ->
-//            if (citiesRes.isEmpty()){
-//                insertCity(City("All")) {}
-//                insertCity(City("Paris, FR")) {}
-//                insertCity(City("NYC, USA")) {}
-//                insertCity(City("Rome, IT")) {}
-//                insertCity(City("London, UK")) {}
-//            }
-//        }
-
-//        getAllCategories { categoriesRes ->
-//            if (categoriesRes.isEmpty()){
-//                insertCategory(Category("All", "ferris_svgrepo_com")) {}
-//                insertCategory(Category("Cafe&Restaurant", "restaurant_svgrepo_com")) {}
-//                insertCategory(Category("Museum", "museum_svgrepo_com")) {}
-//                insertCategory(Category("Park", "park_svgrepo_com")) {}
-//            }
-//        }
-
-
-//        getAllComments { commentsRes ->
-//            if (commentsRes.isEmpty()){
-//                insertComment(Comment(1,1, "My favorite cafe")) {}
-//                insertComment(Comment(1,3, "Thanks for the recommendation")) {}
-//                insertComment(Comment(1,4, "Great service!")) {}
-//                insertComment(Comment(2,1, "What a trip!")) {}
-//                insertComment(Comment(2,3, "Great museum!")) {}
-//            }
-//        }
-
-//        getAllGems { gemsRes ->
-//            if (gemsRes.isEmpty()){
-//                upsertGem(Gem(1, "Grande Coffee", "Hidden coffee shop by the park, cozy and homey atmosphere with fantastic pastries!",
-//                    "76 rue Leon Dierx","Paris, FR","Cafe&Restaurant",
-//                    "https://firebasestorage.googleapis.com/v0/b/hiddengems-f6992.appspot.com/o/photo1jpg.jpg?alt=media&token=316752a0-8dae-4f68-87c7-f600efb9f90e"
-//                    ,2.5,mutableListOf(2, 3, 3))) {}
-//                upsertGem(Gem(3, "Illusion Museum","You won't believe your eyes in this illusion museum!",
-//                          "70 Griffin St" ,"NYC, USA","Museum",
-//                    "https://firebasestorage.googleapis.com/v0/b/hiddengems-f6992.appspot.com/o/2022-03-09-e-lee-stacy-rangel-stec-philadelphia-museum-of-illusions-opening-tunnel.webp?alt=media&token=935310a5-6be2-466b-8d30-f8a30636ad3a",
-//                    3.6,mutableListOf(5, 3, 3))) {}
-//                upsertGem(Gem(2, "Side Street Park","Beautiful park with pastoral views",
-//                      "3 Via Nino Martoglio", "Rome, It","Park",
-//                    "https://firebasestorage.googleapis.com/v0/b/hiddengems-f6992.appspot.com/o/Halleyparknovember_b.jpg?alt=media&token=3c04e9bf-9a3a-4201-b230-07adb2a25aa5"
-//                    ,3.0,mutableListOf( 3, 3))) {}
-//                upsertGem(Gem(1, "Soup-y", "Tiny restaurant run by a small family, hidden just out of view!",
-//                      "174 Quai de Jemmapes","Paris, FR","Cafe&/Restaurant",
-//                    "https://firebasestorage.googleapis.com/v0/b/hiddengems-f6992.appspot.com/o/homey-chinese-restaurant.jpg?alt=media&token=bdeb7499-e7db-441c-911d-2e843bdf7eda"
-//                    ,1.0,mutableListOf(1))) {}
-//            }
-//        }
-
-//        getAllRatings { ratingsRes ->
-//            if(ratingsRes.isEmpty()){
-//                upsertRating(Ratings(1,1,0)){}
-//                upsertRating(Ratings(2,1,1)){}
-//                upsertRating(Ratings(4,1,0)){}
-//            }        }
     }
 
 

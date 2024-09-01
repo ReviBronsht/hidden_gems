@@ -235,7 +235,7 @@ class FirebaseModel {
     fun deleteGem(gId: Int,callback: () -> Unit){
         db?.collection("gems")?.document(gId.toString())
             ?.delete()
-            ?.addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
+            ?.addOnSuccessListener { Log.d(TAG, "Gem successfully deleted!") }
             ?.addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
     }
 
@@ -243,7 +243,7 @@ class FirebaseModel {
     fun deleteRatings(ratingsId: String,callback: () -> Unit){
         db?.collection("ratings")?.document(ratingsId)
             ?.delete()
-            ?.addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
+            ?.addOnSuccessListener { Log.d(TAG, "Ratings successfully deleted!") }
             ?.addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
     }
 
@@ -251,36 +251,20 @@ class FirebaseModel {
     fun deleteComments(comId: Int,callback: () -> Unit){
         db?.collection("comments")?.document(comId.toString())
             ?.delete()
-            ?.addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
+            ?.addOnSuccessListener { Log.d(TAG, "Comment successfully deleted!") }
             ?.addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
     }
 
 
-        //   val db = Firebase.firestore
-
-//    // Create a new user with a first and last name
-//    val user = hashMapOf(
-//        "first" to "Ada",
-//        "last" to "Lovelace",
-//        "born" to 1815,
-//    )
-//
-//// Add a new document with a generated ID
-//    db.collection("users")
-//    .add(user)
-//    .addOnSuccessListener { documentReference ->
-//        Log.d(ContentValues.TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-//    }
-//    .addOnFailureListener { e ->
-//        Log.w(ContentValues.TAG, "Error adding document", e)
-//    }
-
     //sign up function using auth
-    fun signUp(email:String, password:String, listener: (email:String) -> Unit) {
+    fun signUp(email:String, password:String, listener: (email:String?) -> Unit) {
         auth?.createUserWithEmailAndPassword(email, password)
             ?.addOnCompleteListener() { task ->
                 if (task.isSuccessful) {
                     listener(email)
+                }
+                else{
+                    listener(null)
                 }
             }
     }

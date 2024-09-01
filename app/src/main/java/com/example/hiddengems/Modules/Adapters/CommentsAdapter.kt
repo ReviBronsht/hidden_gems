@@ -16,7 +16,7 @@ import com.squareup.picasso.Picasso
 class CommentsAdapter  (
 
     //setting parameters as comment with user list
-    private var comments:MutableList<CommentWithUser>
+    private var comments:MutableList<CommentWithUser> = mutableListOf()
 
 ): RecyclerView.Adapter<CommentsAdapter.CommentsViewHolder>(){
     private lateinit var context: Context

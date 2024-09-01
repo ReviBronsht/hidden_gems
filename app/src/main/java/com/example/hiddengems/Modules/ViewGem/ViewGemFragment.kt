@@ -415,8 +415,15 @@ class ViewGemFragment : Fragment() {
 
         Model.instance.upsertGem(updatedGem, oldId = updatedGem.gId){}
 
-
-        Model.instance.upsertRating(Ratings(updatedGem.gId,Model.instance.currUser.uId,updatedMyRatingIdx)){}
+        if(myRatingIdx == -1) {
+            Model.instance.upsertRating(
+                Ratings(
+                    updatedGem.gId,
+                    Model.instance.currUser.uId,
+                    updatedMyRatingIdx
+                )
+            ) {}
+        }
 
 
         tvGemRating?.text = updatedRating.toString()

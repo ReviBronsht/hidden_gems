@@ -199,17 +199,22 @@ class SignUpFragment : Fragment() {
             if (foundUser != null ) {
                 tilNameLayout?.error = "This user already exists"
             } else {
-                pbSignUp?.visibility = View.VISIBLE
 
                 var isErrors = checkErrors()
 
                 if (isErrors == false) {
-
+                    pbSignUp?.visibility = View.VISIBLE
                     var newUser = User(name,email=email)
                     Model.instance.doSignUp(newUser,email,password){
-                        clearForm()
-                        tvSucessMsg?.visibility = View.VISIBLE
-                        pbSignUp?.visibility= View.GONE
+                        if(it == true) {
+                            clearForm()
+                            tvSucessMsg?.visibility = View.VISIBLE
+                            pbSignUp?.visibility = View.GONE
+                        }
+                        else{
+                            tilEmailLayout?.error = "A user with this email already exists"
+                            pbSignUp?.visibility = View.GONE
+                        }
                     }
 
 

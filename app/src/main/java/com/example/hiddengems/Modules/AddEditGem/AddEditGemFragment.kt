@@ -466,8 +466,8 @@ class AddEditGemFragment : Fragment() {
                         val image = url.toString()
                         val editedGem = gem.copy(name=name, desc = desc, address = address, city = city, type = type, image = image, rating = updatedRating, ratings = updatedRatings)
 
-                        Model.instance.upsertGem(editedGem,oldId=editedGem.gId){id ->
-                            Model.instance.upsertRating(Ratings(id,Model.instance.currUser.uId,myRatingIdx)){}
+                        Model.instance.upsertGem(editedGem, oldId = editedGem.gId){id ->
+                         //   Model.instance.upsertRating(Ratings(editedGem.gId,Model.instance.currUser.uId,myRatingIdx)){}
                         }
 
                         wasImageChanged = false
