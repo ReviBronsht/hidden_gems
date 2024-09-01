@@ -167,6 +167,7 @@ class LogInFragment : Fragment() {
                     fragmentFeed?.let {
                         (activity as MainActivity).displayFragment(it, displayHomeButton = true)
                     }
+                    (activity as MainActivity).fetchCountries().start() //displays today's top country from api on log in
 
                 }
                 else{

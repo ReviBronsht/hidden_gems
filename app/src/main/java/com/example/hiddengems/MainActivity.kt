@@ -1,9 +1,11 @@
 package com.example.hiddengems
 
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -18,11 +20,16 @@ import com.example.hiddengems.Modules.Favorites.FavoritesFragment
 import com.example.hiddengems.Modules.Feed.FeedFragment
 import com.example.hiddengems.Modules.LogIn.LogInFragment
 import com.example.hiddengems.Modules.Profile.ProfileFragment
+import com.example.hiddengems.Modules.Request
 import com.example.hiddengems.Modules.Search.SearchFragment
 import com.example.hiddengems.Modules.SignUp.SignUpFragment
 import com.example.hiddengems.Modules.ViewGem.ViewGemFragment
+import com.google.gson.Gson
+import java.io.InputStreamReader
 import java.math.RoundingMode
+import java.net.URL
 import java.util.regex.Pattern
+import javax.net.ssl.HttpsURLConnection
 
 class MainActivity : AppCompatActivity() {
 
@@ -59,40 +66,6 @@ class MainActivity : AppCompatActivity() {
     //if not in homepage or log in, uses GoBack function for custom back navigation
     //if in sign up, goes back to log in
     override fun onBackPressed() {
-//        bottomNavShow()
-//        if (inDisplayFragment == fragmentViewGem) {
-//            goBack()
-//        }
-//        else{
-//            if (supportFragmentManager.backStackEntryCount > 1) {
-//                super.onBackPressed()
-//                println(inDisplayFragment)
-//                val currFragmentId =
-//                    supportFragmentManager.findFragmentById(R.id.flMainFragmentContainer)
-//                        ?.toString()?.split("{")
-//                currFragmentId?.let {
-//                    when (it[0]) {
-//                        "FeedFragment" -> btnHome?.let { button ->
-//                            displayButton(button)
-//                        }
-//
-//                        "SearchFragment" -> btnSearch?.let { button ->
-//                            displayButton(button)
-//                        }
-//
-//                        "AddEditGemFragment" -> btnAddGem?.let { button ->
-//                            displayButton(button)
-//                        }
-//
-//                        "FavoritesFragment" -> btnFaves?.let { button ->
-//                            displayButton(button)
-//                        }
-//
-//                        else -> btnProfile?.let { button ->
-//                            displayButton(button)
-//                        }
-//                    }
-//                }
         if (Model.instance.currUser.user == ""){
             if (inDisplayFragment == fragmentLogIn) {
                 finish()
@@ -107,8 +80,6 @@ class MainActivity : AppCompatActivity() {
             if (inDisplayFragment != fragmentFeed) {
                 goBack(prevGem)
             } else {
-                //if (supportFragmentManager.backStackEntryCount != 1)
-                //{supportFragmentManager.popBackStackImmediate()}
                 finish()
                 if (false) {
                     super.onBackPressed()
@@ -188,70 +159,53 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        //if user not logged in, sets log in
-        // if user  logged in, sets feed
-        if (Model.instance.currUser.user != "") {
-            fragmentFeed?.let { fragment ->
-                btnHome?.let { button ->
-                    displayFragment(fragment, button)
+        if (inDisplayFragment == null) {
+            //if user not logged in, sets log in
+            // if user  logged in, sets feed
+            if (Model.instance.currUser.user != "") {
+                fragmentFeed?.let { fragment ->
+                    btnHome?.let { button ->
+                        displayFragment(fragment, button)
+                    }
+                }
+            } else {
+                bottomNavHide()
+                fragmentLogIn?.let {
+                    displayFragment(it)
                 }
             }
         }
-        else {
-            bottomNavHide()
-            fragmentLogIn?.let {
-                displayFragment(it)
-            }
-        }
 
-//        gemsAdapter = GemsAdapter(mutableListOf())
-//
-//        val rvGems = findViewById<RecyclerView>(R.id.rvGems)
-//        val tvSaveBtn = findViewById<TextView>(R.id.tvSaveBtn)
-//        val etName = findViewById<EditText>(R.id.etName)
-//        val etDesc = findViewById<EditText>(R.id.etDesc)
-//        val etAddress= findViewById<EditText>(R.id.etAddress)
-//        val etRating = findViewById<EditText>(R.id.etRating)
-//        val etCity= findViewById<EditText>(R.id.etCity)
-//        val etType = findViewById<EditText>(R.id.etType)
-//
-//
-//
-//
-//        rvGems.adapter = gemsAdapter
-//        rvGems.layoutManager = LinearLayoutManager(this)
-//
-//        tvSaveBtn.setOnClickListener{
-//            val gemName = etName.text.toString()
-//            val gemDesc = etDesc.text.toString()
-//            val gemAddress = etAddress.text.toString()
-//            val gemRating = etRating.text.toString()
-//            val gemCity = etCity.text.toString()
-//            val gemType = etType.text.toString()
-//            val gem = Gem(gemName,gemDesc,gemAddress,gemCity,gemType,gemRating.toInt())
-//            gemsAdapter.addGem(gem)
-//        }
 
 
     }
 
-//    fun onButtonClicked(view: View){
-//
-//        if(feedFragment == null) {
-//            displayFragment()
-//        }
-//    }
-//    fun displayFragment(){
-//        feedFragment= FeedFragment.newInstance("Billy")
-//
-//        feedFragment?.let {fragment ->
-//            val transaction = supportFragmentManager.beginTransaction()
-//            transaction.add(R.id.flMainFragmentContainer, fragment)
-//            transaction.addToBackStack("TAG")
-//            transaction.commit()
-//        }
-//    }
 
+    //fetch today's top country from external rest api with input stream on thread with updateUi function
+    internal fun fetchCountries():Thread{
+        return Thread{
+            val url = URL("https://restcountries.com/v3.1/alpha/co?fields=name")
+            val connection= url.openConnection() as HttpsURLConnection
+
+            if(connection.responseCode == 200){
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem,"UTF-8")
+                val request = Gson().fromJson(inputStreamReader,Request::class.java)
+                updateUI(request)
+                inputStreamReader.close()
+                inputSystem.close()
+            }
+        }
+    }
+    fun updateUI(request: Request){
+        runOnUiThread{
+            kotlin.run{
+                Toast.makeText(this,"Today's top destination is: " + request.name.common +"!", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    //varify email with function and string matcher
     val EMAIL_ADDRESS_PATTERN: Pattern = Pattern.compile(
         "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
                 "\\@" +
