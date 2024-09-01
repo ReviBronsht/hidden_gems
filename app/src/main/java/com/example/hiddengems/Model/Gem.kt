@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.hiddengems.base.MyApplication
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import java.math.RoundingMode
 
@@ -21,6 +22,7 @@ data class Gem(
     var rating:Double,
     val ratings:MutableList<Int> = ArrayList(),
     @PrimaryKey(autoGenerate = true) var gId:Int = 0,
+    var lastUpdated: Long = 0
 
 ) {
 
@@ -50,7 +52,8 @@ data class Gem(
             val image = json.get("image").toString()
             val rating = json.get("rating") as Double
             val ratings = json.get("ratings") as MutableList<Int>
-            val newGem = Gem(uId, name, desc, address, city, type, image, rating, ratings, gId)
+            var time: Timestamp = json.get("lastUpdated") as Timestamp
+            val newGem = Gem(uId, name, desc, address, city, type, image, rating, ratings, gId,time.seconds)
             return newGem
         }
     }

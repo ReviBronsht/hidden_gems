@@ -3,6 +3,7 @@ package com.example.hiddengems.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
@@ -63,7 +64,7 @@ interface HiddenGemsDao {
     fun getGemById(id: String): GemWithUserAndComments
 
     //adds new comment
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertComment(comment: Comment):Long
 
     //getting all comments

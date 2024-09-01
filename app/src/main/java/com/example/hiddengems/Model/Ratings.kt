@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.hiddengems.base.MyApplication
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 
 //class to define gem cities table
@@ -11,7 +12,8 @@ import com.google.firebase.firestore.FieldValue
 data class Ratings (
     var gId: Int,
     var uId: Int,
-    val ratingIdx: Int
+    val ratingIdx: Int,
+    var lastUpdated: Long = 0
 ){
 
     companion object {
@@ -34,7 +36,8 @@ data class Ratings (
             val gId = (json.get("gId")as? Long)?.toInt() ?: 0
             val uId = (json.get("uId") as? Long)?.toInt() ?: 0
             val ratingIdx = (json.get("ratingIdx") as? Long)?.toInt() ?: 0
-            val newRatings = Ratings(gId, uId, ratingIdx)
+            var time: Timestamp = json.get("lastUpdated") as Timestamp
+            val newRatings = Ratings(gId, uId, ratingIdx,time.seconds)
             return newRatings
         }
     }

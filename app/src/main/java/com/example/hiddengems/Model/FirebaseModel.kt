@@ -41,7 +41,7 @@ class FirebaseModel {
         var lastUser:Long = 0
         var list = mutableListOf<User>()
         db?.collection("users")
-           // ?.whereGreaterThan("uId", lastLocalUpdate)
+            ?.whereGreaterThanOrEqualTo("lastUpdated", Timestamp(lastLocalUpdate,0))
             ?.get()
             ?.addOnSuccessListener { result ->
                 for (document in result) {
@@ -50,8 +50,8 @@ class FirebaseModel {
                     val time = document.data.get("lastUpdated") as Timestamp
                     println(time.seconds)
 
-                    if (time.seconds > lastLocalUpdate){
-                        list.add(user)
+                    list.add(user)
+                    if (time.seconds > lastUser){
                         lastUser = time.seconds}
                 }
                 if (lastUser > lastLocalUpdate){
@@ -71,15 +71,15 @@ class FirebaseModel {
         var list = mutableListOf<Ratings>()
         var lastRatings:Long = 0
         db?.collection("ratings")
-            //?.whereGreaterThan("lastUpdated", lastLocalUpdate)
+            ?.whereGreaterThanOrEqualTo("lastUpdated", Timestamp(lastLocalUpdate,0))
             ?.get()
             ?.addOnSuccessListener { result ->
                 for (document in result) {
                     Log.d(TAG, "${document.id} => ${document.data}")
                     var rats = Ratings.fromJson(document.data)
                     val time = document.data.get("lastUpdated") as Timestamp
-                    if (time.seconds > lastLocalUpdate){
-                        list.add(rats)
+                    list.add(rats)
+                    if (time.seconds > lastRatings){
                         lastRatings = time.seconds
                     }
                 }
@@ -100,16 +100,15 @@ class FirebaseModel {
         var lastGem:Long = 0
         var list = mutableListOf<Gem>()
         db?.collection("gems")
-            //?.whereGreaterThan("gId", lastLocalUpdate)
+            ?.whereGreaterThanOrEqualTo("lastUpdated", Timestamp(lastLocalUpdate,0))
             ?.get()
             ?.addOnSuccessListener { result ->
                 for (document in result) {
                     Log.d(TAG, "${document.id} => ${document.data}")
                     var gem = Gem.fromJson(document.data)
                     val time = document.data.get("lastUpdated") as Timestamp
-
-                    if (time.seconds > lastLocalUpdate){
-                        list.add(gem)
+                    list.add(gem)
+                    if (time.seconds > lastGem){
                         lastGem = time.seconds}
                 }
                 if (lastGem > lastLocalUpdate){
@@ -126,19 +125,19 @@ class FirebaseModel {
     //gets all comments from firestore
     //after checking that they've been updated after last update user got
     fun getAllComments(lastLocalUpdate:Long, callback: (List<Comment>) -> Unit) {
-        val timestamp = Timestamp(lastLocalUpdate / 1000, 0)
         var lastComment:Long = 0
         var list = mutableListOf<Comment>()
         db?.collection("comments")
+            ?.whereGreaterThanOrEqualTo("lastUpdated",Timestamp(lastLocalUpdate,0))
            // ?.whereGreaterThan("comId", lastLocalUpdate)
             ?.get()
             ?.addOnSuccessListener { result ->
                 for (document in result) {
                     Log.d(TAG, "${document.id} => ${document.data}")
                     var comment = Comment.fromJson(document.data)
+                    list.add(comment)
                     val time = document.data.get("lastUpdated") as Timestamp
-                    if (time.seconds > lastLocalUpdate){
-                        list.add(comment)
+                    if (time.seconds > lastComment){
                         lastComment = time.seconds}
                 }
                 if (lastComment > lastLocalUpdate) {

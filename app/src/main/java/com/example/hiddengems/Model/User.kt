@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.hiddengems.base.MyApplication
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 
 //class to define users table
@@ -15,7 +16,8 @@ data class User (
     var visitedGems:MutableList<Int> = mutableListOf(),
     var image:String="",
     var email:String="",
-    @PrimaryKey(autoGenerate = true) var uId:Int = 0
+    @PrimaryKey(autoGenerate = true) var uId:Int = 0,
+    var lastUpdated: Long = 0
 )
 {
     companion object {
@@ -42,7 +44,8 @@ data class User (
             val email = json.get("email").toString()
             val favoriteGems = json.get("favoriteGems") as MutableList<Int>
             val visitedGems = json.get("visitedGems") as MutableList<Int>
-            val newUser = User(user, bio, favoriteGems, visitedGems, image,email, uId)
+            var time: Timestamp = json.get("lastUpdated") as Timestamp
+            val newUser = User(user, bio, favoriteGems, visitedGems, image,email, uId,time.seconds)
             return newUser
         }
     }

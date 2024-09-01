@@ -371,6 +371,7 @@ class ViewGemFragment : Fragment() {
     // scrolls to top of comments recycler view
     // culculates new comments num and sets the relevant view to display it
     fun onPostClicked(gId:Int, uId:Int,commentText:String){
+
         val newComment =  Comment(gId,uId,commentText)
         if (newComment != null) {
             Model.instance.insertComment(newComment) {}

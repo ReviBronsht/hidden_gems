@@ -2,6 +2,7 @@ package com.example.hiddengems.Model
 
 import android.graphics.Bitmap
 import android.os.Looper
+import android.util.Log
 import androidx.core.os.HandlerCompat
 import com.example.hiddengems.Model.relationships.GemWithUser
 import com.example.hiddengems.Model.relationships.GemWithUserAndComments
@@ -420,56 +421,76 @@ class Model private constructor() {
 
     //gets all updated comments from firebase and adds them to room db
     fun getAllCommentsFromFirebase(localLastUpdate:Long,callback: (List<Comment>) -> Unit) {
-        firebaseModel.getAllComments(localLastUpdate) {comments ->
-            if (comments.isNotEmpty()){
-                for (comment in comments){
-                    insertComment(comment, insertToFirebase = false) {}
+        firebaseModel.getAllComments(localLastUpdate) { comments ->
+            executor.execute {
+                println("comments size: " + comments.size.toString())
+                if (comments.isNotEmpty()) {
+                    for (comment in comments) {
+                        insertComment(comment, insertToFirebase = false) {}
+                    }
+                    mainHandler.post{
+                        callback(comments)
+                    }
+                } else {
+                    println("No comments found or there was an error.")
                 }
-            }
-            else{
-                println("No comments found or there was an error.")
             }
         }
     }
 
     //gets all updated gems from firebase and adds them to room db
     fun getAllGemsFromFirebase(localLastUpdate:Long, callback: (List<Gem>) -> Unit) {
-        firebaseModel.getAllGems(localLastUpdate) {gems ->
-            if (gems.isNotEmpty()){
-                for (gem in gems){
-                    upsertGem(gem, insertToFirebase = false) {}
-                }
-            }
-            else{
+        firebaseModel.getAllGems(localLastUpdate) { gems ->
+            executor.execute {
+                println("gems size: " + gems.size.toString())
+                if (gems.isNotEmpty()) {
+                    for (gem in gems) {
+                        upsertGem(gem, insertToFirebase = false) {}
+                    }
+                    mainHandler.post {
+                        callback(gems)
+                    }
+                }else{
                 println("No gems found or there was an error.")
+            }
             }
         }
     }
 
     //gets all updated ratings from firebase and adds them to room db
     fun getAllRatingsFromFirebase(localLastUpdate:Long,callback: (List<Ratings>) -> Unit) {
-        firebaseModel.getAllRatings(localLastUpdate) {ratings ->
-            if (ratings.isNotEmpty()){
-                for (rat in ratings){
-                    upsertRating(rat, insertToFirebase = false) {}
+        firebaseModel.getAllRatings(localLastUpdate) { ratings ->
+            executor.execute {
+                println("ratings size: " + ratings.size.toString())
+                if (ratings.isNotEmpty()) {
+                    for (rat in ratings) {
+                        upsertRating(rat, insertToFirebase = false) {}
+                    }
+                    mainHandler.post {
+                        callback(ratings)
+                    }
+                } else {
+                    println("No ratings found or there was an error.")
                 }
-            }
-            else{
-                println("No ratings found or there was an error.")
             }
         }
     }
 
     //gets all updated users from firebase and adds them to room db
     fun getAllUsersFromFirebase(localLastUpdate:Long,callback: (List<User>) -> Unit) {
-        firebaseModel.getAllUsers(localLastUpdate) {users ->
-            if (users.isNotEmpty()){
-                for (user in users){
-                    upsertUser(user, insertToFirebase = false) {}
+        firebaseModel.getAllUsers(localLastUpdate) { users ->
+            executor.execute {
+                println("users size: " + users.size.toString())
+                if (users.isNotEmpty()) {
+                    for (user in users) {
+                        upsertUser(user, insertToFirebase = false) {}
+                    }
+                    mainHandler.post {
+                        callback(users)
+                    }
+                } else {
+                    println("No users found or there was an error.")
                 }
-            }
-            else{
-                println("No users found or there was an error.")
             }
         }
     }

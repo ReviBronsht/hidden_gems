@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.hiddengems.base.MyApplication
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 
 //class to define Comments table
@@ -13,7 +14,9 @@ data class Comment (
     var uId: Int,
     val comment: String,
     @PrimaryKey(autoGenerate = true) var comId:Int = 0,
+    var lastUpdated: Long = 0
 ){
+
     companion object {
 
         //using shared references to define funcions that get and set lastUpdated to check for updates
@@ -35,7 +38,8 @@ data class Comment (
             val gId = (json.get("gId")as? Long)?.toInt() ?: 0
             val uId = (json.get("uId") as? Long)?.toInt() ?: 0
             val comment = json.get("comment").toString()
-            val newComment = Comment(gId, uId, comment, comId)
+            var time:Timestamp = json.get("lastUpdated") as Timestamp
+            val newComment = Comment(gId, uId, comment, comId,time.seconds)
             return newComment
         }
     }
