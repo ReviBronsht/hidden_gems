@@ -41,26 +41,64 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvSignUpTitle" />
 
-
     <TextView
-        android:id="@+id/tvNameLabel"
+        android:id="@+id/tvEmailLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
         android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="15dp"
-        android:text="@string/username_label"
+        android:text="@string/email_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/sivBackground" />
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilEmailLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="15dp"
+        app:boxBackgroundColor="@color/gray"
+        app:errorEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvEmailLabel"
+        app:placeholderText="@string/email_placeholder"
+        app:shapeAppearanceOverlay="@style/cornerRadius">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:maxLength="25"
+            android:maxLines="1"
+            tools:layout_editor_absoluteX="80dp"
+            tools:layout_editor_absoluteY="578dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <TextView
+        android:id="@+id/tvNameLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="15dp"
+        android:text="@string/username_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilEmailLayout" />
+
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilNameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
         android:layout_marginStart="15dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="15dp"
         app:boxBackgroundColor="@color/gray"
         app:errorEnabled="true"
@@ -84,27 +122,27 @@
         android:id="@+id/tvPassLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_marginStart="15dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="15dp"
         android:text="@string/password_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilNameLayout"  />
+        app:layout_constraintTop_toBottomOf="@+id/tilNameLayout" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilPasswordLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
         android:layout_marginStart="15dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="15dp"
         app:boxBackgroundColor="@color/gray"
+        app:endIconMode="password_toggle"
         app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:endIconMode="password_toggle"
         app:layout_constraintTop_toBottomOf="@+id/tvPassLabel"
         app:placeholderText="@string/password_placeholder"
         app:shapeAppearanceOverlay="@style/cornerRadius">
@@ -120,32 +158,31 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
-
     <TextView
         android:id="@+id/tvConfPassLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_marginStart="15dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="15dp"
         android:text="@string/conf_password_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilPasswordLayout"  />
+        app:layout_constraintTop_toBottomOf="@+id/tilPasswordLayout" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilConfPasswordLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
         android:layout_marginStart="15dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="15dp"
         app:boxBackgroundColor="@color/gray"
+        app:endIconMode="password_toggle"
         app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:endIconMode="password_toggle"
         app:layout_constraintTop_toBottomOf="@+id/tvConfPassLabel"
         app:placeholderText="@string/conf_password_placeholder"
         app:shapeAppearanceOverlay="@style/cornerRadius">
@@ -179,11 +216,21 @@
         app:layout_constraintTop_toBottomOf="@+id/tilPasswordLayout" />
 
     <TextView
+        android:id="@+id/tvSucessMsg"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/success_msg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSignUp" />
+
+    <TextView
         android:id="@+id/tvLogIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/acc_txt"
         android:layout_marginStart="65dp"
+        android:text="@string/acc_txt"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSignUp" />
@@ -200,6 +247,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSignUp" />
 
+    <ProgressBar
+        android:id="@+id/pbSignUp"
+        style="?android:attr/progressBarStyle"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

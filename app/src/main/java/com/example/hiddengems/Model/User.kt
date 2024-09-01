@@ -14,6 +14,7 @@ data class User (
     var favoriteGems:MutableList<Int> = mutableListOf(),
     var visitedGems:MutableList<Int> = mutableListOf(),
     var image:String="",
+    var email:String="",
     @PrimaryKey(autoGenerate = true) var uId:Int = 0
 )
 {
@@ -38,9 +39,10 @@ data class User (
             val user = json.get("user").toString()
             val bio = json.get("bio").toString()
             val image = json.get("image").toString()
+            val email = json.get("email").toString()
             val favoriteGems = json.get("favoriteGems") as MutableList<Int>
             val visitedGems = json.get("visitedGems") as MutableList<Int>
-            val newUser = User(user, bio, favoriteGems, visitedGems, image, uId)
+            val newUser = User(user, bio, favoriteGems, visitedGems, image,email, uId)
             return newUser
         }
     }
@@ -52,6 +54,7 @@ data class User (
             "user" to user,
             "bio" to bio,
             "image" to image,
+            "email" to email,
             "favoriteGems" to favoriteGems,
             "visitedGems" to visitedGems,
             "lastUpdated" to FieldValue.serverTimestamp()

@@ -283,15 +283,16 @@ class Model private constructor() {
     //executes background task of upsertUser query and posting the result back to main thread  with same in firebase
     fun upsertUser(user: User, insertToFirebase:Boolean = true, oldId:Int? = null, callback: () -> Unit){
         executor.execute{
-            val newUserId = AppLocalDatabase.db.hiddenGemsDao().upsertUser(user)
-            val updatedUser = user.copy(uId = newUserId.toInt())
+            AppLocalDatabase.db.hiddenGemsDao().upsertUser(user)
+            //val newUserId = AppLocalDatabase.db.hiddenGemsDao().upsertUser(user)
+            //val updatedUser = user.copy(uId = newUserId.toInt())
 
-            if (oldId != null){
-                updatedUser.uId = oldId
-            }
+//            if (oldId != null){
+//                updatedUser.uId = oldId
+//            }
 
             if (insertToFirebase) {
-                firebaseModel.upsertUser(updatedUser) {
+                firebaseModel.upsertUser(user) {
                     mainHandler.post {
                         callback()
                     }
@@ -321,6 +322,17 @@ class Model private constructor() {
         executor.execute{
             //Thread.sleep(1000)
             val user = AppLocalDatabase.db.hiddenGemsDao().getUserByName(name)
+            mainHandler.post{
+                callback(user)
+            }
+        }
+    }
+
+    //executes background task of getUserByEmail query and posting the result back to main thread
+    fun getUserByEmail(email:String, callback: (User?) -> Unit) {
+        executor.execute{
+            //Thread.sleep(1000)
+            val user = AppLocalDatabase.db.hiddenGemsDao().getUserByEmail(email)
             mainHandler.post{
                 callback(user)
             }
@@ -463,7 +475,28 @@ class Model private constructor() {
     }
 
 
+    //function does sign up of firebase model, and when its done insers user into room and firebase db with upsert
+    fun doSignUp(user: User,email:String,password:String,callback: () -> Unit){
+        firebaseModel.signUp(email,password) {it->
+            upsertUser(user){
+                callback()
+            }
+        }
+    }
 
+    //function that does log in of firebase model, and when its done, if log in was successful finds the logged in user and passes it, if not, passes null
+    fun doLogIn(email: String,password: String,callback: (User?) -> Unit){
+        firebaseModel.logIn(email,password){
+            if (it == true){
+                getUserByEmail(email){user->
+                    callback(user)
+                }
+            }
+            else{
+                callback(null)
+            }
+        }
+    }
 
         //    implements upload image function from firebase model
     fun uploadImage(name: String, bitmap: Bitmap, listener: (String?) -> Unit){

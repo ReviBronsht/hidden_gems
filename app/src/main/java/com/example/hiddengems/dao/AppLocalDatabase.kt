@@ -17,7 +17,7 @@ import com.example.hiddengems.base.MyApplication
 
 //defining local room database tables, views and version
 @Database(entities = [Category::class,Gem::class,Comment::class, City::class, User::class,Ratings::class],
-    views = [CommentWithUser::class], version = 133)
+    views = [CommentWithUser::class], version = 152)
 
 @TypeConverters(RoomConverters::class) //defines type converters to handle non default types
 //creates app database singleton

@@ -1,9 +1,6 @@
 package com.example.hiddengems
 
-import android.content.ContentValues.TAG
 import android.os.Bundle
-import android.util.Log
-import android.view.Display.Mode
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -24,9 +21,8 @@ import com.example.hiddengems.Modules.Profile.ProfileFragment
 import com.example.hiddengems.Modules.Search.SearchFragment
 import com.example.hiddengems.Modules.SignUp.SignUpFragment
 import com.example.hiddengems.Modules.ViewGem.ViewGemFragment
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
 import java.math.RoundingMode
+import java.util.regex.Pattern
 
 class MainActivity : AppCompatActivity() {
 
@@ -255,6 +251,20 @@ class MainActivity : AppCompatActivity() {
 //            transaction.commit()
 //        }
 //    }
+
+    val EMAIL_ADDRESS_PATTERN: Pattern = Pattern.compile(
+        "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+                "\\@" +
+                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                "(" +
+                "\\." +
+                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                ")+"
+    )
+
+    internal fun checkEmail(email: String): Boolean {
+        return EMAIL_ADDRESS_PATTERN.matcher(email).matches()
+    }
 
 
     //function that recalculates rating when user adds rating from all previous ratings and new rating average

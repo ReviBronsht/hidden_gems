@@ -3,8 +3,11 @@ package com.example.hiddengems.Model
 import android.content.ContentValues.TAG
 import android.graphics.Bitmap
 import android.util.Log
+import android.widget.Toast
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.firestore
@@ -16,11 +19,13 @@ import java.io.ByteArrayOutputStream
 class FirebaseModel {
     var db:FirebaseFirestore ?= null
     var storage:FirebaseStorage ?= null
+    var auth: FirebaseAuth?=null
 
     //initializing with firestore and storage
     init {
         db = Firebase.firestore
         storage = Firebase.storage
+        auth = Firebase.auth
 
         //disabling cache and building
         val settings = FirebaseFirestoreSettings.Builder()
@@ -121,6 +126,7 @@ class FirebaseModel {
     //gets all comments from firestore
     //after checking that they've been updated after last update user got
     fun getAllComments(lastLocalUpdate:Long, callback: (List<Comment>) -> Unit) {
+        val timestamp = Timestamp(lastLocalUpdate / 1000, 0)
         var lastComment:Long = 0
         var list = mutableListOf<Comment>()
         db?.collection("comments")
@@ -269,6 +275,28 @@ class FirebaseModel {
 //    .addOnFailureListener { e ->
 //        Log.w(ContentValues.TAG, "Error adding document", e)
 //    }
+
+    //sign up function using auth
+    fun signUp(email:String, password:String, listener: (email:String) -> Unit) {
+        auth?.createUserWithEmailAndPassword(email, password)
+            ?.addOnCompleteListener() { task ->
+                if (task.isSuccessful) {
+                    listener(email)
+                }
+            }
+    }
+
+    //log in function using auth that returns bool on whether log in was successful or not
+    fun logIn(email:String, password:String, listener: (Boolean) -> Unit){
+        auth?.signInWithEmailAndPassword(email, password)
+            ?.addOnCompleteListener() { task ->
+                if (task.isSuccessful) {
+                    listener(true)
+                } else {
+                    listener(false)
+                }
+            }
+    }
 
     //upload image to firebase storage function
     fun uploadImage(name: String, bitmap: Bitmap, listener: (String?) -> Unit){

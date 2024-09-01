@@ -45,12 +45,16 @@
     <string name="sign_up_btn">Sign Up</string>
     <string name="log_in_subtitle">Please log in to your existing account</string>
     <string name="sign_up_subtitle">Please sign up to get started</string>
+    <string name="email_label">EMAIL</string>
+    <string name="email_placeholder">Email</string>
     <string name="password_label">PASSWORD</string>
     <string name="conf_password_placeholder">Confirm Password</string>
     <string name="conf_password_label">CONFIRM PASSWORD</string>
     <string name="password_placeholder">Password</string>
     <string name="no_acc_txt">Don`t have an account?</string>
     <string name="acc_txt">Have an account?</string>
+    <string name="success_msg">Sign up successful. Please log in.</string>
+    <string name="error_msg">User and/or password are incorrect.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

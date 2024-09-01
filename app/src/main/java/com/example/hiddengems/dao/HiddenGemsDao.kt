@@ -124,6 +124,10 @@ interface HiddenGemsDao {
     @Query("SELECT * FROM User WHERE user =:name")
     fun getUserByName(name: String): User?
 
+    //gets user by email
+    @Query("SELECT * FROM User WHERE email =:email")
+    fun getUserByEmail(email: String): User?
+
     //gets a user by id and all his gems
     @Transaction
     @Query("SELECT * FROM User WHERE uId=:id")

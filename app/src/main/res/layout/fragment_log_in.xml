@@ -43,20 +43,20 @@
 
 
     <TextView
-        android:id="@+id/tvNameLabel"
+        android:id="@+id/tvEmailLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
-        android:text="@string/username_label"
+        android:text="@string/email_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/sivBackground" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilNameLayout"
+        android:id="@+id/tilEmailLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
@@ -66,12 +66,12 @@
         app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvNameLabel"
-        app:placeholderText="@string/name_placeholder"
+        app:layout_constraintTop_toBottomOf="@+id/tvEmailLabel"
+        app:placeholderText="@string/email_placeholder"
         app:shapeAppearanceOverlay="@style/cornerRadius">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etName"
+            android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:maxLength="25"
@@ -91,20 +91,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilNameLayout"  />
+        app:layout_constraintTop_toBottomOf="@+id/tilEmailLayout"  />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilPasswordLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
         app:boxBackgroundColor="@color/gray"
+        app:endIconMode="password_toggle"
         app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:endIconMode="password_toggle"
         app:layout_constraintTop_toBottomOf="@+id/tvPassLabel"
         app:placeholderText="@string/password_placeholder"
         app:shapeAppearanceOverlay="@style/cornerRadius">
@@ -118,6 +117,18 @@
             tools:layout_editor_absoluteX="80dp"
             tools:layout_editor_absoluteY="578dp" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/tvErrMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="@string/error_msg"
+        app:layout_constraintBottom_toTopOf="@+id/btnLogIn"
+        android:textColor="@color/red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilPasswordLayout" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnLogIn"
