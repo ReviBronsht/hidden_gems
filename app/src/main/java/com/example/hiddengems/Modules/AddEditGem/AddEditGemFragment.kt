@@ -480,7 +480,7 @@ class AddEditGemFragment : Fragment() {
 
 
             Model.instance.upsertGem(editedGem, oldId = editedGem.gId){id ->
-                Model.instance.upsertRating(Ratings(id,Model.instance.currUser.uId,myRatingIdx)){}
+               // Model.instance.upsertRating(Ratings(id,Model.instance.currUser.uId,myRatingIdx)){}
             }
 
                 wasImageChanged = false

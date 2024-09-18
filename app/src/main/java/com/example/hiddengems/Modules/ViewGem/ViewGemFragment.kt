@@ -168,7 +168,7 @@ class ViewGemFragment : Fragment() {
                     tvCommentsNum?.text = "(" + commentsNum.toString() + ")"
 
                     //setting up comments recycler view by getting comments, initialising adapter with them, setting the adapter of recyclerview, and setting layout manager
-                    val comments = currComments
+                    val comments = currComments.toMutableList()
 
                     commentsAdapter = CommentsAdapter(comments)
                     rvComments = view.findViewById<RecyclerView>(R.id.rvComments)
